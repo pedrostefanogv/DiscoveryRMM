@@ -1,45 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import './Quickstart.css';
 
-const STEPS = [
-  {
-    num: '01',
-    title: 'Configure o Ambiente',
-    desc: 'Copie o template de configuração e ajuste com suas credenciais.',
-    lines: [
-      { text: 'cp src/Discovery.Api/appsettings.Development.json.example \\', type: 'cmd' },
-      { text: '   src/Discovery.Api/appsettings.Development.json', type: 'cmd' },
-      { text: '# Edite o arquivo com suas credenciais', type: 'comment' },
-      { text: '# PostgreSQL, NATS, Redis, JWT Secret...', type: 'comment' },
-    ],
-  },
-  {
-    num: '02',
-    title: 'Execute as Migrations',
-    desc: 'Crie o schema do banco de dados automaticamente via FluentMigrator.',
-    lines: [
-      { text: 'dotnet run --project src/Discovery.Api -- --migrate', type: 'cmd' },
-      { text: '# Schema criado com sucesso!', type: 'success' },
-    ],
-  },
-  {
-    num: '03',
-    title: 'Inicie o Servidor',
-    desc: 'Servidor pronto para receber conexões de agents. API e docs disponíveis instantaneamente.',
-    lines: [
-      { text: 'dotnet run --project src/Discovery.Api', type: 'cmd' },
-      { text: '', type: 'empty' },
-      { text: '✓ API disponível em: https://localhost:7001', type: 'success' },
-      { text: '✓ Scalar API Docs: https://localhost:7001/scalar', type: 'success' },
-      { text: '✓ SignalR Hub: wss://localhost:7001/hub', type: 'success' },
-    ],
-  },
-];
-
 function Quickstart() {
-  const [activeStep, setActiveStep] = useState(0);
-
   return (
     <section id="quickstart" className="quickstart">
       <div className="quickstart__inner">
@@ -53,70 +16,6 @@ function Quickstart() {
             Siga os passos abaixo para ter o servidor DiscoveryRMM rodando localmente.
             Para produção em Linux, utilize o script bootstrap de instalação rápida.
           </p>
-        </div>
-
-        <div className="quickstart__content">
-          {/* Step Navigation */}
-          <div className="quickstart__nav">
-            {STEPS.map((step, i) => (
-              <button
-                key={step.num}
-                className={`quickstart__nav-btn${activeStep === i ? ' quickstart__nav-btn--active' : ''}`}
-                onClick={() => setActiveStep(i)}
-              >
-                <span className="quickstart__nav-num">{step.num}</span>
-                <span className="quickstart__nav-title">{step.title}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Active Step Terminal */}
-          <div className="quickstart__terminal-wrapper">
-            <div className="quickstart__terminal">
-              <div className="quickstart__terminal-header">
-                <span className="quickstart__terminal-dot quickstart__terminal-dot--red" />
-                <span className="quickstart__terminal-dot quickstart__terminal-dot--yellow" />
-                <span className="quickstart__terminal-dot quickstart__terminal-dot--green" />
-                <span className="quickstart__terminal-label">
-                  terminal — {STEPS[activeStep].title}
-                </span>
-              </div>
-              <div className="quickstart__terminal-body">
-                {STEPS[activeStep].lines.map((line, i) => {
-                  if (line.type === 'cmd') {
-                    return (
-                      <div key={i} className="quickstart__terminal-line">
-                        <span className="quickstart__terminal-prompt">$</span>
-                        <span className="quickstart__terminal-cmd">{line.text}</span>
-                      </div>
-                    );
-                  }
-                  if (line.type === 'comment') {
-                    return (
-                      <div key={i} className="quickstart__terminal-line quickstart__terminal-line--comment">
-                        {line.text}
-                      </div>
-                    );
-                  }
-                  if (line.type === 'success') {
-                    return (
-                      <div key={i} className="quickstart__terminal-line quickstart__terminal-line--success">
-                        {line.text}
-                      </div>
-                    );
-                  }
-                  if (line.type === 'empty') {
-                    return <div key={i} className="quickstart__terminal-line">&nbsp;</div>;
-                  }
-                  return null;
-                })}
-                <div className="quickstart__terminal-line">
-                  <span className="quickstart__terminal-cursor">▌</span>
-                </div>
-              </div>
-            </div>
-            <p className="quickstart__step-desc">{STEPS[activeStep].desc}</p>
-          </div>
         </div>
 
         {/* Linux Bootstrap */}
