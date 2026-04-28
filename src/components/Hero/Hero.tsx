@@ -38,6 +38,15 @@ function Hero() {
           , com API REST + WebSocket, agent leve, chat com IA e automação inteligente de chamados.
         </p>
 
+        <div className="hero__notice" role="note" aria-label="Aviso sobre o estado do projeto">
+          <span className="hero__notice-badge">Aviso</span>
+          <p className="hero__notice-text">
+            Projeto em desenvolvimento ativo. Parte da interface e de alguns fluxos foi
+            acelerada com apoio de IA e vibe coding, então telas, nomenclaturas e
+            comportamentos ainda podem evoluir antes da estabilização.
+          </p>
+        </div>
+
         <div className="hero__actions">
           <a href="#quickstart" className="hero__btn-primary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

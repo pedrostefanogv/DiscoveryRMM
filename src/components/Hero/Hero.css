@@ -79,6 +79,40 @@
   line-height: 1.7;
 }
 
+.hero__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 760px;
+  margin: 0 auto 32px;
+  padding: 16px 18px;
+  text-align: left;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(15, 23, 42, 0.78));
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+.hero__notice-badge {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fef3c7;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+}
+
+.hero__notice-text {
+  margin: 0;
+  color: #d6deeb;
+  line-height: 1.65;
+  font-size: 0.96rem;
+}
+
 .hero__rotating-text {
   display: inline-block;
   color: var(--accent-light);
@@ -247,6 +281,16 @@
 }
 
 @media (max-width: 600px) {
+  .hero__notice {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .hero__notice-text {
+    font-size: 0.9rem;
+  }
+
   .hero__terminal-body {
     font-size: 0.7rem;
     padding: 16px;
