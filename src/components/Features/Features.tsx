@@ -71,12 +71,16 @@ const FEATURES = [
   {
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="16 18 22 12 16 6"/>
-        <polyline points="8 6 2 12 8 18"/>
+        <circle cx="6" cy="12" r="2"/>
+        <circle cx="18" cy="6" r="2"/>
+        <circle cx="18" cy="18" r="2"/>
+        <line x1="8" y1="12" x2="16" y2="6"/>
+        <line x1="8" y1="12" x2="16" y2="18"/>
+        <line x1="18" y1="8" x2="18" y2="16"/>
       </svg>
     ),
-    title: 'NATS Messaging',
-    description: 'Broker de mensageria de alta performance com JetStream, auth callout e credenciais. Fallback automático para SignalR.',
+    title: 'Distribuição P2P',
+    description: 'Os agents distribuem arquivos e artefatos entre si para acelerar instalações, reduzir a carga concentrada no servidor e economizar banda durante deploys e atualizações.',
     color: 'indigo',
     badge: '🧪 Pré-estável',
   },
