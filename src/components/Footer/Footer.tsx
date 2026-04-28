@@ -33,7 +33,7 @@ function Footer() {
             <h4 className="footer__links-title">Projeto</h4>
             <ul className="footer__links-list">
               <li><a href="https://github.com/pedrostefanogv/DiscoveryRMM_API" target="_blank" rel="noopener noreferrer">Servidor (API)</a></li>
-              <li><a href="https://github.com/pedrostefanogv" target="_blank" rel="noopener noreferrer">Agent Windows</a></li>
+              <li><a href="https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases" target="_blank" rel="noopener noreferrer">Agent Windows</a></li>
               <li><a href="https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md" target="_blank" rel="noopener noreferrer">Configuração</a></li>
             </ul>
           </div>
