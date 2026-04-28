@@ -1,0 +1,128 @@
+
+.cta {
+  padding: 100px 24px;
+  position: relative;
+}
+
+.cta__inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.cta__card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 56px 48px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.cta__glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 200px;
+  background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta__title {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.cta__desc {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 auto 36px;
+  position: relative;
+}
+
+.cta__actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.cta__btn--primary {
+  background: var(--accent-gradient);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.cta__btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+.cta__btn--secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.cta__btn--secondary:hover {
+  border-color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cta__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
+}
+
+.cta__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  transition: color var(--transition);
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.cta__link:hover {
+  color: var(--accent-light);
+  border-color: var(--border-color);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 600px) {
+  .cta__card {
+    padding: 40px 24px;
+  }
+  .cta {
+    padding: 60px 16px;
+  }
+}
