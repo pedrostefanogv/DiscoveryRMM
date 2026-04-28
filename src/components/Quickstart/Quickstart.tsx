@@ -5,16 +5,6 @@ import './Quickstart.css';
 const STEPS = [
   {
     num: '01',
-    title: 'Clone e Restaure',
-    desc: 'Clone o repositório e restaure as dependências com o .NET 10 SDK.',
-    lines: [
-      { text: 'git clone https://github.com/pedrostefanogv/DiscoveryRMM_API.git', type: 'cmd' },
-      { text: 'cd DiscoveryRMM_API', type: 'cmd' },
-      { text: 'dotnet restore Discovery.slnx', type: 'cmd' },
-    ],
-  },
-  {
-    num: '02',
     title: 'Configure o Ambiente',
     desc: 'Copie o template de configuração e ajuste com suas credenciais.',
     lines: [
@@ -25,7 +15,7 @@ const STEPS = [
     ],
   },
   {
-    num: '03',
+    num: '02',
     title: 'Execute as Migrations',
     desc: 'Crie o schema do banco de dados automaticamente via FluentMigrator.',
     lines: [
@@ -34,7 +24,7 @@ const STEPS = [
     ],
   },
   {
-    num: '04',
+    num: '03',
     title: 'Inicie o Servidor',
     desc: 'Servidor pronto para receber conexões de agents. API e docs disponíveis instantaneamente.',
     lines: [
