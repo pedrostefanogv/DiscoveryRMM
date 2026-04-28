@@ -60,25 +60,34 @@ function Hero() {
             <span className="hero__terminal-dot hero__terminal-dot--red" />
             <span className="hero__terminal-dot hero__terminal-dot--yellow" />
             <span className="hero__terminal-dot hero__terminal-dot--green" />
-            <span className="hero__terminal-title">DiscoveryRMM — Server Startup</span>
+            <span className="hero__terminal-title">DiscoveryRMM — Linux Bootstrap</span>
           </div>
           <div className="hero__terminal-body">
-            <span className="hero__terminal-prompt">$</span> dotnet run --project src/Discovery.Api
+            <span className="hero__terminal-prompt">$</span> bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/release/scripts/linux/bootstrap_install_discovery.sh)&quot;
             <br />
             <span className="hero__terminal-output">
-              <span className="hero__terminal-info">info:</span> Discovery.Api[0] Starting server on .NET 10...
+              ========================================
               <br />
-              <span className="hero__terminal-info">info:</span> Now listening on <span className="hero__terminal-highlight">https://localhost:7001</span>
+              Discovery RMM - Bootstrap Wizard
               <br />
-              <span className="hero__terminal-success">✓</span> NATS 2.x <span className="hero__terminal-dim">|</span> JetStream connected
+              ----------------------------------------
               <br />
-              <span className="hero__terminal-success">✓</span> PostgreSQL 15+ <span className="hero__terminal-dim">|</span> pgvector ready
+              Selecione o canal/branch:
               <br />
-              <span className="hero__terminal-success">✓</span> Redis <span className="hero__terminal-dim">|</span> Cache online
+              1) lts - suporte longo prazo
               <br />
-              <span className="hero__terminal-success">✓</span> Scalar API Docs <span className="hero__terminal-dim">|</span> /scalar
+              2) <span className="hero__terminal-highlight">release</span> - canal estavel
               <br />
-              <span className="hero__terminal-cursor">▌</span>
+              3) beta - novidades em teste
+              <br />
+              4) dev - desenvolvimento
+              <br />
+              5) custom - informar branch manualmente
+              <br />
+              ----------------------------------------
+              <br />
+              Opcao [2]: <span className="hero__terminal-cursor">▌</span>
+              <br />
             </span>
           </div>
         </div>

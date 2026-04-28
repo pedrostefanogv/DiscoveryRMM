@@ -36,8 +36,8 @@ const FEATURES = [
         <line x1="8" y1="13" x2="14" y2="13"/>
       </svg>
     ),
-    title: 'Chat com IA',
-    description: 'Integração com OpenAI e Ollama. Embeddings via pgvector para análise inteligente de tickets e suporte contextual.',
+    title: 'Suporte com IA',
+    description: 'A IA atua como primeiro nível de atendimento, faz a triagem inicial, sugere respostas e encaminha tickets com mais contexto para a equipe.',
     color: 'purple',
     badge: '🧪 Pré-estável',
   },
