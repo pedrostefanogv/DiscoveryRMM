@@ -23,19 +23,24 @@
 .hero__inner {
   position: relative;
   z-index: 1;
+  width: 100%;
   max-width: 900px;
+  min-width: 0;
   text-align: center;
 }
 
 .hero__badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 6px 16px;
   border: 1px solid var(--border-color);
   border-radius: 100px;
   font-size: 0.85rem;
   color: var(--text-secondary);
+  max-width: 100%;
   margin-bottom: 32px;
   background: rgba(22, 28, 37, 0.6);
   backdrop-filter: blur(10px);
@@ -176,6 +181,7 @@
 
 /* Terminal mock */
 .hero__terminal {
+  width: 100%;
   max-width: 600px;
   margin: 0 auto;
   background: #0d1117;
@@ -189,6 +195,7 @@
 .hero__terminal-header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 12px 16px;
   background: #0a0e14;
@@ -209,6 +216,7 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   font-family: 'JetBrains Mono', monospace;
+  overflow-wrap: anywhere;
 }
 
 .hero__terminal-body {
@@ -217,6 +225,8 @@
   font-size: 0.8rem;
   line-height: 1.9;
   color: var(--text-secondary);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .hero__terminal-prompt {
@@ -281,6 +291,16 @@
 }
 
 @media (max-width: 600px) {
+  .hero {
+    padding: 112px 16px 80px;
+  }
+
+  .hero__badge {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
   .hero__notice {
     flex-direction: column;
     gap: 10px;

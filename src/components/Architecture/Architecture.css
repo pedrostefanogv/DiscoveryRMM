@@ -217,6 +217,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   padding: 12px 16px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -242,6 +243,7 @@
   font-weight: 600;
   color: var(--text-primary);
   font-family: 'JetBrains Mono', monospace;
+  overflow-wrap: anywhere;
 }
 
 .architecture__stack-layer {
@@ -340,10 +342,22 @@
   .architecture {
     padding: 60px 16px;
   }
+  .architecture__flow-label {
+    max-width: 140px;
+    white-space: normal;
+    line-height: 1.4;
+  }
   .architecture__stack-grid {
     grid-template-columns: 1fr 1fr;
   }
   .architecture__channels-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .architecture__stack-grid,
+  .architecture__channels-grid {
+    grid-template-columns: 1fr;
   }
 }
