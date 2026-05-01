@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import './Navbar.css';
 import { useI18n } from '../../i18n';
 
+const BRAND_ICON_SRC = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
+
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -48,7 +50,7 @@ function Navbar() {
       <div className="navbar__inner">
         <a href="#" className="navbar__logo">
           <span className="navbar__logo-icon">
-            <img src="/favicon-32x32.png" alt="DiscoveryRMM" className="navbar__logo-image" />
+            <img src={BRAND_ICON_SRC} alt="DiscoveryRMM" className="navbar__logo-image" />
           </span>
           <span className="navbar__logo-text">
             Discovery<span className="navbar__logo-accent">RMM</span>

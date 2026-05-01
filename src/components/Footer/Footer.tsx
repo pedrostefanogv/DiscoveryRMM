@@ -3,6 +3,8 @@ import React from 'react';
 import './Footer.css';
 import { useI18n } from '../../i18n';
 
+const BRAND_ICON_SRC = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
+
 const PROJECT_LINKS = [
   'https://github.com/pedrostefanogv/DiscoveryRMM_API',
   'https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases',
@@ -29,16 +31,9 @@ function Footer() {
         <div className="footer__top">
           <div className="footer__brand">
             <a href="#" className="footer__logo">
-              <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                <rect width="28" height="28" rx="6" fill="url(#footerLogoGrad)" />
-                <path d="M7 14l4 4 8-8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <defs>
-                  <linearGradient id="footerLogoGrad" x1="0" y1="0" x2="28" y2="28">
-                    <stop stopColor="#06b6d4"/>
-                    <stop offset="1" stopColor="#3b82f6"/>
-                  </linearGradient>
-                </defs>
-              </svg>
+              <span className="footer__logo-icon">
+                <img src={BRAND_ICON_SRC} alt="DiscoveryRMM" className="footer__logo-image" />
+              </span>
               <span className="footer__logo-text">
                 Discovery<span className="footer__logo-accent">RMM</span>
               </span>

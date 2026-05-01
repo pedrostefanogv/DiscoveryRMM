@@ -25,6 +25,21 @@
   margin-bottom: 16px;
 }
 
+.footer__logo-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.footer__logo-image {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
 .footer__logo-text {
   font-size: 1.15rem;
   font-weight: 700;
