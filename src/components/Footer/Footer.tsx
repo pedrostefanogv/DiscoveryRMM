@@ -11,12 +11,14 @@ const PROJECT_LINKS = [
 
 const RESOURCE_LINKS = ['#features', '#architecture', '#quickstart'];
 
-const CHANNEL_CLASSES = [
-  'footer__channel footer__channel--stable',
-  'footer__channel footer__channel--beta',
-  'footer__channel footer__channel--lts',
-  'footer__channel footer__channel--dev',
-];
+const FOOTER_CHANNEL_ORDER = ['dev', 'beta', 'release', 'lts'] as const;
+
+const CHANNEL_CLASSES = {
+  dev: 'footer__channel footer__channel--dev',
+  beta: 'footer__channel footer__channel--beta',
+  release: 'footer__channel footer__channel--stable',
+  lts: 'footer__channel footer__channel--lts',
+} as const;
 
 function Footer() {
   const { text } = useI18n();
@@ -69,8 +71,8 @@ function Footer() {
           <div className="footer__links-col">
             <h4 className="footer__links-title">{text.footer.channelsTitle}</h4>
             <ul className="footer__links-list">
-              {text.footer.channels.map((label, index) => (
-                <li key={label}><span className={CHANNEL_CLASSES[index]}>{label}</span></li>
+              {FOOTER_CHANNEL_ORDER.map((channelKey) => (
+                <li key={channelKey}><span className={CHANNEL_CLASSES[channelKey]}>{text.footer.channels[channelKey]}</span></li>
               ))}
             </ul>
           </div>
