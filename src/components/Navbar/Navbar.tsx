@@ -1,17 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import './Navbar.css';
-
-const NAV_LINKS = [
-  { label: 'Funcionalidades', href: '#features' },
-  { label: 'Arquitetura', href: '#architecture' },
-  { label: 'Instalação', href: '#quickstart' },
-  { label: 'GitHub', href: 'https://github.com/pedrostefanogv/DiscoveryRMM_API', external: true },
-];
+import { useI18n } from '../../i18n';
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { language, setLanguage, text, languageOptions } = useI18n();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -40,35 +35,54 @@ function Navbar() {
           </span>
         </a>
 
-        <ul className={`navbar__links${mobileOpen ? ' navbar__links--open' : ''}`}>
-          {NAV_LINKS.map((link) => (
-            <li key={link.label}>
-              <a
-                href={link.href}
-                className="navbar__link"
-                {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
+        <div className="navbar__right">
+          <ul className={`navbar__links${mobileOpen ? ' navbar__links--open' : ''}`}>
+            {text.navbar.links.map((link) => (
+              <li key={`${link.href}-${link.label}`}>
+                <a
+                  href={link.href}
+                  className="navbar__link"
+                  {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href="#cta" className="navbar__cta-btn" onClick={() => setMobileOpen(false)}>
+                {text.navbar.cta}
               </a>
             </li>
-          ))}
-          <li>
-            <a href="#cta" className="navbar__cta-btn" onClick={() => setMobileOpen(false)}>
-              Comece Agora
-            </a>
-          </li>
-        </ul>
+          </ul>
 
-        <button
-          className={`navbar__hamburger${mobileOpen ? ' navbar__hamburger--open' : ''}`}
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+          <div className="navbar__language-switcher" role="group" aria-label={text.navbar.languageSwitcherLabel}>
+            {languageOptions.map((option) => (
+              <button
+                key={option.code}
+                type="button"
+                className={`navbar__language-btn${language === option.code ? ' navbar__language-btn--active' : ''}`}
+                onClick={() => setLanguage(option.code)}
+                aria-pressed={language === option.code}
+                aria-label={`${text.navbar.languageOptionLabel} ${option.label}`}
+                title={option.label}
+              >
+                <span className="navbar__language-flag" aria-hidden="true">{option.flag}</span>
+                <span className="navbar__language-code">{option.code.slice(0, 2).toUpperCase()}</span>
+              </button>
+            ))}
+          </div>
+
+          <button
+            className={`navbar__hamburger${mobileOpen ? ' navbar__hamburger--open' : ''}`}
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? text.navbar.closeMenuLabel : text.navbar.openMenuLabel}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
       </div>
     </nav>
   );

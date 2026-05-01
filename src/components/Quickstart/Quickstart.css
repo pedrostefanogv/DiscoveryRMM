@@ -153,6 +153,45 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
+.quickstart__copy-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--text-primary);
+  border-radius: 999px;
+  padding: 7px 12px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.quickstart__copy-btn:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: rgba(6, 182, 212, 0.12);
+  transform: translateY(-1px);
+}
+
+.quickstart__copy-btn--copied {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(16, 185, 129, 0.14);
+  color: #a7f3d0;
+}
+
+.quickstart__copy-btn--error {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+}
+
+.quickstart__copy-btn svg {
+  flex-shrink: 0;
+}
+
 .quickstart__terminal-body {
   padding: 20px 20px 24px;
   font-family: 'JetBrains Mono', monospace;
@@ -405,6 +444,10 @@
   .quickstart__bootstrap-terminal {
     overflow-x: auto;
   }
+
+  .quickstart__copy-btn {
+    padding: 6px 10px;
+  }
 }
 
 @media (max-width: 500px) {
@@ -418,6 +461,16 @@
 
   .quickstart__bootstrap-content {
     flex-direction: column;
+  }
+
+  .quickstart__bootstrap-header {
+    flex-wrap: wrap;
+  }
+
+  .quickstart__copy-btn {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
   }
 
   .quickstart__prereqs-grid {

@@ -1,20 +1,70 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Quickstart.css';
+import { useI18n } from '../../i18n';
+
+type CopyState = 'idle' | 'copied' | 'error';
 
 function Quickstart() {
+  const { text } = useI18n();
+  const [copyState, setCopyState] = useState<CopyState>('idle');
+
+  useEffect(() => {
+    if (copyState === 'idle') {
+      return undefined;
+    }
+
+    const resetTimeout = window.setTimeout(() => setCopyState('idle'), 2200);
+    return () => window.clearTimeout(resetTimeout);
+  }, [copyState]);
+
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text.quickstart.command);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text.quickstart.command;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        textarea.style.pointerEvents = 'none';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        const copied = document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        if (!copied) {
+          throw new Error('Unable to copy command');
+        }
+      }
+
+      setCopyState('copied');
+    } catch {
+      setCopyState('error');
+    }
+  };
+
+  const copyButtonLabel = copyState === 'copied'
+    ? text.quickstart.copiedLabel
+    : copyState === 'error'
+      ? text.quickstart.copyErrorLabel
+      : text.quickstart.copyLabel;
+
   return (
     <section id="quickstart" className="quickstart">
       <div className="quickstart__inner">
         <div className="quickstart__header">
-          <span className="quickstart__label">Instalação</span>
+          <span className="quickstart__label">{text.quickstart.label}</span>
           <h2 className="quickstart__title">
-            Do clone ao primeiro{' '}
-            <span className="quickstart__title-accent">deploy</span> em minutos
+            {text.quickstart.titlePrefix}{' '}
+            <span className="quickstart__title-accent">{text.quickstart.titleAccent}</span>{' '}
+            {text.quickstart.titleSuffix}
           </h2>
           <p className="quickstart__desc">
-            Siga os passos abaixo para ter o servidor DiscoveryRMM rodando localmente.
-            Para produção em Linux, utilize o script bootstrap de instalação rápida.
+            {text.quickstart.description}
           </p>
         </div>
 
@@ -28,9 +78,9 @@ function Quickstart() {
               </svg>
             </div>
             <div>
-              <h3 className="quickstart__bootstrap-title">Linux One-Liner</h3>
+              <h3 className="quickstart__bootstrap-title">{text.quickstart.bootstrapTitle}</h3>
               <p className="quickstart__bootstrap-desc">
-                Instalação completa em produção com um único comando. O script clona o repositório e executa todo o processo automaticamente.
+                {text.quickstart.bootstrapDescription}
               </p>
             </div>
           </div>
@@ -40,43 +90,49 @@ function Quickstart() {
               <span className="quickstart__terminal-dot quickstart__terminal-dot--red" />
               <span className="quickstart__terminal-dot quickstart__terminal-dot--yellow" />
               <span className="quickstart__terminal-dot quickstart__terminal-dot--green" />
-              <span className="quickstart__terminal-label">Linux · Bash</span>
+              <span className="quickstart__terminal-label">{text.quickstart.terminalLabel}</span>
+              <button
+                type="button"
+                className={`quickstart__copy-btn${copyState === 'copied' ? ' quickstart__copy-btn--copied' : ''}${copyState === 'error' ? ' quickstart__copy-btn--error' : ''}`}
+                onClick={handleCopy}
+                aria-label={text.quickstart.copyAriaLabel}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                <span>{copyButtonLabel}</span>
+              </button>
             </div>
             <div className="quickstart__bootstrap-body">
               <div className="quickstart__terminal-line">
                 <span className="quickstart__terminal-prompt">$</span>
                 <span className="quickstart__terminal-cmd">
-                  bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/release/scripts/linux/bootstrap_install_discovery.sh)&quot;
+                  {text.quickstart.command}
                 </span>
               </div>
             </div>
           </div>
 
           <div className="quickstart__bootstrap-examples">
-            <span className="quickstart__bootstrap-label">Canais disponíveis:</span>
+            <span className="quickstart__bootstrap-label">{text.quickstart.channelsLabel}</span>
             <div className="quickstart__bootstrap-chips">
-              <code>DISCOVERY_RELEASE_CHANNEL=lts</code>
-              <code>DISCOVERY_RELEASE_CHANNEL=beta</code>
-              <code>DISCOVERY_RELEASE_CHANNEL=dev</code>
-              <code>--branch release</code>
+              {text.quickstart.channels.map((channel) => (
+                <code key={channel}>{channel}</code>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Prerequisites */}
         <div className="quickstart__prereqs">
-          <h3 className="quickstart__prereqs-title">Pré-requisitos</h3>
+          <h3 className="quickstart__prereqs-title">{text.quickstart.prerequisitesTitle}</h3>
           <div className="quickstart__prereqs-grid">
-            {[
-              { name: '.NET 10 SDK', icon: '⚡' },
-              { name: 'PostgreSQL 15+', icon: '🐘', extra: 'com pgvector' },
-              { name: 'NATS Server 2.x', icon: '📡' },
-              { name: 'Redis', icon: '⚙️', extra: 'opcional, para cache' },
-            ].map((pr) => (
+            {text.quickstart.prerequisites.map((pr) => (
               <div key={pr.name} className="quickstart__prereq">
                 <span className="quickstart__prereq-icon">{pr.icon}</span>
                 <span className="quickstart__prereq-name">{pr.name}</span>
-                {pr.extra && <span className="quickstart__prereq-extra">{pr.extra}</span>}
+                {'extra' in pr ? <span className="quickstart__prereq-extra">{pr.extra}</span> : null}
               </div>
             ))}
           </div>

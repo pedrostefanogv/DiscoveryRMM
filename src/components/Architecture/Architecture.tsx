@@ -1,12 +1,10 @@
 
 import React from 'react';
 import './Architecture.css';
+import { useI18n } from '../../i18n';
 
-const COMPONENTS = [
+const COMPONENT_VISUALS = [
   {
-    name: 'Discovery Agent',
-    description: 'Agente leve instalado nos endpoints Windows. Coleta inventário de hardware/software, executa scripts PowerShell/CMD remotamente e mantém heartbeat contínuo com o servidor via NATS (fallback SignalR). Auto-update integrado.',
-    tech: ['Go', 'NATS', 'SignalR', 'PowerShell'],
     color: '#10b981',
     gradient: 'linear-gradient(135deg, #10b981, #059669)',
     icon: (
@@ -18,9 +16,6 @@ const COMPONENTS = [
     ),
   },
   {
-    name: 'DiscoveryRMM Server',
-    description: 'Backend em .NET 10 / ASP.NET Core. Expõe API REST documentada via Scalar, SignalR Hub para comunicação em tempo real, integração NATS para mensageria, chat com IA (OpenAI/Ollama + pgvector) e sistema de auto-tickets.',
-    tech: ['.NET 10', 'ASP.NET Core', 'SignalR', 'Scalar'],
     color: '#3b82f6',
     gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)',
     icon: (
@@ -32,9 +27,6 @@ const COMPONENTS = [
     ),
   },
   {
-    name: 'Infraestrutura',
-    description: 'PostgreSQL 15+ com pgvector para embeddings de IA. NATS 2.x com JetStream para mensageria assíncrona. Redis para cache. Storage local, MinIO ou S3-compatible. OpenTelemetry para observabilidade completa.',
-    tech: ['PostgreSQL', 'Redis', 'NATS', 'MinIO/S3'],
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
     icon: (
@@ -47,45 +39,24 @@ const COMPONENTS = [
   },
 ];
 
-const TECH_STACK = [
-  { label: '.NET 10', layer: 'Runtime', color: '#8b5cf6' },
-  { label: 'PostgreSQL 15+', layer: 'Database', color: '#3b82f6' },
-  { label: 'pgvector', layer: 'AI', color: '#10b981' },
-  { label: 'NATS 2.x', layer: 'Messaging', color: '#f59e0b' },
-  { label: 'JetStream', layer: 'Streaming', color: '#f59e0b' },
-  { label: 'Redis', layer: 'Cache', color: '#ef4444' },
-  { label: 'SignalR', layer: 'Realtime', color: '#06b6d4' },
-  { label: 'OpenAI / Ollama', layer: 'AI', color: '#10b981' },
-  { label: 'OpenTelemetry', layer: 'Observability', color: '#6366f1' },
-  { label: 'MeshCentral', layer: 'Remote', color: '#14b8a6' },
-  { label: 'Scalar', layer: 'API Docs', color: '#f43f5e' },
-  { label: 'Argon2', layer: 'Security', color: '#06b6d4' },
-  { label: 'FluentMigrator', layer: 'Migrations', color: '#8b5cf6' },
-  { label: 'EF Core 10', layer: 'ORM', color: '#3b82f6' },
-  { label: 'MinIO / S3', layer: 'Storage', color: '#f59e0b' },
-  { label: 'NUnit', layer: 'Testing', color: '#14b8a6' },
-];
+const STACK_COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f59e0b', '#ef4444', '#06b6d4', '#10b981', '#6366f1', '#14b8a6', '#f43f5e', '#06b6d4', '#8b5cf6', '#3b82f6', '#f59e0b', '#14b8a6'];
 
-const CHANNELS = [
-  { name: 'Estável', branch: 'release', color: '#10b981', desc: 'Produção' },
-  { name: 'Beta', branch: 'beta', color: '#f59e0b', desc: 'Pré-release' },
-  { name: 'LTS', branch: 'lts', color: '#3b82f6', desc: 'Long-Term Support' },
-  { name: 'Dev', branch: 'dev', color: '#94a3b8', desc: 'Ativo' },
-];
+const CHANNEL_COLORS = ['#10b981', '#f59e0b', '#3b82f6', '#94a3b8'];
 
 function Architecture() {
+  const { text } = useI18n();
+
   return (
     <section id="architecture" className="architecture">
       <div className="architecture__inner">
         <div className="architecture__header">
-          <span className="architecture__label">Arquitetura</span>
+          <span className="architecture__label">{text.architecture.label}</span>
           <h2 className="architecture__title">
-            Três camadas,{' '}
-            <span className="architecture__title-accent">domínio total</span>
+            {text.architecture.titlePrefix}{' '}
+            <span className="architecture__title-accent">{text.architecture.titleAccent}</span>
           </h2>
           <p className="architecture__desc">
-            O DiscoveryRMM segue uma arquitetura limpa com separação de responsabilidades,
-            garantindo escalabilidade horizontal e segurança em cada camada.
+            {text.architecture.description}
           </p>
         </div>
 
@@ -96,74 +67,90 @@ function Architecture() {
           </div>
 
           <div className="architecture__flow-items">
-            {COMPONENTS.map((comp, i) => (
-              <div key={comp.name} className="architecture__flow-item">
-                <div className="architecture__flow-node" style={{ borderColor: comp.color }}>
-                  <div className="architecture__flow-node-inner" style={{ background: comp.gradient }}>
-                    {comp.icon}
+            {text.architecture.components.map((component, index) => {
+              const visual = COMPONENT_VISUALS[index];
+
+              return (
+              <div key={component.name} className="architecture__flow-item">
+                <div className="architecture__flow-node" style={{ borderColor: visual.color }}>
+                  <div className="architecture__flow-node-inner" style={{ background: visual.gradient }}>
+                    {visual.icon}
                   </div>
                 </div>
-                <span className="architecture__flow-label">{comp.name}</span>
-                {i < COMPONENTS.length - 1 && (
+                <span className="architecture__flow-label">{component.name}</span>
+                {index < COMPONENT_VISUALS.length - 1 && (
                   <span className="architecture__flow-connector">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={comp.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={visual.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="9 18 15 12 9 6"/>
                     </svg>
                   </span>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Detailed cards */}
         <div className="architecture__cards">
-          {COMPONENTS.map((comp) => (
-            <div key={comp.name} className="architecture__card">
+          {text.architecture.components.map((component, index) => {
+            const visual = COMPONENT_VISUALS[index];
+
+            return (
+            <div key={component.name} className="architecture__card">
               <div className="architecture__card-top">
-                <div className="architecture__card-icon-wrap" style={{ background: `${comp.color}18`, color: comp.color }}>
-                  {comp.icon}
+                <div className="architecture__card-icon-wrap" style={{ background: `${visual.color}18`, color: visual.color }}>
+                  {visual.icon}
                 </div>
-                <h3 className="architecture__card-title">{comp.name}</h3>
+                <h3 className="architecture__card-title">{component.name}</h3>
               </div>
-              <p className="architecture__card-desc">{comp.description}</p>
+              <p className="architecture__card-desc">{component.description}</p>
               <div className="architecture__card-techs">
-                {comp.tech.map((t) => (
-                  <span key={t} className="architecture__card-tech">{t}</span>
+                {component.tech.map((tech) => (
+                  <span key={tech} className="architecture__card-tech">{tech}</span>
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Tech Stack */}
         <div className="architecture__stack-section">
-          <h3 className="architecture__stack-title">Stack Tecnológica</h3>
+          <h3 className="architecture__stack-title">{text.architecture.stackTitle}</h3>
           <div className="architecture__stack-grid">
-            {TECH_STACK.map((tech) => (
+            {text.architecture.stack.map((tech, index) => {
+              const color = STACK_COLORS[index];
+
+              return (
               <div key={tech.label} className="architecture__stack-item">
-                <span className="architecture__stack-dot" style={{ background: tech.color, boxShadow: `0 0 8px ${tech.color}44` }} />
+                <span className="architecture__stack-dot" style={{ background: color, boxShadow: `0 0 8px ${color}44` }} />
                 <div>
                   <span className="architecture__stack-name">{tech.label}</span>
                   <span className="architecture__stack-layer">{tech.layer}</span>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Release Channels */}
         <div className="architecture__channels">
-          <h3 className="architecture__stack-title">Canais de Release</h3>
+          <h3 className="architecture__stack-title">{text.architecture.channelsTitle}</h3>
           <div className="architecture__channels-grid">
-            {CHANNELS.map((ch) => (
-              <div key={ch.name} className="architecture__channel">
-                <span className="architecture__channel-dot" style={{ background: ch.color, boxShadow: `0 0 10px ${ch.color}66` }} />
-                <span className="architecture__channel-name">{ch.name}</span>
-                <code className="architecture__channel-branch">{ch.branch}</code>
-                <span className="architecture__channel-desc">{ch.desc}</span>
+            {text.architecture.channels.map((channel, index) => {
+              const color = CHANNEL_COLORS[index];
+
+              return (
+              <div key={channel.name} className="architecture__channel">
+                <span className="architecture__channel-dot" style={{ background: color, boxShadow: `0 0 10px ${color}66` }} />
+                <span className="architecture__channel-name">{channel.name}</span>
+                <code className="architecture__channel-branch">{channel.branch}</code>
+                <span className="architecture__channel-desc">{channel.description}</span>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

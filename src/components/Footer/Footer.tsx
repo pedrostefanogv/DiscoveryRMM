@@ -1,8 +1,26 @@
 
 import React from 'react';
 import './Footer.css';
+import { useI18n } from '../../i18n';
+
+const PROJECT_LINKS = [
+  'https://github.com/pedrostefanogv/DiscoveryRMM_API',
+  'https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases',
+  'https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md',
+];
+
+const RESOURCE_LINKS = ['#features', '#architecture', '#quickstart'];
+
+const CHANNEL_CLASSES = [
+  'footer__channel footer__channel--stable',
+  'footer__channel footer__channel--beta',
+  'footer__channel footer__channel--lts',
+  'footer__channel footer__channel--dev',
+];
 
 function Footer() {
+  const { text } = useI18n();
+
   return (
     <footer className="footer">
       <div className="footer__inner">
@@ -24,46 +42,46 @@ function Footer() {
               </span>
             </a>
             <p className="footer__tagline">
-              Servidor open source de Remote Monitoring & Management.
-              .NET 10 · PostgreSQL · NATS · Redis · IA integrada.
+              {text.footer.tagline}
             </p>
           </div>
 
           <div className="footer__links-col">
-            <h4 className="footer__links-title">Projeto</h4>
+            <h4 className="footer__links-title">{text.footer.projectTitle}</h4>
             <ul className="footer__links-list">
-              <li><a href="https://github.com/pedrostefanogv/DiscoveryRMM_API" target="_blank" rel="noopener noreferrer">Servidor (API)</a></li>
-              <li><a href="https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases" target="_blank" rel="noopener noreferrer">Agent Windows</a></li>
-              <li><a href="https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md" target="_blank" rel="noopener noreferrer">Configuração</a></li>
+              {text.footer.projectLinks.map((label, index) => (
+                <li key={label}>
+                  <a href={PROJECT_LINKS[index]} target="_blank" rel="noopener noreferrer">{label}</a>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="footer__links-col">
-            <h4 className="footer__links-title">Recursos</h4>
+            <h4 className="footer__links-title">{text.footer.resourcesTitle}</h4>
             <ul className="footer__links-list">
-              <li><a href="#features">Funcionalidades</a></li>
-              <li><a href="#architecture">Arquitetura</a></li>
-              <li><a href="#quickstart">Instalação</a></li>
+              {text.footer.resourcesLinks.map((label, index) => (
+                <li key={label}><a href={RESOURCE_LINKS[index]}>{label}</a></li>
+              ))}
             </ul>
           </div>
 
           <div className="footer__links-col">
-            <h4 className="footer__links-title">Canais</h4>
+            <h4 className="footer__links-title">{text.footer.channelsTitle}</h4>
             <ul className="footer__links-list">
-              <li><span className="footer__channel footer__channel--stable">release · Estável</span></li>
-              <li><span className="footer__channel footer__channel--beta">beta · Pré-release</span></li>
-              <li><span className="footer__channel footer__channel--lts">lts · Long-Term Support</span></li>
-              <li><span className="footer__channel footer__channel--dev">dev · Ativo</span></li>
+              {text.footer.channels.map((label, index) => (
+                <li key={label}><span className={CHANNEL_CLASSES[index]}>{label}</span></li>
+              ))}
             </ul>
           </div>
         </div>
 
         <div className="footer__bottom">
           <p className="footer__copy">
-            &copy; {new Date().getFullYear()} DiscoveryRMM. Open source sob licença MIT.
+            &copy; {new Date().getFullYear()} DiscoveryRMM. {text.footer.copyright}
           </p>
           <p className="footer__author">
-            Desenvolvido por{' '}
+            {text.footer.authorPrefix}{' '}
             <a href="https://github.com/pedrostefanogv" target="_blank" rel="noopener noreferrer">
               @pedrostefanogv
             </a>
