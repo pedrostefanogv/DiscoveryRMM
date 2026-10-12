@@ -1,5 +1,4 @@
 
-import React from 'react';
 import './Footer.css';
 import { useI18n } from '../../i18n';
 
@@ -11,7 +10,7 @@ const PROJECT_LINKS = [
   'https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md',
 ];
 
-const RESOURCE_LINKS = ['#features', '#architecture', '#quickstart'];
+const RESOURCE_LINKS = ['#features', '#architecture', '#quickstart', '#how-it-works'];
 
 const FOOTER_CHANNEL_ORDER = ['dev', 'beta', 'release', 'lts'] as const;
 
@@ -30,9 +29,9 @@ function Footer() {
       <div className="footer__inner">
         <div className="footer__top">
           <div className="footer__brand">
-            <a href="#" className="footer__logo">
+            <a href="#top" className="footer__logo">
               <span className="footer__logo-icon">
-                <img src={BRAND_ICON_SRC} alt="DiscoveryRMM" className="footer__logo-image" />
+                <img src={BRAND_ICON_SRC} alt="DiscoveryRMM" width={28} height={28} className="footer__logo-image" />
               </span>
               <span className="footer__logo-text">
                 Discovery<span className="footer__logo-accent">RMM</span>

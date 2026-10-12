@@ -1,11 +1,10 @@
 
-import React from 'react';
 import './CTABanner.css';
 import { useI18n } from '../../i18n';
 
 const CTA_LINKS = [
   'https://github.com/pedrostefanogv/DiscoveryRMM_API',
-  'https://github.com/pedrostefanogv',
+  'https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases',
   'https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md',
 ];
 

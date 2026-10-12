@@ -35,12 +35,16 @@ Links uteis:
 
 ## Secoes da landing page
 
-- Hero com posicionamento do projeto e chamadas principais
-- Grade de funcionalidades com modulos e capacidades do ecossistema
-- Secao de arquitetura com fluxo, stack e canais de release
-- Quickstart com onboarding inicial e requisitos do servidor
+- Hero com posicionamento do projeto, terminal do bootstrap e aviso de status
+- Grade com 12 modulos/capacidades do ecossistema
+- Secao de arquitetura com fluxo em quatro camadas, stack tecnologica e canais de release
+- Quickstart com o one-liner Linux, canais/atualizacao e pre-requisitos do host
 - Secao explicativa do fluxo operacional
 - Bloco de estatisticas e CTA final
+
+Toda a pagina e bilingue (PT-BR / EN-US), com deteccao do idioma do navegador, troca manual pelo
+navbar e persistencia da escolha em `localStorage`. O titulo e a meta description do documento sao
+atualizados junto com o idioma.
 
 ## Estrutura do projeto
 
@@ -53,20 +57,19 @@ Links uteis:
 └── src
     ├── App.tsx
     ├── App.css
+    ├── i18n.tsx          <- conteudo PT-BR / EN-US + provider de idioma
     ├── index.tsx
     ├── vite-env.d.ts
-    ├── components
-    │   ├── Architecture
-    │   ├── CTABanner
-    │   ├── Features
-    │   ├── Footer
-    │   ├── Hero
-    │   ├── HowItWorks
-    │   ├── Navbar
-    │   ├── Quickstart
-    │   └── Stats
-    └── utils
-        └── persistence.ts
+    └── components
+        ├── Architecture
+        ├── CTABanner
+        ├── Features
+        ├── Footer
+        ├── Hero
+        ├── HowItWorks
+        ├── Navbar
+        ├── Quickstart
+        └── Stats
 ```
 
 ## Como executar localmente
@@ -122,6 +125,9 @@ Este projeto usa o base path `/DiscoveryRMM/` em [vite.config.ts](vite.config.ts
 
 - A pasta `dist` contem a build gerada para publicacao.
 - O layout foi organizado em componentes independentes para facilitar manutencao e evolucao da landing page.
+- O conteudo textual fica centralizado em `src/i18n.tsx`; ao adicionar um item em `text.features.items`, adicione tambem um visual correspondente em `src/components/Features/Features.tsx`.
+- As fontes (Inter / JetBrains Mono) sao carregadas por `<link>` no `index.html` com `preconnect`, evitando `@import` bloqueante no CSS.
+- Meta tags de SEO/Open Graph e o `<noscript>` ficam no `index.html`.
 - O conteudo do site reflete o estado atual do ecossistema DiscoveryRMM e pode evoluir junto com o projeto principal.
 
 ## Licenca

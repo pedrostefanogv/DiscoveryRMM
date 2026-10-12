@@ -1,5 +1,4 @@
 
-import React from 'react';
 import './Stats.css';
 import { useI18n } from '../../i18n';
 

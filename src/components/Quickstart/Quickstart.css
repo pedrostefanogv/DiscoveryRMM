@@ -225,6 +225,7 @@
 .quickstart__terminal-cmd {
   color: #e2e8f0;
   word-break: break-all;
+  font-family: inherit;
 }
 
 .quickstart__terminal-cursor {
@@ -372,7 +373,7 @@
 
 .quickstart__prereqs-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 

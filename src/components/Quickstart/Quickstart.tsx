@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Quickstart.css';
 import { useI18n } from '../../i18n';
 
@@ -72,7 +72,7 @@ function Quickstart() {
         <div className="quickstart__bootstrap">
           <div className="quickstart__bootstrap-glow" />
           <div className="quickstart__bootstrap-content">
-            <div className="quickstart__bootstrap-icon">
+            <div className="quickstart__bootstrap-icon" aria-hidden="true">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 18l6-6-6-6"/>
               </svg>
@@ -118,12 +118,15 @@ function Quickstart() {
             </div>
             <div className="quickstart__bootstrap-body">
               <div className="quickstart__terminal-line">
-                <span className="quickstart__terminal-prompt">$</span>
-                <span className="quickstart__terminal-cmd">
+                <span className="quickstart__terminal-prompt" aria-hidden="true">$</span>
+                <code className="quickstart__terminal-cmd">
                   {text.quickstart.command}
-                </span>
+                </code>
               </div>
             </div>
+            <p className="sr-only" role="status" aria-live="polite">
+              {copyState === 'idle' ? '' : copyButtonLabel}
+            </p>
           </div>
 
           <div className="quickstart__bootstrap-examples">

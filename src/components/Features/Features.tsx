@@ -1,5 +1,4 @@
 
-import React from 'react';
 import './Features.css';
 import { useI18n } from '../../i18n';
 
@@ -85,6 +84,53 @@ const FEATURE_VISUALS = [
     ),
     color: 'rose',
   },
+  {
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+        <line x1="7" y1="7" x2="7.01" y2="7"/>
+      </svg>
+    ),
+    color: 'sky',
+  },
+  {
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="4 17 10 11 4 5"/>
+        <line x1="12" y1="19" x2="20" y2="19"/>
+      </svg>
+    ),
+    color: 'lime',
+  },
+  {
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+    ),
+    color: 'amber',
+  },
+  {
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+    ),
+    color: 'fuchsia',
+  },
+  {
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+      </svg>
+    ),
+    color: 'slate',
+  },
 ];
 
 const COLOR_MAP: Record<string, string> = {
@@ -96,6 +142,11 @@ const COLOR_MAP: Record<string, string> = {
   indigo: '#6366f1',
   teal: '#14b8a6',
   rose: '#f43f5e',
+  sky: '#0ea5e9',
+  lime: '#84cc16',
+  amber: '#fbbf24',
+  fuchsia: '#d946ef',
+  slate: '#94a3b8',
 };
 
 function Features() {
@@ -114,29 +165,31 @@ function Features() {
           <p className="features__desc">
             {text.features.description}
           </p>
+          <span className="features__status">{text.features.statusBadge}</span>
         </div>
 
         <div className="features__grid">
           {text.features.items.map((feature, index) => {
-            const visual = FEATURE_VISUALS[index];
+            const visual = FEATURE_VISUALS[index % FEATURE_VISUALS.length];
+            const accentColor = COLOR_MAP[visual.color] ?? COLOR_MAP.cyan;
 
             return (
-            <div key={feature.title} className="features__card">
+            <article key={feature.title} className="features__card">
               <div className="features__card-top">
                 <div
                   className="features__card-icon"
                   style={{
-                    color: COLOR_MAP[visual.color],
-                    boxShadow: `0 4px 20px ${COLOR_MAP[visual.color]}22`,
+                    color: accentColor,
+                    boxShadow: `0 4px 20px ${accentColor}22`,
                   }}
+                  aria-hidden="true"
                 >
                   {visual.icon}
                 </div>
-                <span className="features__card-badge">{feature.badge}</span>
               </div>
               <h3 className="features__card-title">{feature.title}</h3>
               <p className="features__card-desc">{feature.description}</p>
-            </div>
+            </article>
             );
           })}
         </div>

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import './HowItWorks.css';
 import { useI18n } from '../../i18n';
 
@@ -57,7 +56,7 @@ function HowItWorks() {
         </div>
 
         <div className="how__timeline">
-          <div className="how__timeline-line" />
+          <div className="how__timeline-line" aria-hidden="true" />
 
           {text.howItWorks.steps.map((step, index) => (
             <div key={step.step} className="how__step">
@@ -65,7 +64,9 @@ function HowItWorks() {
                 <span className="how__step-number">{step.step}</span>
               </div>
               <div className="how__step-card">
-                <div className="how__step-icon">{STEP_VISUALS[index].icon}</div>
+                <div className="how__step-icon" aria-hidden="true">
+                  {STEP_VISUALS[index % STEP_VISUALS.length].icon}
+                </div>
                 <div>
                   <h3 className="how__step-title">{step.title}</h3>
                   <p className="how__step-desc">{step.description}</p>

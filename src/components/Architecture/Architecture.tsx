@@ -1,5 +1,4 @@
 
-import React from 'react';
 import './Architecture.css';
 import { useI18n } from '../../i18n';
 
@@ -27,6 +26,18 @@ const COMPONENT_VISUALS = [
     ),
   },
   {
+    color: '#06b6d4',
+    gradient: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="2" y1="8" x2="22" y2="8"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+    ),
+  },
+  {
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
     icon: (
@@ -39,7 +50,12 @@ const COMPONENT_VISUALS = [
   },
 ];
 
-const STACK_COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f59e0b', '#ef4444', '#06b6d4', '#10b981', '#6366f1', '#14b8a6', '#f43f5e', '#06b6d4', '#8b5cf6', '#3b82f6', '#f59e0b', '#14b8a6'];
+const STACK_COLORS = [
+  '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f59e0b',
+  '#ef4444', '#06b6d4', '#a855f7', '#8b5cf6', '#3b82f6',
+  '#f43f5e', '#06b6d4', '#f59e0b', '#10b981', '#14b8a6',
+  '#00add8', '#df0000', '#0ea5e9', '#61dafb', '#38bdf8',
+];
 
 const CHANNEL_COLORS = ['#10b981', '#f59e0b', '#3b82f6', '#94a3b8'];
 
@@ -68,17 +84,17 @@ function Architecture() {
 
           <div className="architecture__flow-items">
             {text.architecture.components.map((component, index) => {
-              const visual = COMPONENT_VISUALS[index];
+              const visual = COMPONENT_VISUALS[index % COMPONENT_VISUALS.length];
 
               return (
               <div key={component.name} className="architecture__flow-item">
-                <div className="architecture__flow-node" style={{ borderColor: visual.color }}>
+                <div className="architecture__flow-node" style={{ borderColor: visual.color }} aria-hidden="true">
                   <div className="architecture__flow-node-inner" style={{ background: visual.gradient }}>
                     {visual.icon}
                   </div>
                 </div>
                 <span className="architecture__flow-label">{component.name}</span>
-                {index < COMPONENT_VISUALS.length - 1 && (
+                {index < text.architecture.components.length - 1 && (
                   <span className="architecture__flow-connector">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={visual.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="9 18 15 12 9 6"/>
@@ -94,10 +110,10 @@ function Architecture() {
         {/* Detailed cards */}
         <div className="architecture__cards">
           {text.architecture.components.map((component, index) => {
-            const visual = COMPONENT_VISUALS[index];
+            const visual = COMPONENT_VISUALS[index % COMPONENT_VISUALS.length];
 
             return (
-            <div key={component.name} className="architecture__card">
+            <article key={component.name} className="architecture__card">
               <div className="architecture__card-top">
                 <div className="architecture__card-icon-wrap" style={{ background: `${visual.color}18`, color: visual.color }}>
                   {visual.icon}
@@ -110,7 +126,7 @@ function Architecture() {
                   <span key={tech} className="architecture__card-tech">{tech}</span>
                 ))}
               </div>
-            </div>
+            </article>
             );
           })}
         </div>
@@ -120,7 +136,7 @@ function Architecture() {
           <h3 className="architecture__stack-title">{text.architecture.stackTitle}</h3>
           <div className="architecture__stack-grid">
             {text.architecture.stack.map((tech, index) => {
-              const color = STACK_COLORS[index];
+              const color = STACK_COLORS[index % STACK_COLORS.length];
 
               return (
               <div key={tech.label} className="architecture__stack-item">
@@ -140,7 +156,7 @@ function Architecture() {
           <h3 className="architecture__stack-title">{text.architecture.channelsTitle}</h3>
           <div className="architecture__channels-grid">
             {text.architecture.channels.map((channel, index) => {
-              const color = CHANNEL_COLORS[index];
+              const color = CHANNEL_COLORS[index % CHANNEL_COLORS.length];
 
               return (
               <div key={channel.name} className="architecture__channel">

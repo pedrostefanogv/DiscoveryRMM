@@ -1,7 +1,9 @@
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap");
+/* As fontes (Inter / JetBrains Mono) são carregadas via <link> no index.html
+   para evitar @import bloqueante de renderização. */
 
 :root {
+  color-scheme: dark;
   --bg-primary: #0a0e14;
   --bg-secondary: #11161d;
   --bg-card: #161c25;
@@ -35,7 +37,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 90px;
 }
 
 body {
@@ -72,10 +74,36 @@ body::before {
   z-index: 0;
 }
 
+img {
+  max-width: 100%;
+}
+
 /* Selection */
 ::selection {
   background: var(--accent);
   color: #fff;
+}
+
+/* Visibilidade de foco para navegação por teclado */
+:focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respeita a preferência do usuário por menos animação */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 /* Scrollbar */
@@ -91,4 +119,17 @@ body::before {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* Utilitário de acessibilidade */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

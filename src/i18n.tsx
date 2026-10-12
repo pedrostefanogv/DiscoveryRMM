@@ -20,13 +20,16 @@ export const LANGUAGE_OPTIONS: LanguageOption[] = [
 const translations = {
   'pt-BR': {
     meta: {
-      title: 'DiscoveryRMM',
+      title: 'DiscoveryRMM — RMM open source para operações de TI',
+      description:
+        'DiscoveryRMM é uma plataforma RMM open source para operações de TI: inventário de endpoints, monitoramento, acesso remoto, automação e chamados com SLA, com suporte assistido por IA.',
     },
     navbar: {
       links: [
         { label: 'Funcionalidades', href: '#features' },
         { label: 'Arquitetura', href: '#architecture' },
         { label: 'Instalação', href: '#quickstart' },
+        { label: 'Fluxo', href: '#how-it-works' },
         { label: 'GitHub', href: 'https://github.com/pedrostefanogv/DiscoveryRMM_API', external: true },
       ],
       cta: 'Comece Agora',
@@ -43,10 +46,12 @@ const translations = {
       titleMiddle: 'e',
       titleAccentSecondary: 'controle total',
       subtitlePrefix: 'DiscoveryRMM é um servidor open source de Remote Monitoring & Management que oferece visibilidade completa sobre seus',
-      subtitleSuffix: ', com API REST + WebSocket, agent leve, chat com IA e automação inteligente de chamados.',
+      subtitleSuffix:
+        ', com API REST + SignalR, agent leve para Windows, console web, chat com IA e automação inteligente de chamados.',
       noticeAriaLabel: 'Aviso sobre o estado do projeto',
       noticeBadge: 'Aviso',
-      noticeText: 'Projeto em desenvolvimento ativo. Parte da interface e de alguns fluxos foi acelerada com apoio de IA e vibe coding, então telas, nomenclaturas e comportamentos ainda podem evoluir antes da estabilização.',
+      noticeText:
+        'Projeto em desenvolvimento ativo. Parte da interface e de alguns fluxos foi acelerada com apoio de IA e vibe coding, então telas, nomenclaturas e comportamentos ainda podem evoluir antes da estabilização. Homologação acompanha a branch dev; produção recebe apenas a release.',
       primaryCta: 'Instalar Agora',
       secondaryCta: 'Ver no GitHub',
       terminalTitle: 'DiscoveryRMM — Linux Bootstrap',
@@ -70,69 +75,85 @@ const translations = {
       titlePrefix: 'Uma plataforma',
       titleAccent: 'completa',
       titleSuffix: 'para sua operação',
-      description: 'Do inventário à automação inteligente, o DiscoveryRMM oferece 12+ módulos integrados para equipes de TI que exigem o máximo.',
+      statusBadge: '🧪 Pré-estável',
+      description:
+        'Do inventário ao atendimento com IA, o DiscoveryRMM reúne 12+ módulos integrados: RMM, ITSM, automação, distribuição de software e observabilidade no mesmo servidor.',
       items: [
         {
           title: 'Autenticação Robusta',
-          description: 'JWT + API Keys + MFA com suporte a TOTP e FIDO2. Hashing Argon2 para senhas. Rate limiting em endpoints críticos.',
-          badge: '🧪 Pré-estável',
+          description: 'JWT + API Keys + MFA com suporte a TOTP, FIDO2 e WebAuthn. Hashing Argon2 para senhas e rate limiting nos endpoints críticos.',
         },
         {
           title: 'Inventário Completo',
-          description: 'Coleta automática de hardware, software e rede de cada endpoint. Relatórios detalhados com auditoria de ativos.',
-          badge: '🧪 Pré-estável',
+          description: 'Coleta automática de hardware, software e rede de cada endpoint (osquery + PowerShell), com relatórios e auditoria de ativos.',
         },
         {
           title: 'Suporte com IA',
-          description: 'A IA atua como primeiro nível de atendimento, faz a triagem inicial, sugere respostas e encaminha tickets com mais contexto para a equipe.',
-          badge: '🧪 Pré-estável',
+          description: 'A IA atua como primeiro nível de atendimento: faz a triagem, sugere respostas com base no histórico (pgvector) e encaminha o ticket com contexto.',
+        },
+        {
+          title: 'Chamados & SLA',
+          description: 'Filas, templates e campos customizados para tickets, calendários de SLA, escalonamento automático, macros e pesquisa de satisfação (CSAT).',
         },
         {
           title: 'Auto-Tickets',
-          description: 'Motor automático de geração de chamados baseado em eventos e thresholds. Dispare scripts e notificações sem intervenção manual.',
-          badge: '🧪 Pré-estável',
+          description: 'Motor automático de abertura de chamados baseado em eventos e thresholds. Dispare scripts e notificações sem intervenção manual.',
         },
         {
           title: 'Acesso Remoto',
-          description: 'MeshCentral integrado para controle remoto de endpoints. Debug remoto, terminal interativo e transferência de arquivos.',
-          badge: '🧪 Pré-estável',
+          description: 'Suporte remoto nativo: tela em tempo real (H.264/WebRTC), terminal interativo, transferência de arquivos, debug remoto e gravação de sessão.',
+        },
+        {
+          title: 'Automação de Scripts',
+          description: 'Execute PowerShell/CMD e pacotes PSADT sob demanda ou agendados, com biblioteca versionada, gatilhos e trilha de auditoria por execução.',
         },
         {
           title: 'Distribuição P2P',
-          description: 'Os agents distribuem arquivos e artefatos entre si para acelerar instalações, reduzir a carga concentrada no servidor e economizar banda durante deploys e atualizações.',
-          badge: '🧪 Pré-estável',
-        },
-        {
-          title: 'OpenTelemetry',
-          description: 'Rastreamento distribuído e métricas com OpenTelemetry. Visualize latência, throughput e saúde de cada componente do sistema.',
-          badge: '🧪 Pré-estável',
+          description: 'Os agents distribuem arquivos e artefatos entre si (libp2p) para acelerar instalações, reduzir a carga no servidor e economizar banda.',
         },
         {
           title: 'App Store + Updates',
-          description: 'Catálogo de apps com deploy automatizado. Self-update do servidor e agentes com canais beta, LTS e release.',
-          badge: '🧪 Pré-estável',
+          description: 'Catálogo de aplicativos com deploy e aprovações automatizadas e self-update do agent. No servidor, a atualização é sempre manual pelo instalador.',
+        },
+        {
+          title: 'Relatórios & Auditoria',
+          description: 'Relatórios em XLSX, CSV, Markdown e PDF com agendamento, histórico de execuções, presets de filtro e auditoria de configuração.',
+        },
+        {
+          title: 'Base de Conhecimento & MCP',
+          description: 'Artigos versionados com busca semântica por embeddings e execução de ferramentas MCP com políticas de permissão para a IA.',
+        },
+        {
+          title: 'Multi-tenant & IAM',
+          description: 'Modelo Client → Site → Agent, departamentos, grupos, papéis e permissões granulares, campos customizados e tokens de implantação por escopo.',
         },
       ],
     },
     architecture: {
       label: 'Arquitetura',
-      titlePrefix: 'Três camadas,',
+      titlePrefix: 'Quatro camadas,',
       titleAccent: 'domínio total',
-      description: 'O DiscoveryRMM segue uma arquitetura limpa com separação de responsabilidades, garantindo escalabilidade horizontal e segurança em cada camada.',
+      description:
+        'O DiscoveryRMM separa claramente agent, servidor, console web e infraestrutura, garantindo escalabilidade horizontal e segurança em cada camada.',
       components: [
         {
           name: 'Discovery Agent',
-          description: 'Agente leve instalado nos endpoints Windows. Coleta inventário de hardware/software, executa scripts PowerShell/CMD remotamente e mantém heartbeat contínuo com o servidor via NATS (fallback SignalR). Auto-update integrado.',
-          tech: ['Go', 'NATS', 'SignalR', 'PowerShell'],
+          description: 'Agente leve instalado nos endpoints Windows. Coleta inventário de hardware/software (osquery + PowerShell), executa scripts remotamente, participa da malha P2P e mantém heartbeat com o servidor via NATS (fallback SignalR). Auto-update integrado.',
+          tech: ['Go 1.26', 'Wails v3', 'NATS', 'osquery'],
         },
         {
           name: 'DiscoveryRMM Server',
-          description: 'Backend em .NET 10 / ASP.NET Core. Expõe API REST documentada via Scalar, SignalR Hub para comunicação em tempo real, integração NATS para mensageria, chat com IA (OpenAI/Ollama + pgvector) e sistema de auto-tickets.',
-          tech: ['.NET 10', 'ASP.NET Core', 'SignalR', 'Scalar'],
+          description: 'Backend em .NET 10 / ASP.NET Core. Expõe API REST versionada documentada via Scalar, SignalR Hub para tempo real, NATS/JetStream para mensageria e jobs agendados (Quartz.NET), chat com IA (OpenAI/Ollama + pgvector) e motor de auto-tickets.',
+          tech: ['.NET 10', 'PostgreSQL', 'NATS/JetStream', 'SignalR'],
+        },
+        {
+          name: 'Console Web',
+          description: 'SPA administrativa e operacional em React 19 para dashboards, inventário, tickets, automação, relatórios e sessões remotas. Consome a API REST e o realtime via SignalR/NATS, com fallback offline para leitura.',
+          tech: ['React 19', 'TypeScript', 'Vite 8', 'Tailwind 4'],
         },
         {
           name: 'Infraestrutura',
-          description: 'PostgreSQL 15+ com pgvector para embeddings de IA. NATS 2.x com JetStream para mensageria assíncrona. Redis para cache. Storage local, MinIO ou S3-compatible. OpenTelemetry para observabilidade completa.',
+          description: 'PostgreSQL 15+ com pgvector para embeddings de IA e NATS 2.x com JetStream para mensageria assíncrona. Redis para cache, storage local, MinIO ou S3-compatible e OpenTelemetry opcional para observabilidade.',
           tech: ['PostgreSQL', 'Redis', 'NATS', 'MinIO/S3'],
         },
       ],
@@ -145,15 +166,19 @@ const translations = {
         { label: 'JetStream', layer: 'Streaming' },
         { label: 'Redis', layer: 'Cache' },
         { label: 'SignalR', layer: 'Tempo Real' },
-        { label: 'OpenAI / Ollama', layer: 'IA' },
-        { label: 'OpenTelemetry', layer: 'Observabilidade' },
-        { label: 'MeshCentral', layer: 'Acesso Remoto' },
-        { label: 'Scalar', layer: 'Docs de API' },
-        { label: 'Argon2', layer: 'Segurança' },
+        { label: 'Quartz.NET', layer: 'Jobs' },
         { label: 'FluentMigrator', layer: 'Migrações' },
         { label: 'EF Core 10', layer: 'ORM' },
+        { label: 'Scalar', layer: 'Docs de API' },
+        { label: 'Argon2', layer: 'Segurança' },
         { label: 'MinIO / S3', layer: 'Storage' },
-        { label: 'NUnit', layer: 'Testes' },
+        { label: 'OpenAI / Ollama', layer: 'IA' },
+        { label: 'WebRTC / H.264', layer: 'Acesso Remoto' },
+        { label: 'Go 1.26', layer: 'Agent' },
+        { label: 'Wails v3', layer: 'Agent UI' },
+        { label: 'osquery', layer: 'Inventário' },
+        { label: 'React 19', layer: 'Console Web' },
+        { label: 'Tailwind 4', layer: 'Console Web' },
       ],
       channelsTitle: 'Canais de Release',
       channels: [
@@ -168,28 +193,33 @@ const translations = {
       titlePrefix: 'Do clone ao primeiro',
       titleAccent: 'deploy',
       titleSuffix: 'em minutos',
-      description: 'Siga os passos abaixo para ter o servidor DiscoveryRMM rodando localmente. Para produção em Linux, utilize o script bootstrap de instalação rápida.',
+      description:
+        'O bootstrap abaixo prepara o servidor Linux em um único comando. Para rodar a partir do código-fonte, clone o repositório e use o .NET 10 SDK; as atualizações de servidor são sempre manuais.',
       bootstrapTitle: 'Linux One-Liner',
-      bootstrapDescription: 'Instalação completa em produção com um único comando. O script clona o repositório e executa todo o processo automaticamente.',
+      bootstrapDescription:
+        'Instalação completa em produção com um único comando em Ubuntu/Debian. O script clona o repositório, instala dependências e provisiona os serviços automaticamente.',
       terminalLabel: 'Linux · Bash',
       command: LINUX_BOOTSTRAP_COMMAND,
       copyLabel: 'Copiar comando',
       copiedLabel: 'Copiado',
       copyErrorLabel: 'Falha ao copiar',
       copyAriaLabel: 'Copiar comando completo de bootstrap Linux',
-      channelsLabel: 'Canais disponíveis:',
+      channelsLabel: 'Canais e atualização:',
       channels: [
         'DISCOVERY_RELEASE_CHANNEL=lts',
         'DISCOVERY_RELEASE_CHANNEL=beta',
         'DISCOVERY_RELEASE_CHANNEL=dev',
         '--branch release',
+        'install_discovery_server.sh --mode update',
       ],
       prerequisitesTitle: 'Pré-requisitos',
       prerequisites: [
-        { name: '.NET 10 SDK', icon: '⚡' },
+        { name: 'Ubuntu / Debian', icon: '🐧', extra: 'x64 ou arm64' },
+        { name: 'Acesso root ou sudo', icon: '🔐', extra: 'instala serviços' },
+        { name: '.NET 10 SDK', icon: '⚡', extra: 'instalado pelo bootstrap' },
         { name: 'PostgreSQL 15+', icon: '🐘', extra: 'com pgvector' },
-        { name: 'NATS Server 2.x', icon: '📡' },
-        { name: 'Redis', icon: '⚙️', extra: 'opcional, para cache' },
+        { name: 'NATS Server 2.x', icon: '📡', extra: 'com JetStream' },
+        { name: 'Redis', icon: '⚙️', extra: 'cache, opcional' },
       ],
     },
     howItWorks: {
@@ -211,36 +241,38 @@ const translations = {
         {
           step: '03',
           title: 'Coleta & Monitoramento',
-          description: 'Inventário completo de hardware (CPU, RAM, disco, rede), software instalado e métricas de sistema são coletados e enviados em tempo real, alimentando os dashboards.',
+          description: 'Inventário completo de hardware (CPU, RAM, disco, rede), software instalado e métricas de sistema são coletados e enviados em tempo real, alimentando os dashboards do console web.',
         },
         {
           step: '04',
           title: 'Ação & Automação',
-          description: 'Execute scripts PowerShell/CMD remotamente. O motor de auto-tickets gera chamados automaticamente. A IA analisa e sugere soluções baseadas no histórico de tickets.',
+          description: 'Execute scripts PowerShell/CMD e pacotes remotamente, abra sessões de acesso remoto e deixe o motor de auto-tickets e a IA cuidarem da triagem inicial.',
         },
       ],
     },
     stats: {
       items: [
-        { value: '.NET 10', label: 'Runtime', icon: '⚡' },
-        { value: '4', label: 'Canais de Release', icon: '🔄' },
         { value: '12+', label: 'Módulos Integrados', icon: '📦' },
+        { value: '4', label: 'Canais de Release', icon: '🔄' },
         { value: '100%', label: 'Open Source (MIT)', icon: '🔓' },
+        { value: '.NET 10', label: 'Runtime do Servidor', icon: '⚡' },
       ],
     },
     cta: {
       title: 'Pronto para transformar sua gestão de TI?',
-      description: 'O DiscoveryRMM é open source, está em evolução ativa e conta com canais stable, beta, LTS e dev. Explore o repositório, contribua ou implante sua instância hoje.',
+      description:
+        'O DiscoveryRMM é open source, está em evolução ativa e conta com canais stable, beta, LTS e dev. Explore o repositório, contribua ou implante sua instância hoje.',
       primaryButton: 'Ver no GitHub',
       secondaryButton: 'Guia de Instalação',
       links: ['Servidor (API)', 'Discovery Agent', 'Documentação'],
     },
     footer: {
-      tagline: 'Servidor open source de Remote Monitoring & Management. .NET 10 · PostgreSQL · NATS · Redis · IA integrada.',
+      tagline:
+        'Plataforma open source de Remote Monitoring & Management. .NET 10 · PostgreSQL · NATS · Redis · IA integrada.',
       projectTitle: 'Projeto',
       projectLinks: ['Servidor (API)', 'Agent Windows', 'Configuração'],
       resourcesTitle: 'Recursos',
-      resourcesLinks: ['Funcionalidades', 'Arquitetura', 'Instalação'],
+      resourcesLinks: ['Funcionalidades', 'Arquitetura', 'Instalação', 'Fluxo de Trabalho'],
       channelsTitle: 'Canais',
       channels: {
         dev: 'dev · Ativo',
@@ -254,13 +286,16 @@ const translations = {
   },
   'en-US': {
     meta: {
-      title: 'DiscoveryRMM',
+      title: 'DiscoveryRMM — Open source RMM for IT operations',
+      description:
+        'DiscoveryRMM is an open source RMM platform for IT operations: endpoint inventory, monitoring, remote access, automation, and SLA-driven ticketing with AI-assisted support.',
     },
     navbar: {
       links: [
         { label: 'Features', href: '#features' },
         { label: 'Architecture', href: '#architecture' },
         { label: 'Install', href: '#quickstart' },
+        { label: 'Workflow', href: '#how-it-works' },
         { label: 'GitHub', href: 'https://github.com/pedrostefanogv/DiscoveryRMM_API', external: true },
       ],
       cta: 'Get Started',
@@ -276,11 +311,13 @@ const translations = {
       titleAccentPrimary: 'speed',
       titleMiddle: 'and',
       titleAccentSecondary: 'confidence',
-      subtitlePrefix: 'DiscoveryRMM is an open source RMM platform built for teams that need real-time visibility across',
-      subtitleSuffix: ', with REST APIs, WebSockets, a lightweight agent, AI-assisted support, and automation that shortens response time.',
+      subtitlePrefix: 'DiscoveryRMM is an open source Remote Monitoring & Management server that gives you full visibility across your',
+      subtitleSuffix:
+        ', with REST APIs, SignalR, a lightweight Windows agent, a web console, AI-assisted support and automated ticketing.',
       noticeAriaLabel: 'Project status notice',
       noticeBadge: 'Notice',
-      noticeText: 'The platform is evolving quickly. Parts of the interface and some flows were accelerated with AI support and vibe coding, so screens, terminology, and behavior may still change before the product settles.',
+      noticeText:
+        'The platform is evolving quickly. Parts of the interface and some flows were accelerated with AI support and vibe coding, so screens, terminology, and behavior may still change before the product settles. Staging tracks the dev branch; production only ships the release branch.',
       primaryCta: 'Install Now',
       secondaryCta: 'View on GitHub',
       terminalTitle: 'DiscoveryRMM — Linux Bootstrap',
@@ -304,69 +341,85 @@ const translations = {
       titlePrefix: 'A',
       titleAccent: 'complete',
       titleSuffix: 'platform for modern IT operations',
-      description: 'From inventory and remote actions to AI-assisted support, DiscoveryRMM bundles 12+ integrated capabilities for MSPs and internal IT teams.',
+      statusBadge: '🧪 Pre-stable',
+      description:
+        'From inventory to AI-assisted support, DiscoveryRMM bundles 12+ integrated modules: RMM, ITSM, automation, software distribution, and observability on a single server.',
       items: [
         {
           title: 'Robust Authentication',
-          description: 'JWT, API keys, and MFA with TOTP/FIDO2 support protect privileged access. Argon2 hashing and rate limits harden sensitive endpoints.',
-          badge: '🧪 Pre-stable',
+          description: 'JWT, API keys, and MFA with TOTP, FIDO2, and WebAuthn protect privileged access. Argon2 hashing and rate limits harden sensitive endpoints.',
         },
         {
           title: 'Full Inventory',
-          description: 'Continuously collect hardware, software, and network data from every endpoint. Turn raw telemetry into auditable asset visibility.',
-          badge: '🧪 Pre-stable',
+          description: 'Continuously collect hardware, software, and network data from every endpoint (osquery + PowerShell) and turn raw telemetry into auditable asset visibility.',
         },
         {
           title: 'AI-Powered Support',
-          description: 'Use AI as a front-line assistant to classify requests, draft replies, and route tickets with better context for technicians.',
-          badge: '🧪 Pre-stable',
+          description: 'AI acts as your first support line: it triages requests, suggests replies from historical context (pgvector), and routes tickets with better context for technicians.',
+        },
+        {
+          title: 'Tickets & SLA',
+          description: 'Queues, templates, and custom fields for tickets, SLA calendars, automatic escalation, macros, and customer satisfaction surveys (CSAT).',
         },
         {
           title: 'Auto Tickets',
           description: 'Generate tickets automatically from events and thresholds. Trigger scripts and notifications before issues become outages.',
-          badge: '🧪 Pre-stable',
         },
         {
           title: 'Remote Access',
-          description: 'Launch remote sessions through MeshCentral with interactive terminal access, debugging, and file transfer in one workflow.',
-          badge: '🧪 Pre-stable',
+          description: 'Native remote support: real-time screen (H.264/WebRTC), interactive terminal, file transfer, remote debugging, and session recording.',
+        },
+        {
+          title: 'Script Automation',
+          description: 'Run PowerShell/CMD scripts and PSADT packages on demand or on a schedule, with a versioned library, triggers, and a per-execution audit trail.',
         },
         {
           title: 'P2P Distribution',
-          description: 'Reduce server bottlenecks by letting agents relay packages and artifacts across the fleet during deployments and updates.',
-          badge: '🧪 Pre-stable',
-        },
-        {
-          title: 'OpenTelemetry',
-          description: 'Track latency, throughput, and health signals across the stack with distributed traces and metrics.',
-          badge: '🧪 Pre-stable',
+          description: 'Agents relay packages and artifacts across the fleet (libp2p) to speed up installs, reduce server bottlenecks, and save bandwidth during updates.',
         },
         {
           title: 'App Store + Updates',
-          description: 'Publish curated apps, automate rollouts, and manage server and agent updates across release, beta, and LTS channels.',
-          badge: '🧪 Pre-stable',
+          description: 'Publish curated apps with automated approval and rollout flows, plus agent self-update. Server updates are always manual through the installer.',
+        },
+        {
+          title: 'Reports & Audit',
+          description: 'Reports in XLSX, CSV, Markdown, and PDF with scheduling, execution history, filter presets, and configuration audit trails.',
+        },
+        {
+          title: 'Knowledge Base & MCP',
+          description: 'Versioned articles with semantic search over embeddings and MCP tool execution guarded by permission policies for the AI.',
+        },
+        {
+          title: 'Multi-tenant & IAM',
+          description: 'Client → Site → Agent hierarchy, departments, groups, roles, granular permissions, custom fields, and scoped deployment tokens.',
         },
       ],
     },
     architecture: {
       label: 'Architecture',
-      titlePrefix: 'Three layers,',
+      titlePrefix: 'Four layers,',
       titleAccent: 'total ownership',
-      description: 'DiscoveryRMM uses a clean, layered architecture that keeps agents, control plane, and infrastructure responsibilities clearly separated for safer scaling.',
+      description:
+        'DiscoveryRMM keeps the agent, server, web console, and infrastructure responsibilities clearly separated for safer scaling and simpler operations.',
       components: [
         {
           name: 'Discovery Agent',
-          description: 'A lightweight agent for Windows endpoints. It collects hardware and software inventory, runs remote PowerShell/CMD scripts, and maintains a continuous heartbeat with the server through NATS with SignalR fallback. Built-in auto-update is included.',
-          tech: ['Go', 'NATS', 'SignalR', 'PowerShell'],
+          description: 'A lightweight agent for Windows endpoints. It collects hardware and software inventory (osquery + PowerShell), runs remote scripts, joins the P2P mesh, and keeps a heartbeat with the server over NATS with SignalR fallback. Auto-update is included.',
+          tech: ['Go 1.26', 'Wails v3', 'NATS', 'osquery'],
         },
         {
           name: 'DiscoveryRMM Server',
-          description: 'A .NET 10 / ASP.NET Core backend that exposes a REST API through Scalar, a SignalR hub for real-time communication, NATS integration for messaging, AI chat with OpenAI or Ollama plus pgvector, and an automated ticket engine.',
-          tech: ['.NET 10', 'ASP.NET Core', 'SignalR', 'Scalar'],
+          description: 'A .NET 10 / ASP.NET Core backend that exposes a versioned REST API documented with Scalar, a SignalR hub for real-time, NATS/JetStream messaging, Quartz.NET scheduled jobs, AI chat (OpenAI/Ollama + pgvector), and an automated ticket engine.',
+          tech: ['.NET 10', 'PostgreSQL', 'NATS/JetStream', 'SignalR'],
+        },
+        {
+          name: 'Web Console',
+          description: 'A React 19 SPA for dashboards, inventory, ticketing, automation, reports, and remote sessions. It consumes the REST API plus realtime over SignalR/NATS, with offline read caching.',
+          tech: ['React 19', 'TypeScript', 'Vite 8', 'Tailwind 4'],
         },
         {
           name: 'Infrastructure',
-          description: 'PostgreSQL 15+ with pgvector powers AI embeddings. NATS 2.x with JetStream handles asynchronous messaging. Redis accelerates cache access, while local storage, MinIO, or S3-compatible backends cover assets and OpenTelemetry completes observability.',
+          description: 'PostgreSQL 15+ with pgvector powers AI embeddings, while NATS 2.x with JetStream handles asynchronous messaging. Redis accelerates cache access, and local, MinIO, or S3-compatible storage covers assets. OpenTelemetry observability is optional.',
           tech: ['PostgreSQL', 'Redis', 'NATS', 'MinIO/S3'],
         },
       ],
@@ -379,15 +432,19 @@ const translations = {
         { label: 'JetStream', layer: 'Streaming' },
         { label: 'Redis', layer: 'Cache' },
         { label: 'SignalR', layer: 'Realtime' },
-        { label: 'OpenAI / Ollama', layer: 'AI' },
-        { label: 'OpenTelemetry', layer: 'Observability' },
-        { label: 'MeshCentral', layer: 'Remote Access' },
-        { label: 'Scalar', layer: 'API Docs' },
-        { label: 'Argon2', layer: 'Security' },
+        { label: 'Quartz.NET', layer: 'Jobs' },
         { label: 'FluentMigrator', layer: 'Migrations' },
         { label: 'EF Core 10', layer: 'ORM' },
+        { label: 'Scalar', layer: 'API Docs' },
+        { label: 'Argon2', layer: 'Security' },
         { label: 'MinIO / S3', layer: 'Storage' },
-        { label: 'NUnit', layer: 'Testing' },
+        { label: 'OpenAI / Ollama', layer: 'AI' },
+        { label: 'WebRTC / H.264', layer: 'Remote Access' },
+        { label: 'Go 1.26', layer: 'Agent' },
+        { label: 'Wails v3', layer: 'Agent UI' },
+        { label: 'osquery', layer: 'Inventory' },
+        { label: 'React 19', layer: 'Web Console' },
+        { label: 'Tailwind 4', layer: 'Web Console' },
       ],
       channelsTitle: 'Release Channels',
       channels: [
@@ -402,28 +459,33 @@ const translations = {
       titlePrefix: 'From clone to first',
       titleAccent: 'deploy',
       titleSuffix: 'in minutes',
-      description: 'Follow the steps below to run DiscoveryRMM locally. For Linux production rollouts, use the bootstrap script to provision the stack faster.',
+      description:
+        'The bootstrap below provisions a Linux server in a single command. To run from source, clone the repository and use the .NET 10 SDK; server updates are always manual.',
       bootstrapTitle: 'Linux One-Liner',
-      bootstrapDescription: 'Provision a production-ready Linux installation with a single command. The bootstrap script clones the repository and orchestrates the full setup for you.',
+      bootstrapDescription:
+        'Production-ready installation with a single command on Ubuntu/Debian. The script clones the repository, installs dependencies, and provisions the services for you.',
       terminalLabel: 'Linux · Bash',
       command: LINUX_BOOTSTRAP_COMMAND,
       copyLabel: 'Copy command',
       copiedLabel: 'Copied',
       copyErrorLabel: 'Copy failed',
       copyAriaLabel: 'Copy the full Linux bootstrap command',
-      channelsLabel: 'Available channels:',
+      channelsLabel: 'Channels and updates:',
       channels: [
         'DISCOVERY_RELEASE_CHANNEL=lts',
         'DISCOVERY_RELEASE_CHANNEL=beta',
         'DISCOVERY_RELEASE_CHANNEL=dev',
         '--branch release',
+        'install_discovery_server.sh --mode update',
       ],
       prerequisitesTitle: 'Prerequisites',
       prerequisites: [
-        { name: '.NET 10 SDK', icon: '⚡' },
+        { name: 'Ubuntu / Debian', icon: '🐧', extra: 'x64 or arm64' },
+        { name: 'root or sudo access', icon: '🔐', extra: 'installs services' },
+        { name: '.NET 10 SDK', icon: '⚡', extra: 'installed by the bootstrap' },
         { name: 'PostgreSQL 15+', icon: '🐘', extra: 'with pgvector' },
-        { name: 'NATS Server 2.x', icon: '📡' },
-        { name: 'Redis', icon: '⚙️', extra: 'optional, for cache' },
+        { name: 'NATS Server 2.x', icon: '📡', extra: 'with JetStream' },
+        { name: 'Redis', icon: '⚙️', extra: 'cache, optional' },
       ],
     },
     howItWorks: {
@@ -445,36 +507,38 @@ const translations = {
         {
           step: '03',
           title: 'Collection & Monitoring',
-          description: 'Hardware inventory, installed software, and live system metrics are collected continuously to feed dashboards and operational visibility.',
+          description: 'Hardware inventory, installed software, and live system metrics are collected continuously to feed the web console dashboards and operational visibility.',
         },
         {
           step: '04',
           title: 'Action & Automation',
-          description: 'Run remote PowerShell and CMD scripts, open tickets automatically from events, and let AI suggest next actions based on historical context.',
+          description: 'Run remote PowerShell/CMD scripts and packages, open remote sessions, and let auto-ticket rules and AI handle the first triage pass.',
         },
       ],
     },
     stats: {
       items: [
-        { value: '.NET 10', label: 'Runtime', icon: '⚡' },
-        { value: '4', label: 'Release Channels', icon: '🔄' },
         { value: '12+', label: 'Integrated Modules', icon: '📦' },
+        { value: '4', label: 'Release Channels', icon: '🔄' },
         { value: '100%', label: 'Open Source (MIT)', icon: '🔓' },
+        { value: '.NET 10', label: 'Server Runtime', icon: '⚡' },
       ],
     },
     cta: {
       title: 'Ready to modernize endpoint operations?',
-      description: 'DiscoveryRMM gives you an open source foundation for monitoring, automation, and AI-assisted support. Explore the repository, contribute, or deploy your own environment today.',
+      description:
+        'DiscoveryRMM gives you an open source foundation for monitoring, automation, and AI-assisted support. Explore the repository, contribute, or deploy your own environment today.',
       primaryButton: 'View on GitHub',
       secondaryButton: 'Installation Guide',
       links: ['Server (API)', 'Discovery Agent', 'Documentation'],
     },
     footer: {
-      tagline: 'Open source RMM for monitoring, automation, and AI-assisted support in modern IT environments.',
+      tagline:
+        'Open source Remote Monitoring & Management platform. .NET 10 · PostgreSQL · NATS · Redis · built-in AI.',
       projectTitle: 'Project',
       projectLinks: ['Server (API)', 'Windows Agent', 'Configuration'],
       resourcesTitle: 'Resources',
-      resourcesLinks: ['Features', 'Architecture', 'Installation'],
+      resourcesLinks: ['Features', 'Architecture', 'Installation', 'Workflow'],
       channelsTitle: 'Channels',
       channels: {
         dev: 'dev · Active',
@@ -542,12 +606,22 @@ function getInitialLanguage(): Language {
   return getStoredLanguage() ?? detectBrowserLanguage();
 }
 
+function syncDocumentMetadata(language: Language) {
+  const meta = translations[language].meta;
+  document.documentElement.lang = language;
+  document.title = meta.title;
+
+  const descriptionTag = document.querySelector('meta[name="description"]');
+  if (descriptionTag) {
+    descriptionTag.setAttribute('content', meta.description);
+  }
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(getInitialLanguage);
 
   useEffect(() => {
-    document.documentElement.lang = language;
-    document.title = translations[language].meta.title;
+    syncDocumentMetadata(language);
 
     try {
       window.localStorage.setItem(STORAGE_KEY, language);

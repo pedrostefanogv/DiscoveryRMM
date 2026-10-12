@@ -1,26 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <title>DiscoveryRMM</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-        sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
-</head>
-<body>
-  <div id="app"></div>
-  <script type="module" src="./src/index.tsx"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a0e14" />
+
+    <title>DiscoveryRMM — RMM open source para operações de TI</title>
+    <meta
+      name="description"
+      content="DiscoveryRMM é uma plataforma RMM open source para operações de TI: inventário de endpoints, monitoramento, acesso remoto, automação, chamados com SLA e suporte assistido por IA. Servidor .NET 10 + PostgreSQL + NATS, agent Windows e console web."
+    />
+    <meta name="author" content="pedrostefanogv" />
+    <meta
+      name="keywords"
+      content="RMM, Remote Monitoring and Management, open source, inventário de ativos, monitoramento de endpoints, acesso remoto, automação de TI, ITSM, PowerShell, .NET, NATS, PostgreSQL"
+    />
+    <link rel="canonical" href="https://pedrostefanogv.github.io/DiscoveryRMM/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DiscoveryRMM" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:title" content="DiscoveryRMM — RMM open source para operações de TI" />
+    <meta
+      property="og:description"
+      content="Inventário, monitoramento, acesso remoto, automação e suporte com IA em uma única plataforma RMM open source."
+    />
+    <meta property="og:url" content="https://pedrostefanogv.github.io/DiscoveryRMM/" />
+    <meta property="og:image" content="https://pedrostefanogv.github.io/DiscoveryRMM/apple-touch-icon.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DiscoveryRMM — RMM open source para operações de TI" />
+    <meta
+      name="twitter:description"
+      content="Inventário, monitoramento, acesso remoto, automação e suporte com IA em uma única plataforma RMM open source."
+    />
+    <meta name="twitter:image" content="https://pedrostefanogv.github.io/DiscoveryRMM/apple-touch-icon.png" />
+
+    <link rel="shortcut icon" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
+
+    <style>
+      html {
+        background-color: #0a0e14;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <noscript>
+      <p style="padding: 24px; color: #e2e8f0; font-family: sans-serif">
+        O DiscoveryRMM precisa de JavaScript habilitado para exibir esta página. Você também pode
+        conhecer o projeto em
+        <a style="color: #22d3ee" href="https://github.com/pedrostefanogv/DiscoveryRMM_API"
+          >github.com/pedrostefanogv/DiscoveryRMM_API</a
+        >.
+      </p>
+    </noscript>
+    <script type="module" src="./src/index.tsx"></script>
+  </body>
 </html>
