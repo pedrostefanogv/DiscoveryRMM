@@ -50,12 +50,7 @@ const COMPONENT_VISUALS = [
   },
 ];
 
-const STACK_COLORS = [
-  '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f59e0b',
-  '#ef4444', '#06b6d4', '#a855f7', '#8b5cf6', '#3b82f6',
-  '#f43f5e', '#06b6d4', '#f59e0b', '#10b981', '#14b8a6',
-  '#00add8', '#df0000', '#0ea5e9', '#61dafb', '#38bdf8',
-];
+const STACK_GROUP_ACCENTS = ['#10b981', '#3b82f6', '#06b6d4', '#8b5cf6'];
 
 const CHANNEL_COLORS = ['#10b981', '#f59e0b', '#3b82f6', '#94a3b8'];
 
@@ -134,18 +129,29 @@ function Architecture() {
         {/* Tech Stack */}
         <div className="architecture__stack-section">
           <h3 className="architecture__stack-title">{text.architecture.stackTitle}</h3>
-          <div className="architecture__stack-grid">
-            {text.architecture.stack.map((tech, index) => {
-              const color = STACK_COLORS[index % STACK_COLORS.length];
+          <div className="architecture__stack-groups">
+            {text.architecture.stackGroups.map((group, groupIndex) => {
+              const accent = STACK_GROUP_ACCENTS[groupIndex % STACK_GROUP_ACCENTS.length];
 
               return (
-              <div key={tech.label} className="architecture__stack-item">
-                <span className="architecture__stack-dot" style={{ background: color, boxShadow: `0 0 8px ${color}44` }} />
-                <div>
-                  <span className="architecture__stack-name">{tech.label}</span>
-                  <span className="architecture__stack-layer">{tech.layer}</span>
-                </div>
-              </div>
+                <section key={group.title} className="architecture__stack-group">
+                  <h4 className="architecture__stack-group-title">
+                    <span
+                      className="architecture__stack-group-dot"
+                      style={{ background: accent, boxShadow: `0 0 8px ${accent}66` }}
+                      aria-hidden="true"
+                    />
+                    {group.title}
+                  </h4>
+                  <div className="architecture__stack-grid">
+                    {group.items.map((tech) => (
+                      <div key={tech.label} className="architecture__stack-item">
+                        <span className="architecture__stack-name">{tech.label}</span>
+                        <span className="architecture__stack-layer">{tech.layer}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
               );
             })}
           </div>

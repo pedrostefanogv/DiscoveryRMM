@@ -207,19 +207,55 @@
   text-align: center;
 }
 
+.architecture__stack-groups {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.architecture__stack-group {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color var(--transition);
+}
+
+.architecture__stack-group:hover {
+  border-color: #2a3546;
+}
+
+.architecture__stack-group-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.architecture__stack-group-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .architecture__stack-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 8px;
 }
 
 .architecture__stack-item {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
   min-width: 0;
-  padding: 12px 16px;
-  background: var(--bg-card);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   transition: all var(--transition);
@@ -230,16 +266,9 @@
   background: var(--bg-card-hover);
 }
 
-.architecture__stack-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 .architecture__stack-name {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-primary);
   font-family: 'JetBrains Mono', monospace;
@@ -248,7 +277,8 @@
 
 .architecture__stack-layer {
   display: block;
-  font-size: 0.68rem;
+  margin-top: 2px;
+  font-size: 0.66rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -330,8 +360,8 @@
     display: block;
     transform: rotate(90deg);
   }
-  .architecture__stack-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .architecture__stack-groups {
+    grid-template-columns: 1fr;
   }
   .architecture__channels-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -347,8 +377,8 @@
     white-space: normal;
     line-height: 1.4;
   }
-  .architecture__stack-grid {
-    grid-template-columns: 1fr 1fr;
+  .architecture__stack-groups {
+    grid-template-columns: 1fr;
   }
   .architecture__channels-grid {
     grid-template-columns: 1fr 1fr;
@@ -356,7 +386,6 @@
 }
 
 @media (max-width: 420px) {
-  .architecture__stack-grid,
   .architecture__channels-grid {
     grid-template-columns: 1fr;
   }

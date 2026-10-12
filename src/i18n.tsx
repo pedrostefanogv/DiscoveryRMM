@@ -89,11 +89,11 @@ const translations = {
         },
         {
           title: 'Suporte com IA',
-          description: 'A IA atua como primeiro nível de atendimento: faz a triagem, sugere respostas com base no histórico (pgvector) e encaminha o ticket com contexto.',
+          description: 'IA como primeiro nível de atendimento via OpenRouter (ou Ollama local): triagem, sugestão de respostas com busca semântica e chat com ferramentas MCP, com guardrails e controle de custo por modelo.',
         },
         {
           title: 'Chamados & SLA',
-          description: 'Filas, templates e campos customizados para tickets, calendários de SLA, escalonamento automático, macros e pesquisa de satisfação (CSAT).',
+          description: 'Filas, templates e campos customizados para tickets, calendários de SLA, escalonamento automático, macros, pesquisa de satisfação (CSAT) e notificações por e-mail, webhook e push no navegador.',
         },
         {
           title: 'Auto-Tickets',
@@ -101,7 +101,7 @@ const translations = {
         },
         {
           title: 'Acesso Remoto',
-          description: 'Suporte remoto nativo: tela em tempo real (H.264/WebRTC), terminal interativo, transferência de arquivos, debug remoto e gravação de sessão.',
+          description: 'Suporte remoto nativo transportado por NATS: tela em tempo real (WebP/H.264), terminal interativo, arquivos, processos, proxy, debug remoto e gravação de sessão.',
         },
         {
           title: 'Automação de Scripts',
@@ -113,15 +113,15 @@ const translations = {
         },
         {
           title: 'App Store + Updates',
-          description: 'Catálogo de aplicativos com deploy e aprovações automatizadas e self-update do agent. No servidor, a atualização é sempre manual pelo instalador.',
+          description: 'Catálogo com fontes Chocolatey e Winget, aprovações, deploy automatizado e self-update do agent. No servidor, a atualização é sempre manual pelo instalador.',
         },
         {
           title: 'Relatórios & Auditoria',
-          description: 'Relatórios em XLSX, CSV, Markdown e PDF com agendamento, histórico de execuções, presets de filtro e auditoria de configuração.',
+          description: 'Relatórios em XLSX, CSV e Markdown com agendamento, histórico de execuções, presets de filtro e auditoria de configuração.',
         },
         {
           title: 'Base de Conhecimento & MCP',
-          description: 'Artigos versionados com busca semântica por embeddings e execução de ferramentas MCP com políticas de permissão para a IA.',
+          description: 'Artigos versionados com busca semântica por embeddings (pgvector, habilitável) e execução de ferramentas MCP com políticas de permissão para a IA.',
         },
         {
           title: 'Multi-tenant & IAM',
@@ -139,17 +139,17 @@ const translations = {
         {
           name: 'Discovery Agent',
           description: 'Agente leve instalado nos endpoints Windows. Coleta inventário de hardware/software (osquery + PowerShell), executa scripts remotamente, participa da malha P2P e mantém heartbeat com o servidor via NATS (fallback SignalR). Auto-update integrado.',
-          tech: ['Go 1.26', 'Wails v3', 'NATS', 'osquery'],
+          tech: ['Go 1.26', 'Wails v3 beta', 'NATS', 'libp2p'],
         },
         {
           name: 'DiscoveryRMM Server',
           description: 'Backend em .NET 10 / ASP.NET Core. Expõe API REST versionada documentada via Scalar, SignalR Hub para tempo real, NATS/JetStream para mensageria e jobs agendados (Quartz.NET), chat com IA (OpenAI/Ollama + pgvector) e motor de auto-tickets.',
-          tech: ['.NET 10', 'PostgreSQL', 'NATS/JetStream', 'SignalR'],
+          tech: ['.NET 10', 'ASP.NET Core', 'NATS/JetStream', 'SignalR'],
         },
         {
           name: 'Console Web',
           description: 'SPA administrativa e operacional em React 19 para dashboards, inventário, tickets, automação, relatórios e sessões remotas. Consome a API REST e o realtime via SignalR/NATS, com fallback offline para leitura.',
-          tech: ['React 19', 'TypeScript', 'Vite 8', 'Tailwind 4'],
+          tech: ['React 19', 'TypeScript 7', 'Vite 8', 'Tailwind 4'],
         },
         {
           name: 'Infraestrutura',
@@ -158,27 +158,56 @@ const translations = {
         },
       ],
       stackTitle: 'Stack Tecnológica',
-      stack: [
-        { label: '.NET 10', layer: 'Runtime' },
-        { label: 'PostgreSQL 15+', layer: 'Banco de Dados' },
-        { label: 'pgvector', layer: 'IA' },
-        { label: 'NATS 2.x', layer: 'Mensageria' },
-        { label: 'JetStream', layer: 'Streaming' },
-        { label: 'Redis', layer: 'Cache' },
-        { label: 'SignalR', layer: 'Tempo Real' },
-        { label: 'Quartz.NET', layer: 'Jobs' },
-        { label: 'FluentMigrator', layer: 'Migrações' },
-        { label: 'EF Core 10', layer: 'ORM' },
-        { label: 'Scalar', layer: 'Docs de API' },
-        { label: 'Argon2', layer: 'Segurança' },
-        { label: 'MinIO / S3', layer: 'Storage' },
-        { label: 'OpenAI / Ollama', layer: 'IA' },
-        { label: 'WebRTC / H.264', layer: 'Acesso Remoto' },
-        { label: 'Go 1.26', layer: 'Agent' },
-        { label: 'Wails v3', layer: 'Agent UI' },
-        { label: 'osquery', layer: 'Inventário' },
-        { label: 'React 19', layer: 'Console Web' },
-        { label: 'Tailwind 4', layer: 'Console Web' },
+      stackGroups: [
+        {
+          title: 'Agente Windows',
+          items: [
+            { label: 'Go 1.26', layer: 'Runtime' },
+            { label: 'Wails v3 beta', layer: 'UI desktop' },
+            { label: 'osquery', layer: 'Inventário' },
+            { label: 'libp2p', layer: 'Malha P2P' },
+            { label: 'modernc SQLite', layer: 'Cache local' },
+          ],
+        },
+        {
+          title: 'Servidor',
+          items: [
+            { label: '.NET 10', layer: 'Runtime' },
+            { label: 'ASP.NET Core', layer: 'API REST v1' },
+            { label: 'MediatR', layer: 'CQRS' },
+            { label: 'FluentValidation', layer: 'Validação' },
+            { label: 'SignalR', layer: 'Tempo real' },
+            { label: 'NATS.NET + JetStream', layer: 'Mensageria' },
+            { label: 'Quartz.NET', layer: 'Jobs agendados' },
+            { label: 'Scalar', layer: 'Docs de API' },
+            { label: 'Argon2 + FIDO2', layer: 'Autenticação' },
+          ],
+        },
+        {
+          title: 'Console Web',
+          items: [
+            { label: 'React 19', layer: 'Interface' },
+            { label: 'TypeScript 7', layer: 'Tipagem' },
+            { label: 'Vite 8', layer: 'Build' },
+            { label: 'Tailwind 4', layer: 'Estilo' },
+            { label: 'TanStack Query', layer: 'Dados' },
+            { label: 'xterm.js', layer: 'Terminal' },
+            { label: 'PWA + Web Push', layer: 'App instalável' },
+          ],
+        },
+        {
+          title: 'Dados, IA e Infraestrutura',
+          items: [
+            { label: 'PostgreSQL 15+', layer: 'Banco de dados' },
+            { label: 'pgvector', layer: 'Embeddings' },
+            { label: 'Redis', layer: 'Cache' },
+            { label: 'FluentMigrator', layer: 'Migrações' },
+            { label: 'EF Core 10', layer: 'ORM' },
+            { label: 'OpenRouter / OpenAI-compat.', layer: 'IA' },
+            { label: 'MinIO / S3', layer: 'Storage' },
+            { label: 'OpenTelemetry', layer: 'Observabilidade (opcional)' },
+          ],
+        },
       ],
       channelsTitle: 'Canais de Release',
       channels: [
@@ -355,11 +384,11 @@ const translations = {
         },
         {
           title: 'AI-Powered Support',
-          description: 'AI acts as your first support line: it triages requests, suggests replies from historical context (pgvector), and routes tickets with better context for technicians.',
+          description: 'AI as your first support line through OpenRouter (or a local Ollama): triage, reply suggestions backed by semantic search, and tool-using chat over MCP, with guardrails and per-model cost control.',
         },
         {
           title: 'Tickets & SLA',
-          description: 'Queues, templates, and custom fields for tickets, SLA calendars, automatic escalation, macros, and customer satisfaction surveys (CSAT).',
+          description: 'Queues, templates, and custom fields for tickets, SLA calendars, automatic escalation, macros, CSAT surveys, and notifications over email, webhooks, and browser push.',
         },
         {
           title: 'Auto Tickets',
@@ -367,7 +396,7 @@ const translations = {
         },
         {
           title: 'Remote Access',
-          description: 'Native remote support: real-time screen (H.264/WebRTC), interactive terminal, file transfer, remote debugging, and session recording.',
+          description: 'Native remote support carried over NATS: real-time screen (WebP/H.264), interactive terminal, files, processes, proxy, remote debugging, and session recording.',
         },
         {
           title: 'Script Automation',
@@ -379,15 +408,15 @@ const translations = {
         },
         {
           title: 'App Store + Updates',
-          description: 'Publish curated apps with automated approval and rollout flows, plus agent self-update. Server updates are always manual through the installer.',
+          description: 'Curated catalog backed by Chocolatey and Winget, with approvals, automated rollout, and agent self-update. Server updates are always manual through the installer.',
         },
         {
           title: 'Reports & Audit',
-          description: 'Reports in XLSX, CSV, Markdown, and PDF with scheduling, execution history, filter presets, and configuration audit trails.',
+          description: 'Reports in XLSX, CSV, and Markdown with scheduling, execution history, filter presets, and configuration audit trails.',
         },
         {
           title: 'Knowledge Base & MCP',
-          description: 'Versioned articles with semantic search over embeddings and MCP tool execution guarded by permission policies for the AI.',
+          description: 'Versioned articles with semantic search over embeddings (pgvector, opt-in) and MCP tool execution guarded by AI permission policies.',
         },
         {
           title: 'Multi-tenant & IAM',
@@ -405,17 +434,17 @@ const translations = {
         {
           name: 'Discovery Agent',
           description: 'A lightweight agent for Windows endpoints. It collects hardware and software inventory (osquery + PowerShell), runs remote scripts, joins the P2P mesh, and keeps a heartbeat with the server over NATS with SignalR fallback. Auto-update is included.',
-          tech: ['Go 1.26', 'Wails v3', 'NATS', 'osquery'],
+          tech: ['Go 1.26', 'Wails v3 beta', 'NATS', 'libp2p'],
         },
         {
           name: 'DiscoveryRMM Server',
           description: 'A .NET 10 / ASP.NET Core backend that exposes a versioned REST API documented with Scalar, a SignalR hub for real-time, NATS/JetStream messaging, Quartz.NET scheduled jobs, AI chat (OpenAI/Ollama + pgvector), and an automated ticket engine.',
-          tech: ['.NET 10', 'PostgreSQL', 'NATS/JetStream', 'SignalR'],
+          tech: ['.NET 10', 'ASP.NET Core', 'NATS/JetStream', 'SignalR'],
         },
         {
           name: 'Web Console',
           description: 'A React 19 SPA for dashboards, inventory, ticketing, automation, reports, and remote sessions. It consumes the REST API plus realtime over SignalR/NATS, with offline read caching.',
-          tech: ['React 19', 'TypeScript', 'Vite 8', 'Tailwind 4'],
+          tech: ['React 19', 'TypeScript 7', 'Vite 8', 'Tailwind 4'],
         },
         {
           name: 'Infrastructure',
@@ -424,27 +453,56 @@ const translations = {
         },
       ],
       stackTitle: 'Technology Stack',
-      stack: [
-        { label: '.NET 10', layer: 'Runtime' },
-        { label: 'PostgreSQL 15+', layer: 'Database' },
-        { label: 'pgvector', layer: 'AI' },
-        { label: 'NATS 2.x', layer: 'Messaging' },
-        { label: 'JetStream', layer: 'Streaming' },
-        { label: 'Redis', layer: 'Cache' },
-        { label: 'SignalR', layer: 'Realtime' },
-        { label: 'Quartz.NET', layer: 'Jobs' },
-        { label: 'FluentMigrator', layer: 'Migrations' },
-        { label: 'EF Core 10', layer: 'ORM' },
-        { label: 'Scalar', layer: 'API Docs' },
-        { label: 'Argon2', layer: 'Security' },
-        { label: 'MinIO / S3', layer: 'Storage' },
-        { label: 'OpenAI / Ollama', layer: 'AI' },
-        { label: 'WebRTC / H.264', layer: 'Remote Access' },
-        { label: 'Go 1.26', layer: 'Agent' },
-        { label: 'Wails v3', layer: 'Agent UI' },
-        { label: 'osquery', layer: 'Inventory' },
-        { label: 'React 19', layer: 'Web Console' },
-        { label: 'Tailwind 4', layer: 'Web Console' },
+      stackGroups: [
+        {
+          title: 'Windows Agent',
+          items: [
+            { label: 'Go 1.26', layer: 'Runtime' },
+            { label: 'Wails v3 beta', layer: 'Desktop UI' },
+            { label: 'osquery', layer: 'Inventory' },
+            { label: 'libp2p', layer: 'P2P mesh' },
+            { label: 'modernc SQLite', layer: 'Local cache' },
+          ],
+        },
+        {
+          title: 'Server',
+          items: [
+            { label: '.NET 10', layer: 'Runtime' },
+            { label: 'ASP.NET Core', layer: 'REST API v1' },
+            { label: 'MediatR', layer: 'CQRS' },
+            { label: 'FluentValidation', layer: 'Validation' },
+            { label: 'SignalR', layer: 'Realtime' },
+            { label: 'NATS.NET + JetStream', layer: 'Messaging' },
+            { label: 'Quartz.NET', layer: 'Scheduled jobs' },
+            { label: 'Scalar', layer: 'API docs' },
+            { label: 'Argon2 + FIDO2', layer: 'Authentication' },
+          ],
+        },
+        {
+          title: 'Web Console',
+          items: [
+            { label: 'React 19', layer: 'Interface' },
+            { label: 'TypeScript 7', layer: 'Types' },
+            { label: 'Vite 8', layer: 'Build' },
+            { label: 'Tailwind 4', layer: 'Styling' },
+            { label: 'TanStack Query', layer: 'Data' },
+            { label: 'xterm.js', layer: 'Terminal' },
+            { label: 'PWA + Web Push', layer: 'Installable app' },
+          ],
+        },
+        {
+          title: 'Data, AI & Infrastructure',
+          items: [
+            { label: 'PostgreSQL 15+', layer: 'Database' },
+            { label: 'pgvector', layer: 'Embeddings' },
+            { label: 'Redis', layer: 'Cache' },
+            { label: 'FluentMigrator', layer: 'Migrations' },
+            { label: 'EF Core 10', layer: 'ORM' },
+            { label: 'OpenRouter / OpenAI-compat.', layer: 'AI' },
+            { label: 'MinIO / S3', layer: 'Storage' },
+            { label: 'OpenTelemetry', layer: 'Observability (optional)' },
+          ],
+        },
       ],
       channelsTitle: 'Release Channels',
       channels: [

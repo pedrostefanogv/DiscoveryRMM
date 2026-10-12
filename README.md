@@ -28,10 +28,11 @@ Links uteis:
 
 ## Stack utilizada
 
-- React 18
-- TypeScript
-- Vite
-- CSS modular por componente
+- React 19
+- TypeScript 7
+- Vite 8 (com `@vitejs/plugin-react`)
+- CSS modular por componente (sem framework de UI)
+- i18n próprio em `src/i18n.tsx` (PT-BR / EN-US)
 
 ## Secoes da landing page
 
@@ -77,7 +78,7 @@ atualizados junto com o idioma.
 ### Pre-requisitos
 
 - Node.js 20 ou superior
-- npm
+- npm 10 ou superior
 
 ### Instalar dependencias
 
