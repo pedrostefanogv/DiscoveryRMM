@@ -68,7 +68,7 @@ function Quickstart() {
       : text.quickstart.copyLabel;
 
   return (
-    <section id="quickstart" className="quickstart">
+    <section id="quickstart" tabIndex={-1} className="quickstart">
       <div className="quickstart__inner">
         <div className="quickstart__header">
           <span className="quickstart__label">{text.quickstart.label}</span>

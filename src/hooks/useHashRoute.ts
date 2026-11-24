@@ -81,11 +81,13 @@ export function useHashLocation(): HashLocation {
         if (hash && !hash.startsWith('#/')) {
           const targetId = hash.slice(1);
           window.requestAnimationFrame(() => {
-            if (targetId === 'top') {
-              window.scrollTo({ top: 0, behavior: 'auto' });
-            } else {
-              document.getElementById(targetId)?.scrollIntoView();
-            }
+            window.requestAnimationFrame(() => {
+              if (targetId === 'top') {
+                window.scrollTo({ top: 0, behavior: 'auto' });
+              } else {
+                document.getElementById(targetId)?.scrollIntoView();
+              }
+            });
           });
         }
       }

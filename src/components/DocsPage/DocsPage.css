@@ -148,7 +148,7 @@
 }
 
 .docs__nav-link:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle);
   color: var(--text-primary);
 }
 
@@ -305,10 +305,24 @@
 }
 
 .docs__code-card {
+  color-scheme: dark;
   background: #0d1117;
-  border: 1px solid var(--border-color);
+  border: 1px solid #1e293b;
   border-radius: var(--radius-sm);
   overflow: hidden;
+}
+
+.docs__code-card--compact {
+  margin-top: 4px;
+}
+
+.docs__code-card--compact .docs__code-header {
+  padding: 6px 12px;
+}
+
+.docs__code-card--compact .docs__code-pre {
+  padding: 12px 14px;
+  font-size: 0.78rem;
 }
 
 .docs__code-header {
@@ -317,8 +331,8 @@
   justify-content: space-between;
   gap: 12px;
   padding: 10px 14px;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  background: #0a0e14;
+  border-bottom: 1px solid #1e293b;
 }
 
 .docs__code-meta {
@@ -335,22 +349,22 @@
   text-transform: uppercase;
   padding: 2px 8px;
   border-radius: 6px;
-  color: var(--accent-light);
-  background: rgba(6, 182, 212, 0.12);
+  color: #22d3ee;
+  background: rgba(6, 182, 212, 0.14);
 }
 
 .docs__code-title {
   font-size: 0.82rem;
-  color: var(--text-secondary);
+  color: #cbd5e1;
   overflow-wrap: anywhere;
 }
 
 .docs__copy-btn {
   padding: 5px 12px;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-primary);
+  border: 1px solid #1e293b;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
   font-size: 0.76rem;
   font-weight: 600;
   cursor: pointer;
@@ -360,7 +374,7 @@
 
 .docs__copy-btn:hover {
   border-color: rgba(6, 182, 212, 0.45);
-  background: rgba(6, 182, 212, 0.14);
+  background: rgba(6, 182, 212, 0.16);
 }
 
 .docs__copy-btn--copied {
@@ -381,7 +395,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
   line-height: 1.65;
-  color: var(--text-primary);
+  color: #e2e8f0;
 }
 
 /* Responsive Tables */
@@ -427,7 +441,7 @@
 }
 
 .docs__table thead th {
-  background: #0d1117;
+  background: var(--bg-primary);
   color: var(--accent-light);
   font-size: 0.78rem;
   font-weight: 700;
@@ -436,6 +450,8 @@
 }
 
 .docs__table tbody th {
+  position: sticky;
+  inset-inline-start: 0;
   color: var(--text-primary);
   font-weight: 600;
   background: var(--bg-secondary);
@@ -576,14 +592,15 @@
 }
 
 .docs__step-code {
+  color-scheme: dark;
   margin-top: 4px;
   padding: 12px 14px;
   border-radius: 6px;
   background: #0d1117;
-  border: 1px solid var(--border-color);
+  border: 1px solid #1e293b;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.78rem;
-  color: var(--text-primary);
+  color: #e2e8f0;
   overflow-x: auto;
 }
 
@@ -630,7 +647,7 @@
 }
 
 .docs__summary:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-subtle);
 }
 
 .docs__summary::before {

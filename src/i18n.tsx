@@ -47,6 +47,8 @@ const translations = {
       closeMenuLabel: 'Fechar menu de navegação',
       languageSwitcherLabel: 'Selecionar idioma',
       languageOptionLabel: 'Ativar idioma',
+      switchToLightLabel: 'Alternar para tema claro',
+      switchToDarkLabel: 'Alternar para tema escuro',
     },
     hero: {
       rotatingItems: ['Windows 10/11', 'Windows Server', 'estações', 'servidores'],
@@ -499,6 +501,8 @@ const translations = {
       closeMenuLabel: 'Close navigation menu',
       languageSwitcherLabel: 'Select language',
       languageOptionLabel: 'Switch language to',
+      switchToLightLabel: 'Switch to light theme',
+      switchToDarkLabel: 'Switch to dark theme',
     },
     hero: {
       rotatingItems: ['Windows 10/11', 'Windows Server', 'workstations', 'servers'],

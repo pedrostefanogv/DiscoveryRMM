@@ -86,7 +86,7 @@
 
 .cta__btn--secondary:hover {
   border-color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-subtle);
 }
 
 .cta__links {
@@ -114,7 +114,7 @@
 .cta__link:hover {
   color: var(--accent-light);
   border-color: var(--border-color);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-subtle);
 }
 
 @media (max-width: 600px) {

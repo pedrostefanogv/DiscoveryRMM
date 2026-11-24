@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import './Navbar.css';
 import { useI18n } from '../../i18n';
+import { useTheme } from '../../hooks/useTheme';
 import { LanguageFlag } from './LanguageFlag';
 
 const BRAND_ICON_SRC = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
@@ -14,6 +15,9 @@ function Navbar() {
     typeof window !== 'undefined' && window.matchMedia('(max-width: 900px)').matches,
   );
   const { language, setLanguage, text, languageOptions, route } = useI18n();
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const themeActionLabel =
+    resolvedTheme === 'dark' ? text.navbar.switchToLightLabel : text.navbar.switchToDarkLabel;
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const languageTriggerRef = useRef<HTMLButtonElement | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
@@ -21,7 +25,12 @@ function Navbar() {
   const activeLanguageOption = languageOptions.find((option) => option.code === language) ?? languageOptions[0];
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      if (window.scrollY < 160) {
+        setActiveHash('');
+      }
+    };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -269,6 +278,32 @@ function Navbar() {
               </a>
             </li>
           </ul>
+
+          <button
+            type="button"
+            className="navbar__theme-btn"
+            onClick={toggleTheme}
+            aria-label={themeActionLabel}
+            title={themeActionLabel}
+          >
+            {resolvedTheme === 'dark' ? (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.41 1.41" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.41" />
+              </svg>
+            ) : (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            )}
+          </button>
 
           <div className={`navbar__language-menu${languageMenuOpen ? ' navbar__language-menu--open' : ''}`} ref={languageMenuRef}>
             <button

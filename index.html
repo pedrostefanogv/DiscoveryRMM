@@ -3,8 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#0a0e14" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      try {
+        var savedTheme = localStorage.getItem('discoveryrmm-color-scheme');
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          document.querySelector('meta[name="color-scheme"]').setAttribute('content', savedTheme);
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch (e) {}
+    </script>
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0e14" media="(prefers-color-scheme: dark)" />
 
     <title>DiscoveryRMM — RMM open source para operações de TI</title>
     <meta
@@ -93,7 +103,21 @@
 
     <style>
       html {
+        background-color: #f8fafc;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]) {
+          background-color: #0a0e14;
+        }
+      }
+
+      html[data-theme="dark"] {
         background-color: #0a0e14;
+      }
+
+      html[data-theme="light"] {
+        background-color: #f8fafc;
       }
 
       body {

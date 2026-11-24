@@ -1,7 +1,7 @@
 .showcase {
   padding: 100px 24px;
   position: relative;
-  border-top: 1px solid rgba(30, 41, 59, 0.55);
+  border-top: 1px solid var(--border-color);
 }
 
 .showcase__inner {
@@ -88,7 +88,7 @@
 
 .showcase__tab:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle-hover);
 }
 
 .showcase__tab[aria-selected="true"] {
@@ -133,7 +133,7 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 60px var(--shadow-soft);
 }
 
 .showcase__frame-bar {
@@ -142,7 +142,7 @@
   flex-wrap: wrap;
   gap: 12px;
   padding: 12px 16px;
-  background: #0d1117;
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -186,7 +186,7 @@
 }
 
 .showcase__source-badge--agent {
-  color: #6ee7b7;
+  color: var(--green);
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.28);
 }
@@ -199,7 +199,7 @@
   min-block-size: 32px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle);
   color: var(--text-primary);
   font-size: 0.8rem;
   font-weight: 600;
@@ -281,7 +281,7 @@ dialog.showcase__lightbox::backdrop {
   justify-content: space-between;
   gap: 16px;
   padding: 14px 18px;
-  background: #0d1117;
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -306,14 +306,14 @@ dialog.showcase__lightbox::backdrop {
   min-block-size: 36px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle);
   color: var(--text-primary);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .showcase__lightbox-close:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-subtle-hover);
 }
 
 .showcase__lightbox-image {

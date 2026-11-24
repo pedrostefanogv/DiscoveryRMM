@@ -184,7 +184,7 @@
 
 .architecture__card-tech {
   padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.73rem;
@@ -253,7 +253,7 @@
   flex-direction: column;
   min-width: 0;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-subtle);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   transition: all var(--transition);
@@ -328,7 +328,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;
   padding: 2px 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle);
   border-radius: 4px;
   color: var(--text-secondary);
 }

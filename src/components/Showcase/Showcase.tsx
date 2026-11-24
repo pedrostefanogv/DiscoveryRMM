@@ -78,7 +78,7 @@ function Showcase() {
   const lightboxItem = lightboxIndex !== null ? items[lightboxIndex] : null;
 
   return (
-    <section id="showcase" className="showcase">
+    <section id="showcase" tabIndex={-1} className="showcase">
       <div className="showcase__inner">
         <div className="showcase__header">
           <span className="showcase__label">{text.showcase.label}</span>

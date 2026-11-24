@@ -12,7 +12,7 @@ function CTABanner() {
   const { text } = useI18n();
 
   return (
-    <section id="cta" className="cta">
+    <section id="cta" tabIndex={-1} className="cta">
       <div className="cta__inner">
         <div className="cta__card">
           <div className="cta__glow" />

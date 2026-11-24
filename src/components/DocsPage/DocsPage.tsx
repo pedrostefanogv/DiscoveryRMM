@@ -1,14 +1,80 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import './DocsPage.css';
 import { useI18n } from '../../i18n';
 import type { DocSectionId } from '../../hooks/useHashRoute';
-import { getDocsContent, type DocBlock } from '../../data/docs';
+import { getDocsContent, type DocBlock, type DocSection } from '../../data/docs';
 
 type DocsPageProps = {
   section: DocSectionId;
 };
 
 type CopyState = 'idle' | 'copied' | 'error';
+
+function sectionMatchesQuery(section: DocSection, query: string): boolean {
+  if (
+    section.navLabel.toLowerCase().includes(query) ||
+    section.title.toLowerCase().includes(query) ||
+    section.lead.toLowerCase().includes(query) ||
+    section.badge.toLowerCase().includes(query)
+  ) {
+    return true;
+  }
+
+  return section.blocks.some((block) => {
+    switch (block.type) {
+      case 'paragraphs':
+        return block.items.some((p) => p.toLowerCase().includes(query));
+      case 'callout':
+        return (
+          block.title.toLowerCase().includes(query) ||
+          block.text.toLowerCase().includes(query)
+        );
+      case 'code':
+        return (
+          block.title.toLowerCase().includes(query) ||
+          block.snippet.toLowerCase().includes(query)
+        );
+      case 'table':
+        return (
+          block.caption.toLowerCase().includes(query) ||
+          block.headers.some((h) => h.toLowerCase().includes(query)) ||
+          block.rows.some((r) => r.some((cell) => cell.toLowerCase().includes(query)))
+        );
+      case 'cards':
+        return (
+          (block.title?.toLowerCase().includes(query) ?? false) ||
+          block.items.some(
+            (c) =>
+              c.title.toLowerCase().includes(query) ||
+              c.description.toLowerCase().includes(query) ||
+              (c.badge?.toLowerCase().includes(query) ?? false),
+          )
+        );
+      case 'steps':
+        return (
+          (block.title?.toLowerCase().includes(query) ?? false) ||
+          block.items.some(
+            (s) =>
+              s.title.toLowerCase().includes(query) ||
+              s.description.toLowerCase().includes(query) ||
+              (s.code?.toLowerCase().includes(query) ?? false) ||
+              (s.route?.toLowerCase().includes(query) ?? false),
+          )
+        );
+      case 'accordion':
+        return (
+          (block.title?.toLowerCase().includes(query) ?? false) ||
+          block.items.some(
+            (item) =>
+              item.summary.toLowerCase().includes(query) ||
+              item.paragraphs.some((p) => p.toLowerCase().includes(query)) ||
+              (item.code?.toLowerCase().includes(query) ?? false) ||
+              (item.route?.toLowerCase().includes(query) ?? false),
+          )
+        );
+    }
+  });
+}
 
 function DocsCodeBlock({
   title,
@@ -17,6 +83,7 @@ function DocsCodeBlock({
   copyLabel,
   copiedLabel,
   copyErrorLabel,
+  compact = false,
 }: {
   title: string;
   language: string;
@@ -24,6 +91,7 @@ function DocsCodeBlock({
   copyLabel: string;
   copiedLabel: string;
   copyErrorLabel: string;
+  compact?: boolean;
 }) {
   const [copyState, setCopyState] = useState<CopyState>('idle');
 
@@ -63,17 +131,17 @@ function DocsCodeBlock({
         : copyLabel;
 
   return (
-    <div className="docs__code-card">
+    <div className={`docs__code-card${compact ? ' docs__code-card--compact' : ''}`}>
       <div className="docs__code-header">
         <div className="docs__code-meta">
           <span className="docs__code-lang">{language}</span>
-          <span className="docs__code-title">{title}</span>
+          {title ? <span className="docs__code-title">{title}</span> : null}
         </div>
         <button
           type="button"
           className={`docs__copy-btn${copyState === 'copied' ? ' docs__copy-btn--copied' : ''}${copyState === 'error' ? ' docs__copy-btn--error' : ''}`}
           onClick={handleCopy}
-          aria-label={`${copyLabel}: ${title}`}
+          aria-label={title ? `${copyLabel}: ${title}` : copyLabel}
         >
           {statusText}
         </button>
@@ -98,13 +166,10 @@ function DocsResponsiveTable({
   rows: string[][];
 }) {
   const captionId = useId();
-  const tableStyle = {
-    '--docs-col-count': String(headers.length),
-  } as CSSProperties;
 
   return (
     <div tabIndex={0} role="region" aria-labelledby={captionId} className="docs__table-wrap">
-      <table className="docs__table" style={tableStyle}>
+      <table className="docs__table">
         <caption id={captionId} className="docs__table-caption">
           {caption}
         </caption>
@@ -144,6 +209,7 @@ function DocsPage({ section }: DocsPageProps) {
   const content = getDocsContent(language);
   const [query, setQuery] = useState('');
   const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const mobileDrawerRef = useRef<HTMLDetailsElement | null>(null);
 
   const activeIndex = Math.max(
     0,
@@ -156,27 +222,21 @@ function DocsPage({ section }: DocsPageProps) {
 
   const normalizedQuery = query.trim().toLowerCase();
   const filteredSections = normalizedQuery
-    ? content.sections.filter(
-        (item) =>
-          item.navLabel.toLowerCase().includes(normalizedQuery) ||
-          item.title.toLowerCase().includes(normalizedQuery) ||
-          item.lead.toLowerCase().includes(normalizedQuery),
-      )
+    ? content.sections.filter((item) => sectionMatchesQuery(item, normalizedQuery))
     : content.sections;
 
   useEffect(() => {
+    if (mobileDrawerRef.current) {
+      mobileDrawerRef.current.open = false;
+    }
     headingRef.current?.focus();
   }, [section]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return;
-      const target = event.target as HTMLElement | null;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
-        return;
-      }
-      if (event.key === 'Escape') {
-        window.location.hash = '#top';
+      if (event.key === 'Escape' && mobileDrawerRef.current?.open) {
+        mobileDrawerRef.current.open = false;
       }
     };
 
@@ -268,9 +328,15 @@ function DocsPage({ section }: DocsPageProps) {
                   <h3 className="docs__step-title">{step.title}</h3>
                   <p className="docs__step-desc">{step.description}</p>
                   {step.code ? (
-                    <pre className="docs__step-code">
-                      <code>{step.code}</code>
-                    </pre>
+                    <DocsCodeBlock
+                      title=""
+                      language="bash"
+                      snippet={step.code}
+                      copyLabel={content.ui.copyLabel}
+                      copiedLabel={content.ui.copiedLabel}
+                      copyErrorLabel={content.ui.copyErrorLabel}
+                      compact
+                    />
                   ) : null}
                   {step.route ? <code className="docs__route-pill">{step.route}</code> : null}
                 </li>
@@ -292,9 +358,15 @@ function DocsPage({ section }: DocsPageProps) {
                   ))}
                   {item.route ? <code className="docs__route-pill">{item.route}</code> : null}
                   {item.code ? (
-                    <pre className="docs__step-code">
-                      <code>{item.code}</code>
-                    </pre>
+                    <DocsCodeBlock
+                      title=""
+                      language="bash"
+                      snippet={item.code}
+                      copyLabel={content.ui.copyLabel}
+                      copiedLabel={content.ui.copiedLabel}
+                      copyErrorLabel={content.ui.copyErrorLabel}
+                      compact
+                    />
                   ) : null}
                 </div>
               </details>
@@ -331,6 +403,11 @@ function DocsPage({ section }: DocsPageProps) {
                     href={`#/docs/${item.id}`}
                     className={`docs__nav-link${isActive ? ' docs__nav-link--active' : ''}`}
                     aria-current={isActive ? 'page' : undefined}
+                    onClick={() => {
+                      if (mobileDrawerRef.current) {
+                        mobileDrawerRef.current.open = false;
+                      }
+                    }}
                   >
                     {item.navLabel}
                   </a>
@@ -384,7 +461,7 @@ function DocsPage({ section }: DocsPageProps) {
         </div>
 
         {/* Mobile chapter drawer collapsed by default (content-first noise reduction) */}
-        <details className="docs__mobile-drawer">
+        <details ref={mobileDrawerRef} className="docs__mobile-drawer">
           <summary className="docs__mobile-summary">
             {content.ui.mobileMenuSummary}: {activeSection.navLabel}
           </summary>

@@ -42,7 +42,7 @@ function HowItWorks() {
   const { text } = useI18n();
 
   return (
-    <section id="how-it-works" className="how">
+    <section id="how-it-works" tabIndex={-1} className="how">
       <div className="how__inner">
         <div className="how__header">
           <span className="how__label">{text.howItWorks.label}</span>

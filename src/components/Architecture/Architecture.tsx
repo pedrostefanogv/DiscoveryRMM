@@ -58,7 +58,7 @@ function Architecture() {
   const { text } = useI18n();
 
   return (
-    <section id="architecture" className="architecture">
+    <section id="architecture" tabIndex={-1} className="architecture">
       <div className="architecture__inner">
         <div className="architecture__header">
           <span className="architecture__label">{text.architecture.label}</span>
