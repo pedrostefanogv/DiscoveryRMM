@@ -144,17 +144,40 @@ describe('F24 Tier 1 — Landing Page Category-Partition Tests', () => {
     const srcFiles = walkFiles(path.join(LANDING_ROOT, 'src'), ['.ts', '.tsx']).map((f) => readText(f));
     const corpus = [htmlPt, htmlEn, readme, ...srcFiles].join('\n');
 
+    const extractedUrls = (corpus.match(/https:\/\/[^\s"'<>`)]+/g) ?? []).flatMap((raw) => {
+      try {
+        return [new URL(raw)];
+      } catch {
+        return [];
+      }
+    });
+
     assert.equal(
-      corpus.includes('/blob/release/CONFIGURATION.md'),
+      extractedUrls.some(
+        (u) =>
+          u.protocol === 'https:' &&
+          u.hostname === 'github.com' &&
+          u.pathname === '/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md',
+      ),
       false,
       'Found broken 404 link /blob/release/CONFIGURATION.md (must be /blob/release/docs/CONFIGURATION.md)',
     );
     assert.ok(
-      corpus.includes('https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/docs/CONFIGURATION.md'),
+      extractedUrls.some(
+        (u) =>
+          u.protocol === 'https:' &&
+          u.hostname === 'github.com' &&
+          u.pathname === '/pedrostefanogv/DiscoveryRMM_API/blob/release/docs/CONFIGURATION.md',
+      ),
       'Expected documentation link to target /blob/release/docs/CONFIGURATION.md',
     );
     assert.ok(
-      corpus.includes('https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases'),
+      extractedUrls.some(
+        (u) =>
+          u.protocol === 'https:' &&
+          u.hostname === 'github.com' &&
+          u.pathname === '/pedrostefanogv/DiscoveryRMM_Agent/releases',
+      ),
       'Expected agent download link to target DiscoveryRMM_Agent/releases',
     );
 

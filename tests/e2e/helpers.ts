@@ -360,7 +360,7 @@ export function readProdFilesNoComments(
 }
 
 export function hasNatsSubjectSuffix(src: string, suffix: string): boolean {
-  const esc = suffix.replace(/\./g, '\\.');
+  const esc = suffix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re = new RegExp(
     `(?:subscribePattern|publishSubject)\\([^,]+,\\s*"${esc}"\\)|\\.${esc}\\b|["']${esc}["']`,
   );
