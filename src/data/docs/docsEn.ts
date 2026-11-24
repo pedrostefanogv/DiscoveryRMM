@@ -373,9 +373,237 @@ echo "NewStrongPass@2026" | dotnet run --project src/Discovery.Api -- --recover-
       ],
     },
     {
+      id: 'clients-deploy',
+      navLabel: '6. Clients, Sites & Deploy',
+      badge: 'Chapter 06 · Fleet Operations',
+      title: 'How to register Clients, Sites, Departments, and deploy Agents',
+      lead: 'Before monitoring machines or automating apps, structure your multi-tenant hierarchy (Global → Client → Site → Agent), generate Deploy Tokens, and operate endpoints in production.',
+      blocks: [
+        {
+          type: 'callout',
+          tone: 'info',
+          title: 'Why the Client → Site → Agent hierarchy matters',
+          text: 'Everything in DiscoveryRMM inherits from this tree: technician RBAC permissions, patch policies, sensors, automation tasks, App Store approvals, maintenance windows, and SLA/Auto-Ticket rules. A clean Client and Site structure prevents rework at scale.',
+        },
+        {
+          type: 'steps',
+          title: 'Step-by-step: structuring tenants, locations, and deploying Agents',
+          items: [
+            {
+              title: '1. Register the Client',
+              description: 'Open Clients → New Client. Enter company name, internal identifier, primary contacts, and client-level defaults (config inheritance, optional branding, and default SLA).',
+              route: 'Web Console → Clients (/clients)',
+            },
+            {
+              title: '2. Register Sites (branches / locations)',
+              description: 'Inside the Client or via Sites → New Site, create each physical or logical location (e.g., HQ, Branch Office, Remote). Configure timezone, LAN subnets for P2P caching, and local maintenance windows.',
+              route: 'Web Console → Sites (/sites)',
+            },
+            {
+              title: '3. Set up Departments, Custom Fields & Automatic Labels',
+              description: 'Create Departments for ticket and AI Chat routing, Custom Fields to store asset metadata (asset tag, cost center, collector script output), and Automatic Labels to dynamically tag machines by OS, hardware, or installed software.',
+              route: 'Departments (/tickets/departments) · Custom Fields (/settings/custom-fields) · Labels (/automation/agent-labels)',
+            },
+            {
+              title: '4. Generate a Deploy Token and install on Windows endpoints',
+              description: 'Under Deploy → New Token, select Client, Site, expiration, and usage limit (or unlimited for GPO/Intune). Copy the silent install command for fleet rollout. Devices with TPM 2.0 get hardware-bound identity (EK + SMBIOS UUID), enabling Zero-Touch Provisioning and automatic Post-Format Recovery.',
+              route: 'Web Console → Deploy (/deploy)',
+            },
+            {
+              title: '5. Operate the fleet from the Agents view',
+              description: 'In Agents, filter by status (online/offline), client, site, or labels. Open any endpoint to inspect hardware/software inventory, real-time sensors, execution logs, quick maintenance actions, live user chat, remote debug console, and remote desktop.',
+              route: 'Web Console → Agents (/agents) · Logs (/logs)',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'automation-software',
+      navLabel: '7. Automation, Apps & Patches',
+      badge: 'Chapter 07 · Automation & Software',
+      title: 'How to install/remove apps, build automation tasks, and manage patches',
+      lead: 'Automate the full software lifecycle on Windows endpoints using Winget, Chocolatey, private Custom packages, PowerShell/Batch scripts, and Windows Update policies.',
+      blocks: [
+        {
+          type: 'table',
+          caption: 'Available action types in Automation Tasks (/automation/tasks)',
+          headers: ['Action Type', 'What it does on the endpoint', 'Supported sources / capabilities'],
+          rows: [
+            ['InstallPackage', 'Silently installs a target application on Windows (Session 0 SYSTEM or configured context).', 'Winget, Chocolatey, or corporate Custom package'],
+            ['UpdatePackage', 'Updates the application if an earlier version is already installed on the device.', 'Winget, Chocolatey, or Custom package'],
+            ['UpdateOrInstallPackage', 'Enforces desired state: installs if missing or upgrades if outdated.', 'Winget, Chocolatey, or Custom package'],
+            ['RemovePackage', 'Silently uninstalls unauthorized or legacy software across the selected fleet.', 'Winget, Chocolatey, or Custom package'],
+            ['RunScript', 'Runs a versioned script from the Library (/automation/scripts), optionally saving output to notes or a collector custom field.', 'PowerShell, Batch / CMD'],
+            ['CustomCommand', 'Executes a one-off command directly without creating a reusable library script.', 'Windows Shell / CLI'],
+          ],
+        },
+        {
+          type: 'steps',
+          title: 'How to create a task to install, update, or remove apps',
+          items: [
+            {
+              title: '1. Open Automation Tasks and pick the action',
+              description: 'Go to Automation → Tasks and click New Task. Enter name and description, choose the action (Install package, Update/Install, Remove package, or Run script) and source (Winget, Chocolatey, or Custom), then pick the package in the integrated picker.',
+              route: 'Web Console → Automation → Tasks (/automation/tasks)',
+            },
+            {
+              title: '2. Define Scope and Tag Targeting',
+              description: 'Select the scope (Global, Client, Site, or specific Agent) and optionally refine targets with Include Tags and Exclude Tags (e.g., target "Finance" and exclude "Servers").',
+              route: 'Task Modal → Scope & Tags',
+            },
+            {
+              title: '3. Configure Triggers, Execution Order & Maintenance Window',
+              description: 'Combine triggers: Immediate, Recurring (with visual Cron assistant), On User Login, or On Agent Check-In. Set executionOrder to chain prerequisites and choose whether to respect Maintenance Windows.',
+              route: 'Task Modal → Triggers & Schedule',
+            },
+            {
+              title: '4. Tune User Experience & Running Processes',
+              description: 'Choose Silent execution or Toast notification (before/after) with optional defer (allowDefer), prompt timeout, and controlled closing of open processes before install/removal (e.g., chrome.exe, outlook.exe).',
+              route: 'Task Modal → User Experience',
+            },
+            {
+              title: '5. Track live runs and audit history',
+              description: 'Monitor real-time status (pending, running, succeeded, failed, or user-deferred) under Operations, and inspect the full change/trigger trail under Audit.',
+              route: 'Operations (/automation/operations) · Audit (/automation/audit)',
+            },
+          ],
+        },
+        {
+          type: 'accordion',
+          title: 'Operating related Software & Patch modules',
+          items: [
+            {
+              summary: 'Script Library & Custom Field Collectors (/automation/scripts)',
+              paragraphs: [
+                'Store versioned PowerShell or Batch scripts with parameters and revision history. When attaching a script to a task, you can write stdout to the agent note or directly into a collector Custom Field (ideal for auditing licenses, local backup health, or specific registry values).',
+              ],
+            },
+            {
+              summary: 'Self-Service App Store & Custom Packages (/software/store · /software/inventory)',
+              paragraphs: [
+                'Software → Detailed Inventory shows all installed apps and versions across the fleet. Under Software → App Store, approve packages (Winget, Chocolatey, or private Custom installers uploaded to the server and distributed via LAN P2P) so employees can install them with one click in the Discovery Agent without local admin rights.',
+              ],
+            },
+            {
+              summary: 'Windows Patch Management (/patches)',
+              paragraphs: [
+                'Use Patches → Overview and Compliance to track fleet update percentage. In Policy (/patches/policy), configure auto-approval by severity (Critical, Security, Drivers) and deferral days; in Approvals (/patches/approvals) and Updates (/patches/updates), approve, block, or trigger out-of-window emergency installs.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'sensors-monitoring',
+      navLabel: '8. Sensors, Monitoring & Reports',
+      badge: 'Chapter 08 · Proactive Monitoring',
+      title: 'How Sensors work, how to register them, and how to generate Reports',
+      lead: 'Sensors turn the Agent into a continuous collector for health, performance, services, network, and security — evaluating thresholds locally and triggering alerts or Auto-Tickets before users notice an outage.',
+      blocks: [
+        {
+          type: 'paragraphs',
+          items: [
+            'Every sensor defined on the server syncs to Agents in its scope (Global, Client, Site, or Agent). The Windows service collects metrics at the configured interval, streams readings to the server (with time-series retention and sparklines), and evaluates Warning and Critical thresholds.',
+            'Possible sensor states are: OK (Passing), Warning, Critical (Failing), Unknown (No data), Pending, and Stale (no recent data when collection is overdue — never masking an existing Critical failure).',
+          ],
+        },
+        {
+          type: 'table',
+          caption: 'Complete catalog of the 19 built-in and script sensor types (/sensors)',
+          headers: ['Category', 'Available Sensor Types', 'Operational examples'],
+          rows: [
+            ['System & Hardware', 'DiskSpace, Cpu, Memory, Uptime, DiskIo, SmartStatus', 'Alert when C: exceeds 85% / 95%, detect imminent SMART disk failure, or flag servers with > 45 days uptime.'],
+            ['Windows & Apps', 'Service (Windows Service), Process, EventLogRate', 'Ensure Spooler, SQL Server, or backup services stay running; watch Event Viewer error spikes.'],
+            ['Network & Connectivity', 'Ping (ICMP), TcpPort, HttpProbe, HttpThroughput, DnsLatency, Bandwidth', 'Verify internal ERP responds on port 443/8443 from branch offices, track DNS latency and packet loss.'],
+            ['Security & Compliance', 'CertificateExpiry, DefenderStatus, BitLocker', 'Verify BitLocker encryption on laptops, Microsoft Defender real-time protection, and expiring TLS certificates.'],
+            ['Custom', 'Script (multi-channel metrics)', 'Run a PowerShell script returning numeric or boolean channels (e.g., print queue depth, profile size, VPN state).'],
+          ],
+        },
+        {
+          type: 'steps',
+          title: 'Step-by-step: registering and operating Sensors',
+          items: [
+            {
+              title: '1. Register a Built-in Sensor',
+              description: 'Go to Sensors → Manage and click New Sensor. Pick the type (e.g., DiskSpace or Windows Service), select scope (Global, Client, Site, or Agent), set target (such as "C:" or "Spooler"), collection interval, and Warning/Critical thresholds.',
+              route: 'Web Console → Sensors (/sensors)',
+            },
+            {
+              title: '2. Build Script Sensors for custom metrics',
+              description: 'To monitor environment-specific metrics, choose Script and open the Script Sensor Editor. Write a PowerShell script returning one or more named channels, set unit (%, MB, ms, boolean) and comparison operator per threshold.',
+              route: 'Sensors → Script Sensor Editor',
+            },
+            {
+              title: '3. Connect Notification Channels & Auto-Ticket Rules',
+              description: 'Under Notifications (/settings/notifications), configure webhooks, email, or in-app alerts. Under Support → Auto-Ticket (/tickets/auto-rules), create rules to automatically open a ticket when a sensor stays Critical for N consecutive checks and auto-close/comment when it recovers.',
+              route: 'Notifications (/settings/notifications) · Auto-Ticket (/tickets/auto-rules)',
+            },
+            {
+              title: '4. Monitor the fleet and schedule executive Reports',
+              description: 'Use the Sensors Fleet view to filter devices in Warning/Critical with historical sparklines. In Reports, run built-in templates (fleet health, patches, inventory, ticket SLA) or create custom templates with scheduled email delivery.',
+              route: 'Reports → Templates (/reports/templates) · Schedules (/reports/schedules)',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'servicedesk-kb',
+      navLabel: '9. Service Desk & Knowledge Base',
+      badge: 'Chapter 09 · Service Desk & KB',
+      title: 'How to operate Tickets, Service Board, SLAs & Knowledge Base',
+      lead: 'DiscoveryRMM Service Desk connects your support queue directly to endpoint telemetry, live chat, remote access, and the Knowledge Base shared across technicians and Tier-1 AI Chat.',
+      blocks: [
+        {
+          type: 'steps',
+          title: 'Daily ticket handling workflow',
+          items: [
+            {
+              title: '1. Triage on Service Board and Ticket List / Kanban',
+              description: 'Open Service Board (/service-board) for a unified operational view of queues, alerts, and client health, or go to Support → Tickets (/tickets) in List or Kanban mode. Filter by department, priority, status, assignee, or SLA risk.',
+              route: 'Service Board (/service-board) · Tickets (/tickets)',
+            },
+            {
+              title: '2. Troubleshoot with full device context & Live Chat',
+              description: 'Inside a ticket, immediately see the linked endpoint, recent sensors, logs, and inventory. Click Start Live Chat to message the user in real time (with Windows consent prompt and transcript saved to the ticket) or launch a Remote Access session.',
+              route: 'Ticket Detail → Live Chat / Remote Access',
+            },
+            {
+              title: '3. Speed up resolution with Macros, Templates & Runbooks',
+              description: 'Apply Macros (/tickets/macros) for one-click standardized replies + status updates + assignment. Configure Ticket Templates (/tickets/templates) for structured intake and attach Runbooks to guide L1/L2 technicians.',
+              route: 'Templates (/tickets/templates) · Macros (/tickets/macros)',
+            },
+            {
+              title: '4. Configure SLAs, Business Calendars, Workflow Profiles & CSAT',
+              description: 'Under SLA, Calendars & Profiles (/tickets/sla), set first-response and resolution targets aligned with each client’s business hours. Customize states in Workflow Profiles (/settings/workflow-profiles) and track user ratings under CSAT (/tickets/csat).',
+              route: 'SLA (/tickets/sla) · Workflow (/settings/workflow-profiles) · CSAT (/tickets/csat)',
+            },
+          ],
+        },
+        {
+          type: 'steps',
+          title: 'How to operate the Knowledge Base (/knowledge)',
+          items: [
+            {
+              title: '1. Author articles and nested page trees',
+              description: 'Open Support → Knowledge (/knowledge) to write operational manuals, troubleshooting guides, and FAQs. Articles support structured editing, attached images, and hierarchical subpage trees.',
+              route: 'Web Console → Knowledge (/knowledge)',
+            },
+            {
+              title: '2. Control visibility and link to Runbooks & AI Chat',
+              description: 'Separate internal articles (technician-only runbooks linked to tickets) from end-user articles (visible in the Discovery Agent Knowledge Base tab and indexed to ground Tier-1 AI Chat answers).',
+              route: 'Article Editor → Visibility & Categories',
+            },
+          ],
+        },
+      ],
+    },
+    {
       id: 'modules',
-      navLabel: '6. Module Configuration',
-      badge: 'Chapter 06 · Configuration',
+      navLabel: '10. Module Configuration',
+      badge: 'Chapter 10 · Configuration',
       title: 'How to configure each module & scope inheritance',
       lead: 'DiscoveryRMM uses hierarchical Server → Client → Site inheritance with provenance tracking. Learn how to configure every module.',
       blocks: [
@@ -451,8 +679,8 @@ echo "NewStrongPass@2026" | dotnet run --project src/Discovery.Api -- --recover-
     },
     {
       id: 'integrations',
-      navLabel: '7. Internal Integrations',
-      badge: 'Chapter 07 · Internal Integrations',
+      navLabel: '11. Internal Integrations',
+      badge: 'Chapter 11 · Internal Integrations',
       title: 'How internal modules integrate with one another',
       lead: 'DiscoveryRMM connects telemetry, ticketing, AI, automation, and security into automated cross-module pipelines.',
       blocks: [
@@ -492,8 +720,8 @@ echo "NewStrongPass@2026" | dotnet run --project src/Discovery.Api -- --recover-
     },
     {
       id: 'guides',
-      navLabel: '8. End-to-End Guides',
-      badge: 'Chapter 08 · User Manuals',
+      navLabel: '12. End-to-End Guides',
+      badge: 'Chapter 12 · User Manuals',
       title: 'End-to-End Guides: Installer, Operator & End User',
       lead: 'Step-by-step operational playbooks for the infrastructure installer, the daily IT operator, and the Windows workstation user.',
       blocks: [

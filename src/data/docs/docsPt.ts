@@ -373,9 +373,237 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
       ],
     },
     {
+      id: 'clients-deploy',
+      navLabel: '6. Clientes, Sites & Deploy',
+      badge: 'Capítulo 06 · Operação de Parque',
+      title: 'Como cadastrar Clientes, Sites, Departamentos e implantar Agents',
+      lead: 'Antes de monitorar máquinas ou automatizar aplicativos, você estrutura a hierarquia multi-tenant (Global → Cliente → Site → Agente), gera os Deploy Tokens e acompanha os endpoints em operação.',
+      blocks: [
+        {
+          type: 'callout',
+          tone: 'info',
+          title: 'Para que serve a hierarquia Cliente → Site → Agente',
+          text: 'Tudo no DiscoveryRMM herda dessa árvore: permissões RBAC de técnicos, políticas de patches, sensores, tarefas de automação, catálogo da App Store, janelas de manutenção e regras de SLA/Auto-Ticket. Estruturar bem Clientes e Sites evita retrabalho na escala.',
+        },
+        {
+          type: 'steps',
+          title: 'Passo a passo: estruturando empresas, locais e implantando o Agent',
+          items: [
+            {
+              title: '1. Cadastre o Cliente',
+              description: 'Acesse Clientes → Novo Cliente. Informe nome/razão social, identificação interna, contatos principais e políticas padrão do cliente (herança de configurações, branding opcional e SLA padrão).',
+              route: 'Console Web → Clientes (/clients)',
+            },
+            {
+              title: '2. Cadastre os Sites (unidades / filiais)',
+              description: 'Dentro do Cliente ou em Sites → Novo Site, crie cada unidade física ou lógica (ex.: Matriz SP, Filial RJ, Home Office). Configure fuso horário, sub-redes para cache P2P na LAN e janela de manutenção local.',
+              route: 'Console Web → Sites (/sites)',
+            },
+            {
+              title: '3. Estruture Departamentos, Campos Personalizados e Labels Automáticas',
+              description: 'Crie Departamentos para roteamento de chamados e Chat IA, Campos Personalizados para guardar metadados (ex.: patrimônio, centro de custo, saída de script coletor) e Labels Automáticas para taguear máquinas dinamicamente por OS, hardware ou software instalado.',
+              route: 'Departamentos (/tickets/departments) · Campos (/settings/custom-fields) · Labels (/automation/agent-labels)',
+            },
+            {
+              title: '4. Gere um Deploy Token e instale nos endpoints Windows',
+              description: 'Em Deploy → Novo Token, selecione Cliente, Site, validade e limite de usos (ou ilimitado para GPO/Intune). Copie o comando silencioso gerado para implantação em lote. Em máquinas com TPM 2.0, o agente é protegido por identidade de hardware (EK + SMBIOS UUID) e suporta Zero-Touch Provisioning e Post-Format Recovery automático após formatação.',
+              route: 'Console Web → Deploy (/deploy)',
+            },
+            {
+              title: '5. Opere o parque na tela de Agentes',
+              description: 'Em Agentes, filtre por status (online/offline), cliente, site ou labels. Ao abrir um endpoint, você consulta inventário de hardware/software, sensores em tempo real, logs de execução, ações rápidas de manutenção, chat ao vivo com o usuário, console de debug e acesso remoto.',
+              route: 'Console Web → Agentes (/agents) · Logs (/logs)',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'automation-software',
+      navLabel: '7. Automação, Apps & Patches',
+      badge: 'Capítulo 07 · Automação & Software',
+      title: 'Como instalar/remover apps, criar tarefas de automação e gerenciar patches',
+      lead: 'Automatize o ciclo completo de software nos endpoints Windows usando Winget, Chocolatey, pacotes Custom corporativos, scripts PowerShell/Batch e políticas de Windows Update.',
+      blocks: [
+        {
+          type: 'table',
+          caption: 'Ações disponíveis em Tarefas de Automação (/automation/tasks)',
+          headers: ['Tipo de Ação', 'O que faz no endpoint', 'Origens / Recursos suportados'],
+          rows: [
+            ['InstallPackage (Instalar pacote)', 'Instala um aplicativo específico em modo silencioso no Windows (Sessão 0 SYSTEM ou contexto configurado).', 'Winget, Chocolatey ou Pacote Custom corporativo'],
+            ['UpdatePackage (Atualizar pacote)', 'Atualiza o aplicativo caso uma versão anterior já esteja instalada no dispositivo.', 'Winget, Chocolatey ou Pacote Custom'],
+            ['UpdateOrInstallPackage (Atualizar/Instalar)', 'Garante o estado desejado: instala se não existir ou atualiza se estiver desatualizado.', 'Winget, Chocolatey ou Pacote Custom'],
+            ['RemovePackage (Remover pacote)', 'Desinstala silenciosamente softwares não autorizados ou legados em toda a frota selecionada.', 'Winget, Chocolatey ou Pacote Custom'],
+            ['RunScript (Executar script)', 'Executa um script versionado da Biblioteca (/automation/scripts), podendo gravar saída em nota ou campo coletor.', 'PowerShell, Batch / CMD'],
+            ['CustomCommand (Comando personalizado)', 'Executa um comando pontual direto sem precisar cadastrar um script reutilizável.', 'Shell / CLI Windows'],
+          ],
+        },
+        {
+          type: 'steps',
+          title: 'Como cadastrar uma tarefa para instalar, atualizar ou remover apps',
+          items: [
+            {
+              title: '1. Abra Tarefas de Automação e escolha a ação',
+              description: 'Em Automação → Tarefas, clique em Nova Tarefa. Informe nome, descrição e selecione a ação desejada (ex.: Instalar pacote, Atualizar/Instalar ou Remover pacote) e a origem (Winget, Chocolatey ou Custom), escolhendo o pacote no seletor integrado.',
+              route: 'Console Web → Automação → Tarefas (/automation/tasks)',
+            },
+            {
+              title: '2. Defina Escopo e Segmentação por Tags',
+              description: 'Escolha o escopo de aplicação (Global, Cliente, Site ou Agente específico) e, se quiser refinar o alvo, preencha Tags Incluídas e Tags Excluídas (ex.: aplicar apenas na label "Financeiro" e excluir "Servidores").',
+              route: 'Modal de Tarefa → Escopo & Tags',
+            },
+            {
+              title: '3. Configure Gatilhos, Ordem e Janela de Manutenção',
+              description: 'Combine gatilhos: execução Imediata, Recorrente (com Assistente Cron visual), Ao fazer login do usuário ou No check-in do agente. Defina a ordem de execução (executionOrder) para encadear pré-requisitos e marque se a tarefa deve respeitar a Janela de Manutenção.',
+              route: 'Modal de Tarefa → Gatilhos & Agendamento',
+            },
+            {
+              title: '4. Ajuste Notificação ao Usuário e Processos em Aberto',
+              description: 'Escolha entre execução 100% Silenciosa ou aviso Toast (antes/depois) com opção de adiar (allowDefer), tempo limite do aviso e lista de processos a fechar controladamente antes da instalação/remoção (ex.: chrome.exe, outlook.exe).',
+              route: 'Modal de Tarefa → Experiência do Usuário',
+            },
+            {
+              title: '5. Monitore execuções e auditoria',
+              description: 'Acompanhe o status em tempo real (pendente, em execução, sucesso, erro ou adiado pelo usuário) em Operações e consulte a trilha completa de quem criou, alterou ou disparou cada tarefa em Auditoria.',
+              route: 'Operações (/automation/operations) · Auditoria (/automation/audit)',
+            },
+          ],
+        },
+        {
+          type: 'accordion',
+          title: 'Operação dos módulos complementares de Software & Patches',
+          items: [
+            {
+              summary: 'Biblioteca de Scripts & Saída para Campos Personalizados (/automation/scripts)',
+              paragraphs: [
+                'Cadastre scripts PowerShell ou Batch reutilizáveis com parâmetros e histórico de revisões. Ao vincular um script a uma tarefa, você pode habilitar a gravação do output na nota do agente ou diretamente em um Campo Personalizado coletor (ideal para auditar licenças, status de backup local ou chaves específicas).',
+              ],
+            },
+            {
+              summary: 'Loja Self-Service e Pacotes Customizados (/software/store · /software/inventory)',
+              paragraphs: [
+                'Em Software → Inventário Detalhado você visualiza todos os aplicativos instalados na frota e versões por endpoint. Em Software → Loja de Aplicativos, aprove pacotes (Winget, Chocolatey ou pacotes Custom privados com instalador enviado ao servidor e distribuído via P2P na LAN) para aparecerem na aba Loja do Discovery Agent, permitindo que o colaborador instale com 1 clique sem senha de administrador.',
+              ],
+            },
+            {
+              summary: 'Gestão de Windows Patches (/patches)',
+              paragraphs: [
+                'Use Patches → Visão Geral e Conformidade para medir o percentual da frota atualizada. Em Política (/patches/policy), defina aprovação automática por severidade (Crítico, Segurança, Drivers) e dias de carência/adiamento; em Aprovações (/patches/approvals) e Atualizações (/patches/updates), aprove, bloqueie ou dispare instalações fora da janela quando houver urgência de segurança.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'sensors-monitoring',
+      navLabel: '8. Sensores, Monitoramento & Relatórios',
+      badge: 'Capítulo 08 · Monitoramento Proativo',
+      title: 'Como funcionam os Sensores, como cadastrá-los e gerar Relatórios',
+      lead: 'Sensores transformam o Agent em um coletor contínuo de saúde, desempenho, serviços, rede e segurança — avaliando limiares localmente e disparando alertas ou Auto-Tickets antes da parada do usuário.',
+      blocks: [
+        {
+          type: 'paragraphs',
+          items: [
+            'Cada sensor definido no servidor é sincronizado com os Agents do escopo correspondente (Global, Cliente, Site ou Agente). O serviço Windows coleta as métricas no intervalo configurado, envia as leituras ao servidor (com retenção em série temporal e sparklines) e avalia os limiares de Atenção (Warning) e Crítico (Failing).',
+            'Os estados possíveis de um sensor são: OK (Passing), Atenção (Warning), Crítico (Failing), Sem dados (Unknown), Aguardando (Pending) e Sem dados recentes (Stale — quando o intervalo de coleta expira sem nova leitura, sem nunca mascarar um estado Crítico já existente).',
+          ],
+        },
+        {
+          type: 'table',
+          caption: 'Catálogo completo dos 19 tipos de sensores nativos e de script (/sensors)',
+          headers: ['Categoria', 'Tipos de Sensores disponíveis', 'Exemplos de uso operacional'],
+          rows: [
+            ['Sistema & Hardware', 'Espaço em disco (DiskSpace), CPU, Memória, Tempo ligado (Uptime), I/O de disco (DiskIo), Saúde do disco (SmartStatus)', 'Alertar quando C: passar de 85% / 95%, detectar disco com falha SMART iminente ou servidor sem reinício há > 45 dias.'],
+            ['Windows & Aplicações', 'Serviço do Windows (Service), Processo (Process), Taxa de eventos (EventLogRate)', 'Garantir que Spooler, SQL Server ou agente de backup estejam rodando; vigiar picos de erro no Event Viewer.'],
+            ['Rede & Conectividade', 'Ping (ICMP), Porta TCP (TcpPort), HTTP (probe), HTTP (throughput), Latência de DNS, Banda de rede', 'Testar se o ERP interno responde na porta 443/8443 a partir da filial, medir latência de DNS e perda de pacotes.'],
+            ['Segurança & Conformidade', 'Expiração de certificado (CertificateExpiry), Microsoft Defender (DefenderStatus), BitLocker', 'Verificar criptografia BitLocker ativa nos notebooks, proteção em tempo real do Defender e certificados perto do vencimento.'],
+            ['Personalizado', 'Script (métricas em múltiplos canais)', 'Executar script PowerShell que retorna valores numéricos ou booleanos (ex.: fila de impressão, tamanho de perfil, status de VPN).'],
+          ],
+        },
+        {
+          type: 'steps',
+          title: 'Passo a passo: como cadastrar e operar Sensores',
+          items: [
+            {
+              title: '1. Cadastre um Sensor Nativo',
+              description: 'Acesse Sensores → Gerenciar e clique em Novo Sensor. Escolha o tipo (ex.: Espaço em disco ou Serviço do Windows), defina o escopo (Global, Cliente, Site ou Agente), preencha o alvo (target, como "C:" ou "Spooler"), o intervalo de coleta e os limiares de Atenção e Crítico.',
+              route: 'Console Web → Sensores (/sensors)',
+            },
+            {
+              title: '2. Crie Sensores de Script para métricas específicas',
+              description: 'Para monitorar algo próprio do seu ambiente, selecione o tipo Script e abra o Editor de Sensor de Script. Escreva o script PowerShell que devolve um ou mais canais nomeados, defina unidade (%, MB, ms, booleano) e operador de comparação para cada limiar.',
+              route: 'Sensores → Editor de Script',
+            },
+            {
+              title: '3. Conecte Notificações e Regras de Auto-Ticket',
+              description: 'Em Notificações (/settings/notifications), configure webhooks, e-mail ou alertas internos. Em Suporte → Auto-Ticket (/tickets/auto-rules), defina regras para abrir um chamado automaticamente quando um sensor entrar em Crítico por N coletas consecutivas e encerrar/comentar quando voltar a OK.',
+              route: 'Notificações (/settings/notifications) · Auto-Ticket (/tickets/auto-rules)',
+            },
+            {
+              title: '4. Acompanhe a frota e gere Relatórios executivos',
+              description: 'Use a visão de Frota em Sensores para filtrar equipamentos em Atenção/Crítico com sparklines históricos. Em Relatórios, use templates prontos (saúde da frota, patches, inventário, SLA de chamados) ou crie modelos personalizados com agendamento automático por e-mail.',
+              route: 'Relatórios → Templates (/reports/templates) · Agendamentos (/reports/schedules)',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'servicedesk-kb',
+      navLabel: '9. Chamados, Service Board & Base de Conhecimento',
+      badge: 'Capítulo 09 · Service Desk & Conhecimento',
+      title: 'Como operar o atendimento de chamados, SLA e a Base de Conhecimento',
+      lead: 'O Service Desk do DiscoveryRMM une a fila de atendimento diretamente à telemetria do endpoint, ao chat ao vivo, ao acesso remoto e à Base de Conhecimento usada por técnicos e pelo Chat IA.',
+      blocks: [
+        {
+          type: 'steps',
+          title: 'Fluxo de operação do atendimento de chamados',
+          items: [
+            {
+              title: '1. Faça a triagem no Service Board e na lista/Kanban de Chamados',
+              description: 'Abra o Service Board (/service-board) para ter visão operacional unificada de fila, alertas e saúde dos clientes, ou acesse Suporte → Chamados (/tickets) em modo Lista ou Quadro Kanban. Filtre por departamento, prioridade, status, técnico responsável ou risco de SLA.',
+              route: 'Service Board (/service-board) · Chamados (/tickets)',
+            },
+            {
+              title: '2. Atenda com contexto total do dispositivo e Chat ao Vivo',
+              description: 'Dentro do chamado, visualize automaticamente o equipamento vinculado, últimos sensores, logs e inventário. Clique em Iniciar Chat ao Vivo para conversar em tempo real com o colaborador (com aviso de consentimento na tela do Windows e transcrição salva no chamado) ou inicie uma sessão de Acesso Remoto.',
+              route: 'Detalhe do Chamado → Chat ao Vivo / Acesso Remoto',
+            },
+            {
+              title: '3. Acelere respostas com Macros, Templates e Runbooks',
+              description: 'Use Macros (/tickets/macros) para aplicar respostas padronizadas + mudança de status + atribuição em um clique. Configure Templates de Chamado (/tickets/templates) para coleta estruturada na abertura e associe Runbooks para guiar técnicos N1/N2 durante incidentes recorrentes.',
+              route: 'Templates (/tickets/templates) · Macros (/tickets/macros)',
+            },
+            {
+              title: '4. Configure SLA, Calendários, Workflow Profiles e acompanhe CSAT',
+              description: 'Em SLA, Calendários e Perfis (/tickets/sla), defina metas de primeira resposta e resolução dentro do horário comercial de cada cliente. Ajuste estados e transições em Workflow Profiles (/settings/workflow-profiles) e monitore a avaliação dos usuários em Satisfação (CSAT) (/tickets/csat).',
+              route: 'SLA (/tickets/sla) · Workflow (/settings/workflow-profiles) · CSAT (/tickets/csat)',
+            },
+          ],
+        },
+        {
+          type: 'steps',
+          title: 'Como operar a Base de Conhecimento (/knowledge)',
+          items: [
+            {
+              title: '1. Crie artigos e organize subpáginas em árvore',
+              description: 'Acesse Suporte → Conhecimento (/knowledge) e crie manuais operacionais, procedimentos de solução e FAQs. Cada artigo suporta editor estruturado, anexos de imagens e subpáginas hierárquicas em árvore para documentações extensas.',
+              route: 'Console Web → Conhecimento (/knowledge)',
+            },
+            {
+              title: '2. Defina visibilidade e vincule a Runbooks e Chat IA',
+              description: 'Separe artigos internos (visíveis apenas para técnicos e vinculados como Runbooks em chamados) de artigos públicos/do colaborador (exibidos na aba Base de Conhecimento do Discovery Agent e utilizados para enriquecer as respostas do Chat IA de 1º nível).',
+              route: 'Editor de Artigo → Visibilidade & Categorias',
+            },
+          ],
+        },
+      ],
+    },
+    {
       id: 'modules',
-      navLabel: '6. Configuração por Módulo',
-      badge: 'Capítulo 06 · Configuração',
+      navLabel: '10. Configuração por Módulo',
+      badge: 'Capítulo 10 · Configuração',
       title: 'Como configurar cada módulo e usar herança de escopo',
       lead: 'O DiscoveryRMM usa herança hierárquica Server → Client → Site (com visualização da configuração efetiva e proveniência). Veja como configurar cada área.',
       blocks: [
@@ -451,8 +679,8 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
     },
     {
       id: 'integrations',
-      navLabel: '7. Integração entre Módulos',
-      badge: 'Capítulo 07 · Integrações Internas',
+      navLabel: '11. Integração entre Módulos',
+      badge: 'Capítulo 11 · Integrações Internas',
       title: 'Como os módulos internos se integram entre si',
       lead: 'O valor do DiscoveryRMM está na automação entre domínios: um alerta de sensor vira chamado, aciona a IA com a Base de Conhecimento, roda um script no agent e fecha o ticket automaticamente.',
       blocks: [
@@ -492,8 +720,8 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
     },
     {
       id: 'guides',
-      navLabel: '8. Guias Ponta a Ponta (Uso)',
-      badge: 'Capítulo 08 · Manuais de Uso',
+      navLabel: '12. Guias Ponta a Ponta (Uso)',
+      badge: 'Capítulo 12 · Manuais de Uso',
       title: 'Guias práticos: Instalador, Operador e Usuário Final',
       lead: 'Roteiros passo a passo para quem implanta a plataforma, quem opera a TI no dia a dia e quem utiliza o Discovery Agent na estação de trabalho.',
       blocks: [

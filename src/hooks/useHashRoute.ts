@@ -9,6 +9,10 @@ export type DocSectionId =
   | 'server-install'
   | 'agent'
   | 'interface'
+  | 'clients-deploy'
+  | 'automation-software'
+  | 'sensors-monitoring'
+  | 'servicedesk-kb'
   | 'modules'
   | 'integrations'
   | 'guides';
@@ -19,6 +23,10 @@ export const DOC_SECTION_IDS: readonly DocSectionId[] = [
   'server-install',
   'agent',
   'interface',
+  'clients-deploy',
+  'automation-software',
+  'sensors-monitoring',
+  'servicedesk-kb',
   'modules',
   'integrations',
   'guides',
