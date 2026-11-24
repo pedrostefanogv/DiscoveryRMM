@@ -306,7 +306,9 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
             ['Processos & Registro', 'sysctrl e winregistry com guard fail-closed', 'SAM/SECURITY/LSA bloqueados até para leitura; Run/RunOnce bloqueados para escrita'],
             ['Proxy LAN HTTP/WS', 'core/netproxy sobre NATS', 'Allowlist fail-closed quando vazia, bloqueio SSRF e DNS único anti-TOCTOU'],
             ['Túnel RDP / WebRDP', 'session_tunnel multiplexado (64 streams, codec 6B) + preflight TermService', 'Porta efêmera travada em 127.0.0.1; respeita direito NoRdp=128'],
-            ['Automação', 'PowerShell, CMD e PSADT com janelas de manutenção IANA', 'Campos customizados via env MDZ_CUSTOM_FIELDS (sem interpolação na linha de comando)'],
+            ['Automação', 'PowerShell, CMD e pacotes customizados com janelas de manutenção IANA', 'Campos customizados via env MDZ_CUSTOM_FIELDS (sem interpolação na linha de comando)'],
+            ['Zero-Touch & Recovery', 'Unattend / GPO / Intune + reassociação por TPM 2.0 EK e SMBIOS UUID', 'Ao formatar o Windows, o endpoint recupera automaticamente vínculo, políticas e apps'],
+            ['Transparência Remota', 'Avisos interativos de Chat/Acesso Remoto + banner flutuante ativo', 'Consentimento com contagem regressiva e banner excluído da captura (WDA_EXCLUDEFROMCAPTURE)'],
             ['Rede P2P', 'go-libp2p + descoberta local mDNS/UDP por Site', 'Compartilha apenas artefatos verificados por SHA-256 para economizar banda WAN'],
           ],
         },
@@ -430,7 +432,7 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
             {
               summary: '6. Patches, App Store, Automação e Campos Customizados',
               paragraphs: [
-                'Defina janelas de manutenção (fuso IANA) e aprovações automáticas de patches em /patches/policy. Configure fontes Winget/Chocolatey e pacotes PSADT em /software/store.',
+                'Defina janelas de manutenção (fuso IANA) e aprovações automáticas de patches em /patches/policy. Configure fontes Winget/Chocolatey e pacotes customizados em /software/store.',
                 'Campos customizados (/settings/custom-fields) marcados como segredo nunca são expostos na variável de ambiente MDZ_CUSTOM_FIELDS durante a execução de scripts.',
               ],
               route: '/patches/policy',

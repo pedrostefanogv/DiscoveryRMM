@@ -241,6 +241,19 @@ function Features() {
           })}
         </div>
 
+        <div className="features__highlights-block">
+          <h3 className="features__highlights-title">{text.features.highlightsTitle}</h3>
+          <div className="features__highlights">
+            {text.features.highlights.map((item) => (
+              <article key={item.title} className="features__highlight">
+                <span className="features__highlight-badge">{item.badge}</span>
+                <h4 className="features__highlight-title">{item.title}</h4>
+                <p className="features__highlight-desc">{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
         <div className="features__footer">
           <a href="#/docs/modules" className="features__docs-link">
             {text.features.docsCta}

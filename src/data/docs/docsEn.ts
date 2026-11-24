@@ -306,7 +306,9 @@ echo "NewStrongPass@2026" | dotnet run --project src/Discovery.Api -- --recover-
             ['Processes & Registry', 'sysctrl and winregistry with fail-closed guards', 'SAM/SECURITY/LSA blocked even for read; Run/RunOnce blocked for writes'],
             ['LAN Proxy HTTP/WS', 'core/netproxy over NATS', 'Fail-closed allowlist when empty, SSRF protection, and anti-TOCTOU DNS resolution'],
             ['RDP / WebRDP Tunnel', 'Multiplexed session_tunnel (64 streams, 6B codec) + TermService preflight', 'Ephemeral port bound strictly to 127.0.0.1; enforces NoRdp=128 right'],
-            ['Automation', 'PowerShell, CMD, and PSADT with IANA maintenance windows', 'Custom fields passed via MDZ_CUSTOM_FIELDS env (no command-line interpolation)'],
+            ['Automation', 'PowerShell, CMD, and custom packages with IANA maintenance windows', 'Custom fields passed via MDZ_CUSTOM_FIELDS env (no command-line interpolation)'],
+            ['Zero-Touch & Recovery', 'Unattend / GPO / Intune + hardware rebinding via TPM 2.0 EK & SMBIOS UUID', 'After Windows reinstallation, the endpoint automatically restores its record, policies, and apps'],
+            ['Remote Transparency', 'Interactive Chat/Remote Access consent prompts + floating active banner', 'Countdown-guarded approval and always-visible top banner excluded from capture (WDA_EXCLUDEFROMCAPTURE)'],
             ['P2P Mesh', 'go-libp2p + mDNS/UDP per-Site local discovery', 'Relays only SHA-256 verified artifacts to save WAN bandwidth'],
           ],
         },
@@ -430,7 +432,7 @@ echo "NewStrongPass@2026" | dotnet run --project src/Discovery.Api -- --recover-
             {
               summary: '6. Patches, App Store, Automation & Custom Fields',
               paragraphs: [
-                'Set IANA maintenance windows and patch approval policies at /patches/policy. Manage Winget/Chocolatey catalogs and PSADT packages at /software/store.',
+                'Set IANA maintenance windows and patch approval policies at /patches/policy. Manage Winget/Chocolatey catalogs and custom packages at /software/store.',
                 'Custom fields (/settings/custom-fields) flagged as secret are excluded from the MDZ_CUSTOM_FIELDS environment variable during script execution.',
               ],
               route: '/patches/policy',
