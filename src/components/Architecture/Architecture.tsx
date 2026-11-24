@@ -7,7 +7,7 @@ const COMPONENT_VISUALS = [
     color: '#10b981',
     gradient: 'linear-gradient(135deg, #10b981, #059669)',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
         <line x1="8" y1="21" x2="16" y2="21"/>
         <line x1="12" y1="17" x2="12" y2="21"/>
@@ -18,7 +18,7 @@ const COMPONENT_VISUALS = [
     color: '#3b82f6',
     gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <ellipse cx="12" cy="5" rx="9" ry="3"/>
         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
@@ -29,7 +29,7 @@ const COMPONENT_VISUALS = [
     color: '#06b6d4',
     gradient: 'linear-gradient(135deg, #06b6d4, #0891b2)',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
         <line x1="2" y1="8" x2="22" y2="8"/>
         <line x1="8" y1="21" x2="16" y2="21"/>
@@ -41,7 +41,7 @@ const COMPONENT_VISUALS = [
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <rect x="2" y="2" width="20" height="20" rx="2" ry="2"/>
         <line x1="2" y1="8" x2="22" y2="8"/>
         <line x1="8" y1="2" x2="8" y2="8"/>
@@ -90,8 +90,8 @@ function Architecture() {
                 </div>
                 <span className="architecture__flow-label">{component.name}</span>
                 {index < text.architecture.components.length - 1 && (
-                  <span className="architecture__flow-connector">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={visual.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <span className="architecture__flow-connector" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={visual.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                       <polyline points="9 18 15 12 9 6"/>
                     </svg>
                   </span>
@@ -110,7 +110,7 @@ function Architecture() {
             return (
             <article key={component.name} className="architecture__card">
               <div className="architecture__card-top">
-                <div className="architecture__card-icon-wrap" style={{ background: `${visual.color}18`, color: visual.color }}>
+                <div className="architecture__card-icon-wrap" style={{ background: `${visual.color}18`, color: visual.color }} aria-hidden="true">
                   {visual.icon}
                 </div>
                 <h3 className="architecture__card-title">{component.name}</h3>

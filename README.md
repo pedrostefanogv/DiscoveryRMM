@@ -2,65 +2,81 @@
 
 Landing page oficial do projeto DiscoveryRMM, desenvolvida em React + TypeScript + Vite e publicada no GitHub Pages.
 
-O DiscoveryRMM e um projeto open source de Remote Monitoring & Management voltado para operacoes de TI, com foco em inventario, automacao, observabilidade, atendimento com IA e gerenciamento remoto de endpoints.
+O DiscoveryRMM é um projeto open source de Remote Monitoring & Management voltado para operações de TI, com foco em inventário de endpoints Windows, automação, observabilidade, acesso remoto (tela WebP/JPEG, ConPTY, arquivos binários, proxy LAN HTTP/TCP e RDP/WebRDP), atendimento com IA e mensageria NATS/JetStream + REST/SSE.
 
 ## Sobre o projeto
 
-Esta aplicacao apresenta o produto DiscoveryRMM de forma institucional e tecnica, reunindo:
+Esta aplicação apresenta o produto DiscoveryRMM de forma institucional e técnica, reunindo:
 
 - proposta de valor do projeto
 - funcionalidades principais
-- visao de arquitetura
-- stack tecnologica
-- canais de release
-- orientacoes iniciais de instalacao
-- links para o servidor principal, agente e documentacao
+- vitrine visual (`Showcase`) com capturas reais do Console Web e do Agent Windows
+- visão de arquitetura e stack tecnológica (.NET 10, PostgreSQL, NATS JetStream, Go/Wails v3, React 19)
+- canais de release e orientações iniciais de instalação (Linux Server)
+- páginas legais bilíngues (`#/privacy` — LGPD e `#/terms` — Termos de Uso)
+- links para o servidor principal, agente e documentação
 
-## O que existe neste repositorio
+## O que existe neste repositório
 
-Este repositorio contem o frontend estatico da landing page. O produto principal esta distribuido em outros repositorios do ecossistema DiscoveryRMM.
+Este repositório contém o frontend estático da landing page. O produto principal está distribuído em outros repositórios do ecossistema DiscoveryRMM.
 
-Links uteis:
+Links úteis:
 
 - Servidor/API: https://github.com/pedrostefanogv/DiscoveryRMM_API
 - Agent Windows: https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases
-- Guia de configuracao: https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md
+- Guia de configuração: https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/docs/CONFIGURATION.md
 
 ## Stack utilizada
 
 - React 19
-- TypeScript 7
+- TypeScript 7 (`noUnusedLocals` e `noUnusedParameters` habilitados)
 - Vite 8 (com `@vitejs/plugin-react`)
 - CSS modular por componente (sem framework de UI)
-- i18n próprio em `src/i18n.tsx` (PT-BR / EN-US)
+- i18n próprio em `src/i18n.tsx` (PT-BR / EN-US) e roteamento por hash em `src/hooks/useHashRoute.ts`
 
-## Secoes da landing page
+## Seções da landing page
 
-- Hero com posicionamento do projeto, terminal do bootstrap e aviso de status
-- Grade com 12 modulos/capacidades do ecossistema
-- Secao de arquitetura com fluxo em quatro camadas, stack tecnologica e canais de release
-- Quickstart com o one-liner Linux, canais/atualizacao e pre-requisitos do host
-- Secao explicativa do fluxo operacional
-- Bloco de estatisticas e CTA final
+- Hero com posicionamento do projeto, terminal do bootstrap Linux e aviso de status
+- Grade com 12 módulos/capacidades do ecossistema
+- Showcase interativo com abas (`role="tablist"`), capturas reais em `public/screenshots/` e lightbox modal nativo (`<dialog>`)
+- Seção de arquitetura com fluxo em quatro camadas, stack tecnológica e canais de release
+- Quickstart com o one-liner Linux, canais/atualização e pré-requisitos do host
+- Seção explicativa do fluxo operacional
+- Bloco de estatísticas, CTA final e rodapé com links para Política de Privacidade (LGPD) e Termos de Uso
 
-Toda a pagina e bilingue (PT-BR / EN-US), com deteccao do idioma do navegador, troca manual pelo
-navbar e persistencia da escolha em `localStorage`. O titulo e a meta description do documento sao
-atualizados junto com o idioma.
+Toda a página é bilíngue (PT-BR / EN-US), com detecção do idioma do navegador, troca manual pelo
+navbar (com bandeiras SVG inline) e persistência da escolha em `localStorage`. O título e a meta description do documento são
+atualizados junto com o idioma e a rota ativa.
 
 ## Estrutura do projeto
 
 ```text
 .
-├── index.html
+├── .github/workflows
+│   ├── ci.yml            <- verificação de PRs (tsc --noEmit, npm test e npm run build)
+│   └── deploy.yml        <- publicação automática no GitHub Pages
+├── LICENSE               <- licença MIT
+├── index.html            <- SEO, Open Graph (1200x630), hreflang e JSON-LD
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
+├── public
+│   ├── apple-touch-icon.png
+│   ├── favicon-32x32.png
+│   ├── og-image.png      <- card Open Graph 1200x630
+│   ├── robots.txt
+│   ├── sitemap.xml
+│   └── screenshots       <- capturas reais (1280x800) do Console Web e Agent Windows
+├── tests
+│   └── e2e               <- suíte E2E (helpers.ts + Tiers 1–4 para landing F24 e contratos F25)
 └── src
     ├── App.tsx
     ├── App.css
-    ├── i18n.tsx          <- conteudo PT-BR / EN-US + provider de idioma
+    ├── i18n.tsx          <- conteúdo PT-BR / EN-US + provider de idioma
     ├── index.tsx
     ├── vite-env.d.ts
+    ├── hooks
+    │   └── useHashRoute.ts
     └── components
         ├── Architecture
         ├── CTABanner
@@ -68,19 +84,21 @@ atualizados junto com o idioma.
         ├── Footer
         ├── Hero
         ├── HowItWorks
+        ├── LegalPage
         ├── Navbar
         ├── Quickstart
+        ├── Showcase
         └── Stats
 ```
 
 ## Como executar localmente
 
-### Pre-requisitos
+### Pré-requisitos
 
-- Node.js 20 ou superior
+- Node.js 22+ (`22.6+` para `--experimental-strip-types` ou `22.18+` para execução nativa sem flag nos testes TypeScript via `node --test`, compatível com Vite 8)
 - npm 10 ou superior
 
-### Instalar dependencias
+### Instalar dependências
 
 ```bash
 npm install
@@ -92,7 +110,13 @@ npm install
 npm run dev
 ```
 
-### Gerar build de producao
+### Executar testes
+
+```bash
+npm test
+```
+
+### Gerar build de produção
 
 ```bash
 npm run build
@@ -104,33 +128,30 @@ npm run build
 npm run preview
 ```
 
-## Scripts disponiveis
+## Scripts disponíveis
 
 - `npm run dev`: inicia o servidor de desenvolvimento com Vite
 - `npm run build`: compila TypeScript e gera a pasta `dist`
-- `npm run preview`: sobe a build gerada localmente para validacao
+- `npm run preview`: sobe a build gerada localmente para validação
+- `npm test`: executa a suíte E2E standalone da landing page (`^F24-` em `tests/e2e/`) com `node --experimental-strip-types --test`
+- `npm run test:e2e`: executa todos os 6 arquivos da suíte E2E em `tests/e2e/` (F24 + validações cross-repo F25 no workspace completo)
 
-## Publicacao
+## Publicação e CI
 
-O deploy e feito automaticamente via GitHub Actions sempre que ha push na branch `main`.
+- O workflow `.github/workflows/ci.yml` executa `npm ci`, `npx tsc --noEmit`, `npm test` e `npm run build` em pull requests para `main` e pushes em outras branches.
+- O workflow `.github/workflows/deploy.yml` publica automaticamente o conteúdo da pasta `dist` no GitHub Pages a cada push na branch `main` (Node 22).
 
-Fluxo atual:
+Este projeto usa o base path `/DiscoveryRMM/` em [vite.config.ts](vite.config.ts), o que é importante para funcionar corretamente no GitHub Pages.
 
-1. instala dependencias com `npm ci`
-2. executa `npm run build`
-3. publica o conteudo da pasta `dist` no GitHub Pages
+## Observações
 
-Este projeto usa o base path `/DiscoveryRMM/` em [vite.config.ts](vite.config.ts), o que e importante para funcionar corretamente no GitHub Pages.
+- A pasta `dist` contém a build gerada para publicação.
+- O layout foi organizado em componentes independentes para facilitar manutenção e evolução da landing page.
+- O conteudo textual fica centralizado em `src/i18n.tsx`; ao adicionar um item em `text.features.items`, adicione também um visual correspondente em `src/components/Features/Features.tsx`.
+- As fontes (Inter / JetBrains Mono) são carregadas por `<link>` no `index.html` com `preconnect`, evitando `@import` bloqueante no CSS.
+- Meta tags de SEO/Open Graph, JSON-LD (`WebSite` + `SoftwareApplication`) e o `<noscript>` ficam no `index.html`.
+- O conteúdo do site reflete o estado atual do ecossistema DiscoveryRMM e pode evoluir junto com o projeto principal.
 
-## Observacoes
+## Licença
 
-- A pasta `dist` contem a build gerada para publicacao.
-- O layout foi organizado em componentes independentes para facilitar manutencao e evolucao da landing page.
-- O conteudo textual fica centralizado em `src/i18n.tsx`; ao adicionar um item em `text.features.items`, adicione tambem um visual correspondente em `src/components/Features/Features.tsx`.
-- As fontes (Inter / JetBrains Mono) sao carregadas por `<link>` no `index.html` com `preconnect`, evitando `@import` bloqueante no CSS.
-- Meta tags de SEO/Open Graph e o `<noscript>` ficam no `index.html`.
-- O conteudo do site reflete o estado atual do ecossistema DiscoveryRMM e pode evoluir junto com o projeto principal.
-
-## Licenca
-
-O site apresenta o DiscoveryRMM como projeto open source sob licenca MIT. Se desejar, vale manter o arquivo de licenca do repositorio alinhado com essa informacao.
+Distribuído sob a licença [MIT](LICENSE).

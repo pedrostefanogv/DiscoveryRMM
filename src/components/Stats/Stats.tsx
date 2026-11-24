@@ -11,7 +11,7 @@ function Stats() {
         <div className="stats__grid">
           {text.stats.items.map((stat) => (
             <div key={stat.label} className="stats__item">
-              <span className="stats__icon">{stat.icon}</span>
+              <span className="stats__icon" aria-hidden="true">{stat.icon}</span>
               <span className="stats__value">
                 {stat.value}
               </span>

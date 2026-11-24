@@ -5,9 +5,23 @@ import { useI18n } from '../../i18n';
 
 type CopyState = 'idle' | 'copied' | 'error';
 
+const CHANNEL_COMMANDS: Record<string, (base: string) => string> = {
+  'DISCOVERY_RELEASE_CHANNEL=lts': (base) => `DISCOVERY_RELEASE_CHANNEL=lts ${base}`,
+  'DISCOVERY_RELEASE_CHANNEL=beta': (base) => `DISCOVERY_RELEASE_CHANNEL=beta ${base}`,
+  'DISCOVERY_RELEASE_CHANNEL=dev': (base) => `DISCOVERY_RELEASE_CHANNEL=dev ${base}`,
+  '--branch release': (base) => `${base} -- --branch release`,
+  'install_discovery_server.sh --mode update': () => './scripts/linux/install_discovery_server.sh --mode update',
+};
+
 function Quickstart() {
   const { text } = useI18n();
   const [copyState, setCopyState] = useState<CopyState>('idle');
+  const [selectedChannel, setSelectedChannel] = useState<string | null>(null);
+
+  const activeCommand =
+    selectedChannel && CHANNEL_COMMANDS[selectedChannel]
+      ? CHANNEL_COMMANDS[selectedChannel](text.quickstart.command)
+      : text.quickstart.command;
 
   useEffect(() => {
     if (copyState === 'idle') {
@@ -21,10 +35,10 @@ function Quickstart() {
   const handleCopy = async () => {
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text.quickstart.command);
+        await navigator.clipboard.writeText(activeCommand);
       } else {
         const textarea = document.createElement('textarea');
-        textarea.value = text.quickstart.command;
+        textarea.value = activeCommand;
         textarea.setAttribute('readonly', '');
         textarea.style.position = 'fixed';
         textarea.style.opacity = '0';
@@ -87,9 +101,9 @@ function Quickstart() {
 
           <div className="quickstart__bootstrap-terminal">
             <div className="quickstart__bootstrap-header">
-              <span className="quickstart__terminal-dot quickstart__terminal-dot--red" />
-              <span className="quickstart__terminal-dot quickstart__terminal-dot--yellow" />
-              <span className="quickstart__terminal-dot quickstart__terminal-dot--green" />
+              <span className="quickstart__terminal-dot quickstart__terminal-dot--red" aria-hidden="true" />
+              <span className="quickstart__terminal-dot quickstart__terminal-dot--yellow" aria-hidden="true" />
+              <span className="quickstart__terminal-dot quickstart__terminal-dot--green" aria-hidden="true" />
               <span className="quickstart__terminal-label">{text.quickstart.terminalLabel}</span>
               <button
                 type="button"
@@ -120,7 +134,7 @@ function Quickstart() {
               <div className="quickstart__terminal-line">
                 <span className="quickstart__terminal-prompt" aria-hidden="true">$</span>
                 <code className="quickstart__terminal-cmd">
-                  {text.quickstart.command}
+                  {activeCommand}
                 </code>
               </div>
             </div>
@@ -130,11 +144,24 @@ function Quickstart() {
           </div>
 
           <div className="quickstart__bootstrap-examples">
-            <span className="quickstart__bootstrap-label">{text.quickstart.channelsLabel}</span>
+            <span className="quickstart__bootstrap-label">
+              {text.quickstart.channelsLabel} {text.quickstart.channelSelectedHint}
+            </span>
             <div className="quickstart__bootstrap-chips">
-              {text.quickstart.channels.map((channel) => (
-                <code key={channel}>{channel}</code>
-              ))}
+              {text.quickstart.channels.map((channel) => {
+                const isActive = selectedChannel === channel;
+                return (
+                  <button
+                    key={channel}
+                    type="button"
+                    className={`quickstart__chip-btn${isActive ? ' quickstart__chip-btn--active' : ''}`}
+                    aria-pressed={isActive}
+                    onClick={() => setSelectedChannel(isActive ? null : channel)}
+                  >
+                    <code>{channel}</code>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -145,11 +172,19 @@ function Quickstart() {
           <div className="quickstart__prereqs-grid">
             {text.quickstart.prerequisites.map((pr) => (
               <div key={pr.name} className="quickstart__prereq">
-                <span className="quickstart__prereq-icon">{pr.icon}</span>
+                <span className="quickstart__prereq-icon" aria-hidden="true">{pr.icon}</span>
                 <span className="quickstart__prereq-name">{pr.name}</span>
                 {'extra' in pr ? <span className="quickstart__prereq-extra">{pr.extra}</span> : null}
               </div>
             ))}
+          </div>
+          <div className="quickstart__docs-bar">
+            <a href="#/docs/server-install" className="quickstart__docs-link">
+              {text.quickstart.docsInstallLink} →
+            </a>
+            <a href="#/docs/requirements" className="quickstart__docs-link">
+              {text.quickstart.docsRequirementsLink} →
+            </a>
           </div>
         </div>
       </div>

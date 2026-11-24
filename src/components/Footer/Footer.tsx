@@ -7,10 +7,10 @@ const BRAND_ICON_SRC = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
 const PROJECT_LINKS = [
   'https://github.com/pedrostefanogv/DiscoveryRMM_API',
   'https://github.com/pedrostefanogv/DiscoveryRMM_Agent/releases',
-  'https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/CONFIGURATION.md',
+  'https://github.com/pedrostefanogv/DiscoveryRMM_API/blob/release/docs/CONFIGURATION.md',
 ];
 
-const RESOURCE_LINKS = ['#features', '#architecture', '#quickstart', '#how-it-works'];
+const RESOURCE_LINKS = ['#features', '#showcase', '#architecture', '#quickstart', '#how-it-works'];
 
 const FOOTER_CHANNEL_ORDER = ['dev', 'beta', 'release', 'lts'] as const;
 
@@ -31,7 +31,7 @@ function Footer() {
           <div className="footer__brand">
             <a href="#top" className="footer__logo">
               <span className="footer__logo-icon">
-                <img src={BRAND_ICON_SRC} alt="DiscoveryRMM" width={28} height={28} className="footer__logo-image" />
+                <img src={BRAND_ICON_SRC} alt="" width={28} height={28} className="footer__logo-image" />
               </span>
               <span className="footer__logo-text">
                 Discovery<span className="footer__logo-accent">RMM</span>
@@ -50,6 +50,9 @@ function Footer() {
                   <a href={PROJECT_LINKS[index]} target="_blank" rel="noopener noreferrer">{label}</a>
                 </li>
               ))}
+              <li>
+                <a href="#/docs">{text.footer.docsLink}</a>
+              </li>
             </ul>
           </div>
 
@@ -76,6 +79,11 @@ function Footer() {
           <p className="footer__copy">
             &copy; {new Date().getFullYear()} DiscoveryRMM. {text.footer.copyright}
           </p>
+          <nav className="footer__legal" aria-label={text.footer.legalNavLabel}>
+            <a href="#/privacy">{text.footer.privacyLink}</a>
+            <span className="footer__legal-sep" aria-hidden="true">·</span>
+            <a href="#/terms">{text.footer.termsLink}</a>
+          </nav>
           <p className="footer__author">
             {text.footer.authorPrefix}{' '}
             <a href="https://github.com/pedrostefanogv" target="_blank" rel="noopener noreferrer">

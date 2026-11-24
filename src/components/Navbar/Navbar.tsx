@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import './Navbar.css';
 import { useI18n } from '../../i18n';
+import { LanguageFlag } from './LanguageFlag';
 
 const BRAND_ICON_SRC = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
 
@@ -8,9 +9,15 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
-  const { language, setLanguage, text, languageOptions } = useI18n();
+  const [activeHash, setActiveHash] = useState<string>('');
+  const [isMobileViewport, setIsMobileViewport] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 900px)').matches,
+  );
+  const { language, setLanguage, text, languageOptions, route } = useI18n();
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const languageTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const hamburgerRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLUListElement | null>(null);
   const activeLanguageOption = languageOptions.find((option) => option.code === language) ?? languageOptions[0];
 
   useEffect(() => {
@@ -20,15 +27,96 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Menu mobile: fecha com Escape, bloqueia o scroll do fundo e libera no desktop.
+  // Scrollspy fallback + aria-current sync para seções da página inicial.
+  useEffect(() => {
+    if (route !== 'home' || typeof IntersectionObserver === 'undefined') {
+      setActiveHash('');
+      return undefined;
+    }
+
+    const sectionIds = ['features', 'showcase', 'architecture', 'quickstart', 'how-it-works'];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (!sections.length) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveHash(`#${entry.target.id}`);
+          }
+        }
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [route]);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 900px)');
+    const handleViewportChange = (event: MediaQueryListEvent) => {
+      setIsMobileViewport(event.matches);
+      if (!event.matches) {
+        setMobileOpen(false);
+      }
+    };
+
+    setIsMobileViewport(mobileQuery.matches);
+    mobileQuery.addEventListener('change', handleViewportChange);
+    return () => mobileQuery.removeEventListener('change', handleViewportChange);
+  }, []);
+
+  // Menu mobile: foca primeiro item ao abrir, prende Tab, fecha com Escape e devolve foco.
   useEffect(() => {
     if (!mobileOpen) {
       return undefined;
     }
 
+    const focusFrame = window.requestAnimationFrame(() => {
+      const firstLink = menuRef.current?.querySelector<HTMLElement>('a[href], button:not([disabled])');
+      firstLink?.focus();
+    });
+
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Escape') {
+        event.preventDefault();
         setMobileOpen(false);
+        hamburgerRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const menuItems = Array.from(
+        menuRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? [],
+      );
+      const focusRing: HTMLElement[] = hamburgerRef.current
+        ? [...menuItems, hamburgerRef.current]
+        : menuItems;
+
+      if (!focusRing.length) {
+        return;
+      }
+
+      const activeElement = document.activeElement as HTMLElement | null;
+      const currentIndex = activeElement ? focusRing.indexOf(activeElement) : -1;
+
+      if (event.shiftKey) {
+        event.preventDefault();
+        const prevIndex = currentIndex <= 0 ? focusRing.length - 1 : currentIndex - 1;
+        focusRing[prevIndex].focus();
+      } else {
+        event.preventDefault();
+        const nextIndex = currentIndex === -1 || currentIndex >= focusRing.length - 1 ? 0 : currentIndex + 1;
+        focusRing[nextIndex].focus();
       }
     };
 
@@ -36,18 +124,10 @@ function Navbar() {
     document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', handleKeyDown);
 
-    const desktopQuery = window.matchMedia('(min-width: 901px)');
-    const handleDesktop = () => {
-      if (desktopQuery.matches) {
-        setMobileOpen(false);
-      }
-    };
-    desktopQuery.addEventListener('change', handleDesktop);
-
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', handleKeyDown);
-      desktopQuery.removeEventListener('change', handleDesktop);
     };
   }, [mobileOpen]);
 
@@ -65,6 +145,7 @@ function Navbar() {
 
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Escape') {
+        event.preventDefault();
         setLanguageMenuOpen(false);
         languageTriggerRef.current?.focus();
       }
@@ -133,8 +214,10 @@ function Navbar() {
     setLanguageMenuOpen(false);
   };
 
+  const isDrawerHidden = isMobileViewport && !mobileOpen;
+
   return (
-    <nav className="navbar" aria-label="Principal">
+    <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`} aria-label={text.navbar.navAriaLabel}>
       <div className="navbar__inner">
         <a href="#top" className="navbar__logo" onClick={closeMenus}>
           <span className="navbar__logo-icon">
@@ -148,20 +231,38 @@ function Navbar() {
         <div className="navbar__right">
           <ul
             id="navbar-menu"
+            ref={menuRef}
             className={`navbar__links${mobileOpen ? ' navbar__links--open' : ''}`}
+            inert={isDrawerHidden ? true : undefined}
+            aria-hidden={isDrawerHidden ? true : undefined}
           >
-            {text.navbar.links.map((link) => (
-              <li key={`${link.href}-${link.label}`}>
-                <a
-                  href={link.href}
-                  className="navbar__link"
-                  {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  onClick={closeMenus}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            {text.navbar.links.map((link) => {
+              const isExternal = 'external' in link && link.external;
+              const isActive = route === 'home' && !isExternal && activeHash === link.href;
+              return (
+                <li key={`${link.href}-${link.label}`}>
+                  <a
+                    href={link.href}
+                    className={`navbar__link${isActive ? ' navbar__link--active' : ''}`}
+                    aria-current={isActive ? 'true' : undefined}
+                    {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    onClick={closeMenus}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+            <li>
+              <a
+                href="#/docs"
+                className={`navbar__link${route === 'docs' ? ' navbar__link--active' : ''}`}
+                aria-current={route === 'docs' ? 'page' : undefined}
+                onClick={closeMenus}
+              >
+                {text.navbar.docsLink}
+              </a>
+            </li>
             <li>
               <a href="#cta" className="navbar__cta-btn" onClick={closeMenus}>
                 {text.navbar.cta}
@@ -174,10 +275,14 @@ function Navbar() {
               type="button"
               ref={languageTriggerRef}
               className="navbar__language-trigger"
-              onClick={() => setLanguageMenuOpen((current) => !current)}
+              onClick={() => {
+                setMobileOpen(false);
+                setLanguageMenuOpen((current) => !current);
+              }}
               onKeyDown={(event) => {
                 if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
                   event.preventDefault();
+                  setMobileOpen(false);
                   setLanguageMenuOpen(true);
                 }
               }}
@@ -186,7 +291,9 @@ function Navbar() {
               aria-label={text.navbar.languageSwitcherLabel}
               title={activeLanguageOption.label}
             >
-              <span className="navbar__language-flag" aria-hidden="true">{activeLanguageOption.flag}</span>
+              <span className="navbar__language-flag" aria-hidden="true">
+                <LanguageFlag language={activeLanguageOption.code} />
+              </span>
               <span className="navbar__language-code">{activeLanguageOption.code.slice(0, 2).toUpperCase()}</span>
               <svg className="navbar__language-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polyline points="6 9 12 15 18 9" />
@@ -214,7 +321,9 @@ function Navbar() {
                   aria-label={`${text.navbar.languageOptionLabel} ${option.label}`}
                   tabIndex={-1}
                 >
-                  <span className="navbar__language-flag" aria-hidden="true">{option.flag}</span>
+                  <span className="navbar__language-flag" aria-hidden="true">
+                    <LanguageFlag language={option.code} />
+                  </span>
                   <span className="navbar__language-option-label">{option.label}</span>
                   <span className="navbar__language-option-code">{option.code}</span>
                 </button>
@@ -223,6 +332,7 @@ function Navbar() {
           </div>
 
           <button
+            ref={hamburgerRef}
             type="button"
             className={`navbar__hamburger${mobileOpen ? ' navbar__hamburger--open' : ''}`}
             onClick={() => {
@@ -242,7 +352,10 @@ function Navbar() {
 
       <div
         className={`navbar__overlay${mobileOpen ? ' navbar__overlay--open' : ''}`}
-        onClick={() => setMobileOpen(false)}
+        onClick={() => {
+          setMobileOpen(false);
+          hamburgerRef.current?.focus();
+        }}
         aria-hidden="true"
       />
     </nav>

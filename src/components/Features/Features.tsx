@@ -1,6 +1,24 @@
 
+import { useState } from 'react';
 import './Features.css';
 import { useI18n } from '../../i18n';
+
+type FeatureCategory = 'security' | 'remote' | 'itsm' | 'automation';
+
+const FEATURE_CATEGORIES: readonly FeatureCategory[] = [
+  'security',   // 0: Autenticação Robusta
+  'remote',     // 1: Inventário Completo
+  'itsm',       // 2: Suporte com IA
+  'itsm',       // 3: Chamados & SLA
+  'itsm',       // 4: Auto-Tickets
+  'remote',     // 5: Acesso Remoto
+  'automation', // 6: Automação de Scripts
+  'automation', // 7: Distribuição P2P
+  'automation', // 8: App Store + Updates
+  'remote',     // 9: Relatórios & Auditoria
+  'itsm',       // 10: Base de Conhecimento & MCP
+  'security',   // 11: Multi-tenant & IAM
+];
 
 const FEATURE_VISUALS = [
   {
@@ -151,9 +169,21 @@ const COLOR_MAP: Record<string, string> = {
 
 function Features() {
   const { text } = useI18n();
+  const [activeFilter, setActiveFilter] = useState<'all' | FeatureCategory>('all');
+
+  const indexedFeatures = text.features.items.map((feature, index) => ({
+    feature,
+    index,
+    category: FEATURE_CATEGORIES[index] ?? 'remote',
+  }));
+
+  const visibleFeatures =
+    activeFilter === 'all'
+      ? indexedFeatures
+      : indexedFeatures.filter((item) => item.category === activeFilter);
 
   return (
-    <section id="features" className="features">
+    <section id="features" tabIndex={-1} className="features">
       <div className="features__inner">
         <div className="features__header">
           <span className="features__label">{text.features.label}</span>
@@ -168,8 +198,25 @@ function Features() {
           <span className="features__status">{text.features.statusBadge}</span>
         </div>
 
+        <div className="features__filters" role="group" aria-label={text.features.filterLabel}>
+          {text.features.filters.map((filter) => {
+            const isSelected = activeFilter === filter.id;
+            return (
+              <button
+                key={filter.id}
+                type="button"
+                className={`features__filter-btn${isSelected ? ' features__filter-btn--active' : ''}`}
+                aria-pressed={isSelected}
+                onClick={() => setActiveFilter(filter.id as 'all' | FeatureCategory)}
+              >
+                {filter.label}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="features__grid">
-          {text.features.items.map((feature, index) => {
+          {visibleFeatures.map(({ feature, index }) => {
             const visual = FEATURE_VISUALS[index % FEATURE_VISUALS.length];
             const accentColor = COLOR_MAP[visual.color] ?? COLOR_MAP.cyan;
 
@@ -192,6 +239,16 @@ function Features() {
             </article>
             );
           })}
+        </div>
+
+        <div className="features__footer">
+          <a href="#/docs/modules" className="features__docs-link">
+            {text.features.docsCta}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
         </div>
       </div>
     </section>
