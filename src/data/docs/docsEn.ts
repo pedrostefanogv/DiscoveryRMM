@@ -47,8 +47,8 @@ export const docsEn: DocsContent = {
               title: 'IT Operator / NOC',
               badge: 'Operations',
               description: 'Client/Site onboarding, Deploy Tokens, sensors, Auto-Tickets, PowerShell scripts, patches, and remote access.',
-              meta: 'Go to End-to-End Guides →',
-              href: '#/docs/guides',
+              meta: 'Go to Fleet Operations →',
+              href: '#/docs/clients-deploy',
             },
             {
               title: 'End User (Windows Endpoint)',

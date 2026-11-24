@@ -47,8 +47,8 @@ export const docsPt: DocsContent = {
               title: 'Quem vai operar (Técnico / NOC)',
               badge: 'Operação',
               description: 'Cadastro de Clientes/Sites, Deploy Tokens, sensores, Auto-Tickets, scripts PowerShell, patches e acesso remoto.',
-              meta: 'Ir para Guias Ponta a Ponta →',
-              href: '#/docs/guides',
+              meta: 'Ir para Operação do Parque →',
+              href: '#/docs/clients-deploy',
             },
             {
               title: 'Usuário final (Endpoint Windows)',

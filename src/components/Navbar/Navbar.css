@@ -24,6 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 28px;
 }
 
 .navbar__logo {
@@ -31,25 +32,30 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
   z-index: 1001;
 }
 
 .navbar__logo-icon {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .navbar__logo-image {
   display: block;
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 7px;
   object-fit: cover;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
 }
 
 .navbar__logo-text {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -67,6 +73,7 @@
   align-items: center;
   gap: 16px;
   margin-left: auto;
+  min-width: 0;
 }
 
 .navbar__links {
@@ -229,7 +236,7 @@
 }
 
 .navbar__link:hover,
-.navbar__link:is(:target-current, .navbar__link--active) {
+.navbar__link--active {
   color: var(--text-primary);
 }
 
@@ -246,7 +253,7 @@
 }
 
 .navbar__link:hover::after,
-.navbar__link:is(:target-current, .navbar__link--active)::after {
+.navbar__link--active::after {
   width: 100%;
 }
 
@@ -316,7 +323,15 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1180px) {
+  .navbar__inner {
+    gap: 18px;
+  }
+
+  .navbar__right {
+    gap: 12px;
+  }
+
   .navbar__links {
     gap: 16px;
   }
@@ -326,18 +341,28 @@
   }
 
   .navbar__cta-btn {
-    padding: 9px 16px;
-    font-size: 0.85rem;
+    padding: 8px 14px;
+    font-size: 0.84rem;
   }
 }
 
 @media (max-width: 1024px) {
+  .navbar__inner {
+    padding: 0 16px;
+    gap: 14px;
+  }
+
   .navbar__links {
-    gap: 20px;
+    gap: 12px;
   }
 
   .navbar__link {
-    font-size: 0.875rem;
+    font-size: 0.82rem;
+  }
+
+  .navbar__cta-btn {
+    padding: 7px 12px;
+    font-size: 0.82rem;
   }
 }
 

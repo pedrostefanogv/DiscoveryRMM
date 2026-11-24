@@ -63,6 +63,14 @@
   border-radius: var(--radius);
 }
 
+@media (min-width: 960px) {
+  .showcase__tablist {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: visible;
+  }
+}
+
 .showcase__tablist::-webkit-scrollbar {
   display: none;
 }
