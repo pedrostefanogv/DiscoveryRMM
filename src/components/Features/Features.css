@@ -260,3 +260,18 @@
     padding: 60px 16px;
   }
 }
+
+@media (min-width: 1600px) {
+  .features__desc {
+    max-width: 720px;
+  }
+
+  .features__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+
+  .features__highlights {
+    gap: 20px;
+  }
+}

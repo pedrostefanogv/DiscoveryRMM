@@ -342,3 +342,32 @@
     align-items: center;
   }
 }
+
+@media (min-width: 1600px) {
+  .hero__inner {
+    max-width: 1120px;
+  }
+
+  .hero__subtitle {
+    max-width: 760px;
+    font-size: 1.22rem;
+  }
+
+  .hero__pills {
+    max-width: 920px;
+  }
+
+  .hero__terminal {
+    max-width: 760px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .hero__inner {
+    max-width: 1240px;
+  }
+
+  .hero__terminal {
+    max-width: 840px;
+  }
+}

@@ -260,6 +260,23 @@ img {
   background: var(--bg-card-hover);
 }
 
+@media (min-width: 1600px) {
+  :root {
+    --max-width: 1440px;
+  }
+
+  body::before {
+    width: clamp(900px, 58vw, 1500px);
+    height: clamp(900px, 58vw, 1500px);
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --max-width: 1680px;
+  }
+}
+
 :root[data-theme="dark"] {
   --bg-primary: #0a0e14;
   --bg-secondary: #11161d;

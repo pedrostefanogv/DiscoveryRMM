@@ -835,3 +835,31 @@
   line-height: 1.5;
   color: var(--text-muted);
 }
+
+@media (min-width: 1600px) {
+  .docs__layout {
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .docs__article {
+    padding: 40px 44px;
+  }
+
+  .docs__paragraph,
+  .docs__lead,
+  .docs__step-desc {
+    max-width: 78ch;
+  }
+}
+
+@media (min-width: 2200px) {
+  .docs__layout {
+    grid-template-columns: 340px minmax(0, 1fr);
+    gap: 48px;
+  }
+
+  .docs__cards {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}

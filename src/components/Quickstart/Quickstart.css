@@ -371,3 +371,15 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (min-width: 1600px) {
+  .quickstart__inner {
+    max-width: 1180px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .quickstart__inner {
+    max-width: 1320px;
+  }
+}

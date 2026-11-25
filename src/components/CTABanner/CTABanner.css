@@ -125,3 +125,9 @@
     padding: 60px 16px;
   }
 }
+
+@media (min-width: 1600px) {
+  .cta__inner {
+    max-width: 900px;
+  }
+}

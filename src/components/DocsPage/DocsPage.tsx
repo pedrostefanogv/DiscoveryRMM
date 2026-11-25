@@ -219,6 +219,7 @@ function DocsPage({ section }: DocsPageProps) {
   const [query, setQuery] = useState('');
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const mobileDrawerRef = useRef<HTMLDetailsElement | null>(null);
+  const sidebarRef = useRef<HTMLElement | null>(null);
 
   const activeIndex = Math.max(
     0,
@@ -248,6 +249,8 @@ function DocsPage({ section }: DocsPageProps) {
       mobileDrawerRef.current.open = false;
     }
     headingRef.current?.focus();
+    const activeLink = sidebarRef.current?.querySelector<HTMLElement>('.docs__nav-link--active');
+    activeLink?.scrollIntoView({ block: 'nearest' });
   }, [section]);
 
   useEffect(() => {
@@ -513,7 +516,7 @@ function DocsPage({ section }: DocsPageProps) {
         </details>
 
         <div className="docs__layout">
-          <aside className="docs__sidebar">{renderSidebarNav('docs-chapter-search-desktop')}</aside>
+          <aside ref={sidebarRef} className="docs__sidebar">{renderSidebarNav('docs-chapter-search-desktop')}</aside>
 
           <article className="docs__article">
             <header className="docs__header">

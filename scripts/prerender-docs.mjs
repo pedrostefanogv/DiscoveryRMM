@@ -30,7 +30,7 @@ const pre = (code) => '<pre><code>' + esc(code) + '</code></pre>';
 const pill = (route) => (route ? '<p class="route">' + esc(route) + '</p>' : '');
 const paras = (items) => items.map((p) => '<p>' + esc(p) + '</p>').join('');
 
-function block(b) {
+function block(b, prefix) {
   if (b.type === 'paragraphs') return paras(b.items);
   if (b.type === 'callout') return '<aside class="callout"><strong>' + esc(b.title) + '</strong><p>' + esc(b.text) + '</p></aside>';
   if (b.type === 'code') return '<figure class="code"><figcaption>' + esc(b.language + (b.title ? ' - ' + b.title : '')) + '</figcaption>' + pre(b.snippet) + '</figure>';
@@ -43,7 +43,7 @@ function block(b) {
   if (b.type === 'cards') {
     const items = b.items.map((c) => {
       const inner = '<h4>' + esc(c.title) + '</h4>' + (c.badge ? '<span class="badge">' + esc(c.badge) + '</span>' : '') + '<p>' + esc(c.description) + '</p>' + (c.meta ? '<span class="meta">' + esc(c.meta) + '</span>' : '');
-      const target = c.href && c.href.indexOf('#/docs/') === 0 ? base + 'docs/' + c.href.slice(7) : c.href;
+      const target = c.href && c.href.indexOf('#/docs/') === 0 ? prefix + c.href.slice(7).replace(/\/+$/, '') + '/' : c.href;
       return target ? '<a class="card" href="' + esc(target) + '">' + inner + '</a>' : '<article class="card">' + inner + '</article>';
     }).join('');
     return (b.title ? '<h3>' + esc(b.title) + '</h3>' : '') + '<div class="cards">' + items + '</div>';
@@ -79,7 +79,8 @@ const STYLE = ':root{color-scheme:light dark;--bg:#0d1117;--fg:#e6edf3;--muted:#
   '.steps h4{margin:0 0 4px;font-size:.95rem}.route{color:var(--muted);font-size:.8rem}' +
   'details{border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:10px 0;background:var(--card)}summary{cursor:pointer;font-weight:600}' +
   '.shot{margin:22px 0}.shot img{width:100%;height:auto;border:1px solid var(--border);border-radius:10px}.shot figcaption{color:var(--muted);font-size:.82rem;margin-top:8px}' +
-  '.pager{display:flex;justify-content:space-between;gap:16px;margin-top:40px;border-top:1px solid var(--border);padding-top:16px;font-size:.86rem}.pager a{color:var(--accent);text-decoration:none}';
+  '.pager{display:flex;justify-content:space-between;gap:16px;margin-top:40px;border-top:1px solid var(--border);padding-top:16px;font-size:.86rem}.pager a{color:var(--accent);text-decoration:none}' +
+  '@media (min-width:1600px){.wrap{max-width:1440px;grid-template-columns:300px minmax(0,1fr);gap:40px}}';
 
 function tocHtml(content, currentId, prefix) {
   return content.parts.map((part) => {
@@ -91,30 +92,32 @@ function tocHtml(content, currentId, prefix) {
 
 function page(o) {
   const isPt = o.lang === 'pt-BR';
-  const title = o.section ? o.section.title + ' - DiscoveryRMM' : 'Documentacao - DiscoveryRMM';
+  const title = o.section ? o.section.title + ' - DiscoveryRMM' : o.content.ui.portalTitle + ' - DiscoveryRMM';
   const description = o.section ? o.section.lead : o.content.ui.portalBadge;
   const body = o.section
-    ? '<span class="badge">' + esc(o.section.badge) + '</span><h1>' + esc(o.section.title) + '</h1><p class="lead">' + esc(o.section.lead) + '</p>' + o.section.blocks.map(block).join('\n')
+    ? '<span class="badge">' + esc(o.section.badge) + '</span><h1>' + esc(o.section.title) + '</h1><p class="lead">' + esc(o.section.lead) + '</p>' + o.section.blocks.map((b) => block(b, o.prefix)).join('\n')
     : '<h1>' + esc(o.content.ui.portalTitle) + '</h1><p class="lead">' + esc(o.content.ui.portalBadge) + '</p>' + o.content.sections.map((s) => '<p><a href="' + o.prefix + s.id + '/">' + esc(s.navLabel) + ' - ' + esc(s.title) + '</a></p>').join('');
   const pager = o.section
-    ? '<div class="pager">' + (o.prev ? '<a href="' + o.prefix + o.prev.id + '/">Anterior: ' + esc(o.prev.navLabel) + '</a>' : '<span></span>') + (o.next ? '<a href="' + o.prefix + o.next.id + '/">Proximo: ' + esc(o.next.navLabel) + '</a>' : '<span></span>') + '</div>'
+    ? '<div class="pager">' + (o.prev ? '<a href="' + o.prefix + o.prev.id + '/">' + esc(o.content.ui.previousLabel) + ': ' + esc(o.prev.navLabel) + '</a>' : '<span></span>') + (o.next ? '<a href="' + o.prefix + o.next.id + '/">' + esc(o.content.ui.nextLabel) + ': ' + esc(o.next.navLabel) + '</a>' : '<span></span>') + '</div>'
     : '';
   const interactive = o.section ? base + '#/docs/' + o.section.id : base + '#/docs';
-  const otherLang = isPt ? o.prefix + '../en/' : o.prefix + '../';
+  const ptPath = isPt ? o.canonicalPath : o.altPath;
+  const enPath = isPt ? o.altPath : o.canonicalPath;
+  const otherLang = o.altPath;
   return ['<!doctype html>', '<html lang="' + o.lang + '">', '<head>', '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
     '<title>' + esc(title) + '</title>', '<meta name="description" content="' + esc(description) + '">',
     '<link rel="canonical" href="' + ORIGIN + o.canonicalPath + '">',
-    '<link rel="alternate" hreflang="pt-BR" href="' + ORIGIN + o.canonicalPath + '">',
-    '<link rel="alternate" hreflang="en-US" href="' + ORIGIN + o.altPath + '">',
-    '<link rel="alternate" hreflang="x-default" href="' + ORIGIN + o.canonicalPath + '">',
+    '<link rel="alternate" hreflang="pt-BR" href="' + ORIGIN + ptPath + '">',
+    '<link rel="alternate" hreflang="en-US" href="' + ORIGIN + enPath + '">',
+    '<link rel="alternate" hreflang="x-default" href="' + ORIGIN + ptPath + '">',
     '<meta property="og:type" content="article">', '<meta property="og:title" content="' + esc(title) + '">',
     '<meta property="og:description" content="' + esc(description) + '">', '<style>' + STYLE + '</style>', '</head>', '<body>', '<div class="wrap">',
     '<nav class="toc" aria-label="' + esc(o.content.ui.portalTitle) + '">',
     '<a class="top" href="' + o.homePath + '">' + (isPt ? 'Voltar ao site' : 'Back to site') + '</a>',
-    '<a class="top" href="' + otherLang + '">' + (isPt ? 'English version' : 'Versao em portugues') + '</a>',
+    '<a class="top" href="' + otherLang + '">' + (isPt ? 'English version' : 'Versão em português') + '</a>',
     tocHtml(o.content, o.section ? o.section.id : '', o.prefix), '</nav>', '<main>',
-    '<a class="top" href="' + interactive + '">' + (isPt ? 'Abrir versao interativa' : 'Open interactive version') + '</a>',
+    '<a class="top" href="' + interactive + '">' + (isPt ? 'Abrir versão interativa' : 'Open interactive version') + '</a>',
     body, pager, '</main>', '</div>', '</body>', '</html>', ''].join('\n');
 }
 

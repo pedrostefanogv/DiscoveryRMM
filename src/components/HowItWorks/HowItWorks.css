@@ -154,3 +154,15 @@
     gap: 12px;
   }
 }
+
+@media (min-width: 1600px) {
+  .how__inner {
+    max-width: 1040px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .how__inner {
+    max-width: 1160px;
+  }
+}
