@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/prerender-docs.mjs",
     "preview": "vite preview",
     "test": "node --experimental-strip-types --test --test-name-pattern=\"^F24-\" tests/e2e/tier1_landing_f24.test.ts tests/e2e/tier2_landing_f24.test.ts tests/e2e/tier3_pairwise.test.ts tests/e2e/tier4_scenarios.test.ts",
     "test:e2e": "node --experimental-strip-types --test tests/e2e/tier1_landing_f24.test.ts tests/e2e/tier2_landing_f24.test.ts tests/e2e/tier1_contracts_hygiene_f25.test.ts tests/e2e/tier2_contracts_hygiene_f25.test.ts tests/e2e/tier3_pairwise.test.ts tests/e2e/tier4_scenarios.test.ts"

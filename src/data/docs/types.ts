@@ -2,6 +2,19 @@ import type { DocSectionId } from '../../hooks/useHashRoute';
 
 export type DocCalloutTone = 'info' | 'warning' | 'tip';
 
+/** As três grandes partes da documentação. */
+export type DocPartId = 'install' | 'operation' | 'support';
+
+export type DocPart = {
+  id: DocPartId;
+  /** Rótulo longo usado na navegação lateral (ex.: "Parte 1 · Instalação & Implantação"). */
+  label: string;
+  /** Rótulo curto usado em resumos e no menu móvel. */
+  shortLabel: string;
+  /** Uma frase explicando o que o leitor encontra nesta parte. */
+  description: string;
+};
+
 export type DocStep = {
   title: string;
   description: string;
@@ -31,10 +44,14 @@ export type DocBlock =
   | { type: 'table'; caption: string; headers: string[]; rows: string[][] }
   | { type: 'cards'; title?: string; items: DocCard[] }
   | { type: 'steps'; title?: string; items: DocStep[] }
-  | { type: 'accordion'; title?: string; items: DocAccordionItem[] };
+  | { type: 'accordion'; title?: string; items: DocAccordionItem[] }
+  /** Imagem de produto: `file` é relativo a `screenshots/` no public/. */
+  | { type: 'image'; file: string; alt: string; caption?: string };
 
 export type DocSection = {
   id: DocSectionId;
+  /** Parte à qual o capítulo pertence — define o agrupamento na navegação. */
+  part: DocPartId;
   navLabel: string;
   badge: string;
   title: string;
@@ -61,5 +78,6 @@ export type DocsUiCopy = {
 
 export type DocsContent = {
   ui: DocsUiCopy;
+  parts: DocPart[];
   sections: DocSection[];
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import './App.css';
 import { useI18n } from './i18n';
 import Navbar from './components/Navbar/Navbar';
@@ -11,7 +11,12 @@ import HowItWorks from './components/HowItWorks/HowItWorks';
 import Stats from './components/Stats/Stats';
 import CTABanner from './components/CTABanner/CTABanner';
 import LegalPage from './components/LegalPage/LegalPage';
-import DocsPage from './components/DocsPage/DocsPage';
+/**
+ * A documentação é um chunk separado: a home não precisa carregar ~160 kB de
+ * conteúdo de guias para renderizar. O hash router continua funcionando porque
+ * o lazy é resolvido antes do primeiro render da rota de docs.
+ */
+const DocsPage = lazy(() => import('./components/DocsPage/DocsPage'));
 import Footer from './components/Footer/Footer';
 
 function App() {
@@ -45,7 +50,15 @@ function App() {
             <CTABanner />
           </>
         ) : route === 'docs' ? (
-          <DocsPage section={docSection} />
+          <Suspense
+            fallback={
+              <div className="app__route-loading" role="status" aria-live="polite">
+                {text.common.loadingDocs}
+              </div>
+            }
+          >
+            <DocsPage section={docSection} />
+          </Suspense>
         ) : (
           <LegalPage page={route} />
         )}

@@ -775,3 +775,63 @@
     text-align: left;
   }
 }
+
+/* Navegação em 3 partes (Instalação · Operação · Suporte) */
+.docs__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.docs__nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docs__nav-group-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-light);
+}
+
+.docs__nav-group-desc {
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.docs__part-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* Imagens de produto nos capítulos */
+.docs__figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.docs__figure-img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+}
+
+.docs__figure-caption {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}

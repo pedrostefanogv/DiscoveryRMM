@@ -10,6 +10,9 @@ type DocsPageProps = {
 
 type CopyState = 'idle' | 'copied' | 'error';
 
+/** Mesma convenção do Showcase: arquivos em public/screenshots/. */
+const DOCS_SCREENSHOTS_BASE = `${import.meta.env.BASE_URL}screenshots/`;
+
 function sectionMatchesQuery(section: DocSection, query: string): boolean {
   if (
     section.navLabel.toLowerCase().includes(query) ||
@@ -22,6 +25,12 @@ function sectionMatchesQuery(section: DocSection, query: string): boolean {
 
   return section.blocks.some((block) => {
     switch (block.type) {
+      case 'image':
+        return (
+          block.alt.toLowerCase().includes(query) ||
+          (block.caption?.toLowerCase().includes(query) ?? false) ||
+          block.file.toLowerCase().includes(query)
+        );
       case 'paragraphs':
         return block.items.some((p) => p.toLowerCase().includes(query));
       case 'callout':
@@ -216,13 +225,22 @@ function DocsPage({ section }: DocsPageProps) {
     content.sections.findIndex((item) => item.id === section),
   );
   const activeSection = content.sections[activeIndex] ?? content.sections[0];
+  const activePart = content.parts.find((part) => part.id === activeSection.part) ?? content.parts[0];
   const prevSection = activeIndex > 0 ? content.sections[activeIndex - 1] : null;
   const nextSection =
     activeIndex < content.sections.length - 1 ? content.sections[activeIndex + 1] : null;
 
   const normalizedQuery = query.trim().toLowerCase();
   const filteredSections = normalizedQuery
-    ? content.sections.filter((item) => sectionMatchesQuery(item, normalizedQuery))
+    ? content.sections.filter(
+        (item) =>
+          sectionMatchesQuery(item, normalizedQuery) ||
+          (content.parts
+            .find((part) => part.id === item.part)
+            ?.label.toLowerCase()
+            .includes(normalizedQuery) ??
+            false),
+      )
     : content.sections;
 
   useEffect(() => {
@@ -246,6 +264,22 @@ function DocsPage({ section }: DocsPageProps) {
 
   const renderBlock = (block: DocBlock, idx: number) => {
     switch (block.type) {
+      case 'image':
+        return (
+          <figure key={idx} className="docs__figure">
+            <img
+              className="docs__figure-img"
+              src={`${DOCS_SCREENSHOTS_BASE}${block.file}`}
+              alt={block.alt}
+              width={1280}
+              height={800}
+              loading="lazy"
+              decoding="async"
+            />
+            {block.caption ? <figcaption className="docs__figure-caption">{block.caption}</figcaption> : null}
+          </figure>
+        );
+
       case 'paragraphs':
         return (
           <div key={idx} className="docs__paragraphs">
@@ -394,27 +428,37 @@ function DocsPage({ section }: DocsPageProps) {
 
       <nav aria-label={content.ui.portalTitle} className="docs__nav">
         {filteredSections.length > 0 ? (
-          <ul className="docs__nav-list">
-            {filteredSections.map((item) => {
-              const isActive = item.id === activeSection.id;
-              return (
-                <li key={item.id}>
-                  <a
-                    href={`#/docs/${item.id}`}
-                    className={`docs__nav-link${isActive ? ' docs__nav-link--active' : ''}`}
-                    aria-current={isActive ? 'page' : undefined}
-                    onClick={() => {
-                      if (mobileDrawerRef.current) {
-                        mobileDrawerRef.current.open = false;
-                      }
-                    }}
-                  >
-                    {item.navLabel}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+          content.parts.map((part) => {
+            const partSections = filteredSections.filter((item) => item.part === part.id);
+            if (partSections.length === 0) return null;
+            return (
+              <div key={part.id} className="docs__nav-group">
+                <p className="docs__nav-group-title">{part.label}</p>
+                <p className="docs__nav-group-desc">{part.description}</p>
+                <ul className="docs__nav-list" aria-label={part.label}>
+                  {partSections.map((item) => {
+                    const isActive = item.id === activeSection.id;
+                    return (
+                      <li key={item.id}>
+                        <a
+                          href={`#/docs/${item.id}`}
+                          className={`docs__nav-link${isActive ? ' docs__nav-link--active' : ''}`}
+                          aria-current={isActive ? 'page' : undefined}
+                          onClick={() => {
+                            if (mobileDrawerRef.current) {
+                              mobileDrawerRef.current.open = false;
+                            }
+                          }}
+                        >
+                          {item.navLabel}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })
         ) : (
           <p className="docs__nav-empty">{content.ui.searchEmpty}</p>
         )}
@@ -473,6 +517,7 @@ function DocsPage({ section }: DocsPageProps) {
 
           <article className="docs__article">
             <header className="docs__header">
+              {activePart ? <span className="docs__part-label">{activePart.label}</span> : null}
               <span className="docs__badge">{activeSection.badge}</span>
               <h1 id="docs-page-title" ref={headingRef} tabIndex={-1} className="docs__title">
                 {activeSection.title}

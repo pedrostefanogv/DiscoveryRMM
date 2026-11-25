@@ -30,6 +30,7 @@ const translations = {
     common: {
       skipToContent: 'Pular para o conteúdo principal',
       backToTop: 'Voltar ao topo',
+      loadingDocs: 'Carregando documentação…',
     },
     navbar: {
       navAriaLabel: 'Principal',
@@ -538,6 +539,7 @@ const translations = {
     common: {
       skipToContent: 'Skip to main content',
       backToTop: 'Back to top',
+      loadingDocs: 'Loading documentation…',
     },
     navbar: {
       navAriaLabel: 'Primary',

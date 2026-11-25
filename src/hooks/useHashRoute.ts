@@ -3,34 +3,106 @@ import { useEffect, useState } from 'react';
 export type LegalRoute = 'privacy' | 'terms';
 export type ActiveRoute = 'home' | LegalRoute | 'docs';
 
+/**
+ * Capítulos da documentação, agrupados em 3 partes:
+ *  - install   → Instalação e Implantação
+ *  - operation → Operação do Parque
+ *  - support   → Suporte e Usuário Final
+ */
 export type DocSectionId =
+  // Parte 1 · Instalação e Implantação
   | 'overview'
   | 'requirements'
   | 'server-install'
+  | 'server-maintenance'
+  | 'console-access'
+  | 'client-setup'
+  | 'site-setup'
+  | 'custom-fields'
+  | 'deploy-tokens'
+  | 'agent-install'
+  | 'zero-touch'
   | 'agent'
+  // Parte 2 · Operação do Parque
   | 'interface'
-  | 'clients-deploy'
-  | 'automation-software'
-  | 'sensors-monitoring'
-  | 'servicedesk-kb'
-  | 'modules'
+  | 'agents-fleet'
+  | 'agent-labels'
+  | 'remote-access'
+  | 'automation-scripts'
+  | 'automation-tasks'
+  | 'software-store'
+  | 'patches'
+  | 'sensors'
+  | 'sensor-script'
+  | 'monitoring-reports'
+  | 'tickets'
+  | 'knowledge-ai'
   | 'integrations'
+  | 'endpoint-lifecycle'
+  | 'governance-admin'
+  | 'ticket-access'
+  | 'platform-reliability'
+  // Parte 3 · Suporte e Usuário Final
+  | 'support-chat'
+  | 'enduser-agent'
+  | 'module-config'
+  | 'troubleshooting'
   | 'guides';
 
 export const DOC_SECTION_IDS: readonly DocSectionId[] = [
   'overview',
   'requirements',
   'server-install',
+  'server-maintenance',
+  'console-access',
+  'client-setup',
+  'site-setup',
+  'custom-fields',
+  'deploy-tokens',
+  'agent-install',
+  'zero-touch',
   'agent',
   'interface',
-  'clients-deploy',
-  'automation-software',
-  'sensors-monitoring',
-  'servicedesk-kb',
-  'modules',
+  'agents-fleet',
+  'agent-labels',
+  'remote-access',
+  'automation-scripts',
+  'automation-tasks',
+  'software-store',
+  'patches',
+  'sensors',
+  'sensor-script',
+  'monitoring-reports',
+  'tickets',
+  'knowledge-ai',
   'integrations',
+  'endpoint-lifecycle',
+  'governance-admin',
+  'ticket-access',
+  'platform-reliability',
+  'support-chat',
+  'enduser-agent',
+  'module-config',
+  'troubleshooting',
   'guides',
 ];
+
+/**
+ * Ids antigos (links externos, favoritos e versões anteriores da documentação).
+ * São redirecionados para o capítulo equivalente na estrutura em 3 partes, para
+ * que nenhum endereço publicado passe a abrir a documentação no lugar errado.
+ */
+const DOC_SECTION_LEGACY_IDS: Record<string, DocSectionId> = {
+  'clients-deploy': 'client-setup',
+  'automation-software': 'automation-tasks',
+  'sensors-monitoring': 'sensors',
+  'servicedesk-kb': 'tickets',
+  'modules': 'module-config',
+  'agent-install-minimal': 'agent-install',
+  'fleet': 'agents-fleet',
+  'sensors-script': 'sensor-script',
+  'reports': 'monitoring-reports',
+};
 
 export type HashLocation = {
   route: ActiveRoute;
@@ -57,10 +129,10 @@ export function parseHashLocation(hash: string): HashLocation {
   const docMatch = normalized.match(/^#\/(?:docs|documentacao)\/([a-z0-9-]+)$/);
   if (docMatch) {
     const candidate = docMatch[1];
-    return {
-      route: 'docs',
-      docSection: DOC_SECTION_SET.has(candidate) ? (candidate as DocSectionId) : 'overview',
-    };
+    const resolved = DOC_SECTION_SET.has(candidate)
+      ? (candidate as DocSectionId)
+      : (DOC_SECTION_LEGACY_IDS[candidate] ?? 'overview');
+    return { route: 'docs', docSection: resolved };
   }
 
   return { route: 'home', docSection: 'overview' };

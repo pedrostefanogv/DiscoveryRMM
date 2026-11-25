@@ -284,3 +284,13 @@ img {
   --notice-text: #d6deeb;
   --shadow-soft: rgba(0, 0, 0, 0.35);
 }
+
+/* Fallback do chunk lazy da documentação */
+.app__route-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
