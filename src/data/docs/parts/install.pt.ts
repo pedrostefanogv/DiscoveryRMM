@@ -74,10 +74,10 @@ Streams JetStream por tenant:
         caption: 'Canais de release e política de ambientes',
         headers: ['Canal / Branch', 'Público-alvo', 'Comportamento', 'Recomendação'],
         rows: [
-          ['release (Estável)', 'Produção', 'Somente código validado e testado', 'Padrão para servidores e agents em produção'],
-          ['beta', 'Pré-produção', 'Novas funcionalidades em validação final', 'Validar em ambiente piloto antes do rollout'],
-          ['lts', 'Long-Term Support', 'Foco em estabilidade e correções críticas', 'Ambientes com janela rígida de mudança'],
-          ['dev', 'Homologação / Devs', 'Desenvolvimento ativo e integração contínua', 'Nunca usar diretamente em produção'],
+          ['dev', 'Testes pré-lançamento', 'Desenvolvimento ativo (único canal utilizável no momento)', 'Use esta branch para testar antes do lançamento oficial'],
+          ['beta', 'Pré-produção', 'Novas funcionalidades em validação final (em breve)', 'Será liberado após a estabilização da dev'],
+          ['release (Estável)', 'Produção', 'Somente código validado e testado (em breve)', 'Será o padrão para produção após o lançamento'],
+          ['lts', 'Long-Term Support', 'Foco em estabilidade e correções críticas (em breve)', 'Será liberado após a estabilização da release'],
         ],
       },
       {
@@ -149,25 +149,31 @@ Streams JetStream por tenant:
     navLabel: '1.3. Instalação do servidor',
     badge: 'Parte 1 · Capítulo 3 · Setup do servidor',
     title: 'Como instalar o servidor (bootstrap Linux ou manual)',
-    lead: 'Passo a passo completo para subir o DiscoveryRMM em produção via bootstrap Linux ou manualmente a partir do código-fonte.',
+    lead: 'Passo a passo completo para subir o DiscoveryRMM via bootstrap Linux (branch dev para testes pré-lançamento) ou manualmente a partir do código-fonte.',
     blocks: [
       {
+        type: 'callout',
+        tone: 'warning',
+        title: 'Disponível no momento apenas na branch dev (pré-lançamento)',
+        text: 'Para quem deseja testar o DiscoveryRMM antes do lançamento oficial, somente a versão da branch dev está utilizável neste momento. Os canais release, beta e lts serão liberados após a estabilização.',
+      },
+      {
         type: 'steps',
-        title: 'Método A — Instalação rápida em produção (Linux Bootstrap)',
+        title: 'Método A — Instalação rápida para testes (Linux Bootstrap · branch dev)',
         items: [
           {
             title: '1. Prepare o host Ubuntu/Debian',
             description: 'Acesse como root ou usuário com sudo e garanta conectividade HTTPS de saída para GitHub e repositórios do sistema.',
           },
           {
-            title: '2. Execute o Bootstrap Wizard',
-            description: 'O script clona o repositório, instala .NET 10, PostgreSQL + pgvector, NATS 2.x, Redis e configura os serviços systemd.',
-            code: 'bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/release/scripts/linux/bootstrap_install_discovery.sh)"',
+            title: '2. Execute o Bootstrap Wizard (branch dev)',
+            description: 'O script da branch dev clona o repositório, instala .NET 10, PostgreSQL + pgvector, NATS 2.x, Redis e configura os serviços systemd.',
+            code: 'bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/dev/scripts/linux/bootstrap_install_discovery.sh)"',
           },
           {
-            title: '3. Escolha o canal de release',
-            description: 'No assistente, selecione a opção 2 (release — estável). Para automação não-interativa, use a variável DISCOVERY_RELEASE_CHANNEL.',
-            code: 'DISCOVERY_RELEASE_CHANNEL=release bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/release/scripts/linux/bootstrap_install_discovery.sh)"',
+            title: '3. Selecione o canal dev',
+            description: 'No assistente, selecione a opção 4 (dev — único canal utilizável no momento para testes). Para automação não-interativa, use a variável DISCOVERY_RELEASE_CHANNEL=dev.',
+            code: 'DISCOVERY_RELEASE_CHANNEL=dev bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/dev/scripts/linux/bootstrap_install_discovery.sh)"',
           },
           {
             title: '4. Valide o health check',
@@ -242,7 +248,7 @@ Streams JetStream por tenant:
     navLabel: '1.4. Atualização, backup e recuperação',
     badge: 'Parte 1 · Capítulo 4 · Manutenção',
     title: 'Atualizar, fazer backup e recuperar o servidor',
-    lead: 'O servidor central nunca se atualiza sozinho. Veja o ciclo seguro de atualização, backup/restauração e recuperação de acesso administrativo.',
+    lead: 'O servidor central nunca se atualiza sozinho. Este capítulo cobre o ciclo de atualização, o backup que é responsabilidade sua, a recuperação de acesso administrativo e a rotina periódica que realmente faz sentido.',
     blocks: [
       {
         type: 'callout',
@@ -252,17 +258,21 @@ Streams JetStream por tenant:
       },
       {
         type: 'code',
-        title: 'Atualização do servidor instalado via script',
+        title: 'Backup antes de atualizar, atualização e validação',
         language: 'bash',
-        snippet: `# 1. Backup antes de qualquer mudança
-pg_dump -Fc discovery > /backup/discovery-$(date +%F-%H%M).dump
+        snippet: `# 1) Backup ANTES de qualquer mudança — o instalador NÃO faz backup do banco
+sudo grep -m1 'ConnectionStrings__DefaultConnection' /etc/discovery-api/discovery.env
+#   confirme o database/usuário (padrão do instalador: discovery / discovery_app)
+sudo -u postgres pg_dump -Fc discovery > /backup/discovery-$(date +%F-%H%M).dump
+#   copie o dump E o bucket (RustFS local ou storage externo) para fora do host
 
-# 2. Atualizar (aplica migrations pendentes e reinicia os serviços)
+# 2) Atualizar: reaplica as escolhas de TLS, regenera o nginx e aplica as migrations
 ./scripts/linux/install_discovery_server.sh --mode update
 
-# 3. Validar
+# 3) Validar
 curl -fsS https://seu-dominio/health
-systemctl status discovery-api discovery-nats --no-pager`,
+systemctl status discovery-api nginx --no-pager
+systemctl list-timers 'discovery-*' --no-pager`,
       },
       {
         type: 'code',
@@ -280,12 +290,21 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
         caption: 'Rotina mínima de manutenção recomendada',
         headers: ['Item', 'Periodicidade', 'Como fazer'],
         rows: [
-          ['Backup do PostgreSQL', 'Diário + antes de atualizar', 'pg_dump -Fc e cópia fora do host'],
-          ['Backup do object storage', 'Diário', 'Anexos, pacotes customizados e gravações (disco/MinIO/S3)'],
-          ['Retenção de logs e séries', 'Configuração única', 'Configurações → Manutenção do banco (/settings/database-maintenance)'],
-          ['Teste de restauração', 'Trimestral', 'Restaurar o dump em um host de homologação e validar o /health'],
-          ['Rotação de chaves/NKeys NATS', 'Anual ou sob incidente', 'Reprogramar Nats:ServerPublicKey e reiniciar API + NATS'],
+          ['Backup do PostgreSQL', 'Diário + antes de atualizar', 'pg_dump -Fc do banco (padrão discovery / discovery_app) para um destino fora do host — o instalador não faz backup do banco'],
+          ['Backup do object storage', 'Diário', 'Bucket discovery-files (RustFS local na porta 9000 ou storage externo/S3): anexos, pacotes próprios, gravações e relatórios'],
+          ['Saúde e guardas do servidor', 'Semanal', 'Conferir /health e os timers discovery-health-check.timer e discovery-api-runtime-guard.timer'],
+          ['Certificado TLS', 'Mensal (conferência)', 'Validar a validade do certificado e o timer de renovação: discovery-letsencrypt-renew.timer ou discovery-zerossl-renew.timer'],
+          ['Espaço em disco e retenção', 'Mensal', 'Banco, bucket e gravações: ajuste a retenção para caber no disco em vez de apagar dados na mão'],
+          ['Checagens de sanitização', 'Mensal ou após incidente', 'Rodar as checagens de banco e de object storage em /settings/database-maintenance e aplicar só depois de ler o relatório'],
+          ['Teste de restauração', 'Trimestral', 'Restaurar o dump em um host de homologação, subir a API e validar /health e login'],
+          ['Identidade do NATS (trust anchor)', 'Só sob evento — não é rotação periódica', 'Ao reconstruir o servidor NATS ou reemitir a NKey, atualize Nats:ServerPublicKey e reinicie a API; não há ganho em rotacionar por calendário'],
         ],
+      },
+      {
+        type: 'callout',
+        tone: 'info',
+        title: 'O que o instalador já cuida sozinho',
+        text: 'Renovação de certificado (timer discovery-letsencrypt-renew ou discovery-zerossl-renew), guarda de runtime do serviço, health-check periódico, reinício dos serviços .NET quando o apt atualiza o runtime e regeneração do nginx a cada update. Na sua rotina, verifique — não refaça.',
       },
       {
         type: 'callout',
@@ -295,68 +314,68 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
       },
     ],
   },
+
   {
     id: 'console-access',
     part: 'install',
     navLabel: '1.5. Console Web, HTTPS e primeiro acesso',
     badge: 'Parte 1 · Capítulo 5 · Acesso ao Console',
-    title: 'Publicar o Console Web com HTTPS/WSS e liberar o primeiro acesso',
-    lead: 'Configure o proxy reverso, valide o WebSocket do NATS e conclua o onboarding de identidade (senha, perfil, MFA e papéis).',
+    title: 'O que o instalador já entrega de HTTPS/Console e o que resta fazer',
+    lead: 'O instalador publica o Console Web, renderiza o nginx, emite o certificado e expõe o NATS por WSS automaticamente. Este capítulo separa o que ele resolve do que continua sendo decisão sua: DNS, provedor de certificado, firewall, primeiro acesso e validação.',
     blocks: [
       {
+        type: 'table',
+        caption: 'O que o instalador já faz automaticamente',
+        headers: ['Item', 'O que ele entrega', 'Observação'],
+        rows: [
+          ['nginx renderizado e ativado', 'Gera /etc/nginx/sites-available/discovery-rmm a partir do template, ativa em sites-enabled, remove o site default e guarda backup do anterior', 'Não edite esse arquivo à mão: o update regenera por padrão'],
+          ['Redirecionamento e TLS', 'Porta 80 redireciona para HTTPS (301); 443 com TLS 1.2/1.3, HTTP/2 e um default_server que rejeita host desconhecido', 'Sem ajuste manual no proxy'],
+          ['Certificado e renovação', 'Escolha no wizard: self-signed (padrão), ZeroSSL ou Let\'s Encrypt via ACME, com timer de renovação automática', 'ACME por validação DNS: crie o registro TXT (há hook pronto para Cloudflare)'],
+          ['Portal web publicado', 'Clona o DiscoveryRMM_Site, roda o build e publica o dist no vhost do portal', 'O Console já sobe em https://seu-dominio/'],
+          ['NATS por WSS', 'Configura wss://<host>/nats/ com o encaminhamento de Upgrade do WebSocket', 'Sem isso o tempo real cai para SSE'],
+          ['Object storage e serviços', 'Publica o bucket pelo nginx e instala as units systemd, incluindo os guardas de runtime', 'Ajustes finos ficam no appsettings/env'],
+        ],
+      },
+      {
         type: 'steps',
-        title: 'Sequência de publicação e primeiro acesso',
+        title: 'O que continua sendo seu',
         items: [
           {
-            title: '1. Publique o Console Web',
-            description: 'Build de produção do DiscoveryRMM_Site e publicação dos arquivos estáticos pelo mesmo domínio da API (evita CORS e simplifica o WSS).',
-            code: 'npm ci && npm run build   # gera dist/',
+            title: '1. Aponte o DNS do domínio',
+            description: 'Antes de emitir certificado, o nome precisa resolver para o servidor: crie os registros A/AAAA (ou CNAME) apontando para o IP da máquina.',
           },
           {
-            title: '2. Termine TLS e encaminhe o WebSocket do NATS',
-            description: 'No proxy reverso, exponha 443 para API/Console e encaminhe /nats com Upgrade de WebSocket. Sem isso o Console cai para SSE e as sessões remotas ficam indisponíveis.',
+            title: '2. Escolha o provedor de certificado',
+            description: 'No wizard: self-signed para laboratório, ZeroSSL ou Let\'s Encrypt para produção. Na validação por DNS (ACME), crie o registro TXT solicitado — ou use o hook do Cloudflare — e aguarde a emissão.',
           },
           {
-            title: '3. Faça o primeiro login e troque a senha',
-            description: 'Entre com admin / Mudar@123. O sistema exige troca de senha (12+ caracteres), atualização de perfil e cadastro de MFA.',
+            title: '3. Libere as portas no firewall',
+            description: 'O instalador não altera firewall. Libere 80 e 443 no host e no security group da nuvem; 4222 só se o NATS for exposto diretamente (agentes e Console usam 443).',
+          },
+          {
+            title: '4. Conclua o primeiro acesso',
+            description: 'Entre com admin / Mudar@123. O sistema exige troca de senha (12+ caracteres, maiúscula, número e símbolo), atualização de perfil e cadastro de MFA (FIDO2/WebAuthn ou TOTP).',
             route: 'https://seu-dominio/auth/login',
-          },
-          {
-            title: '4. Registre MFA e revise papéis',
-            description: 'Cadastre FIDO2/WebAuthn ou TOTP e crie os usuários técnicos em /identity/access com papéis e escopo (Global, Cliente, Site).',
-            route: 'Configurações → Identidade e Acesso (/identity/access)',
           },
         ],
       },
       {
         type: 'code',
-        title: 'Exemplo de proxy reverso (Nginx) com HTTPS + WSS',
-        language: 'nginx',
-        snippet: `server {
-  listen 443 ssl http2;
-  server_name seu-dominio;
+        title: 'Diagnóstico do que foi gerado (e como trocar o certificado depois)',
+        language: 'bash',
+        snippet: `# A configuração vive fora do seu editor: inspecione antes de mexer
+sudo nginx -t                                  # valida a configuração sem aplicar
+sudo ls -l /etc/nginx/sites-enabled/           # discovery-rmm -> sites-available/discovery-rmm
+sudo systemctl status nginx discovery-api      # serviços do proxy e da API
 
-  ssl_certificate     /etc/letsencrypt/live/seu-dominio/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/seu-dominio/privkey.pem;
+# Validação ponta a ponta
+curl -fsS https://seu-dominio/health           # API respondendo
+# No navegador: https://seu-dominio/            (portal)
+#               https://seu-dominio/scalar/v1   (documentação da API)
 
-  # API + Console Web
-  location / {
-    proxy_pass http://127.0.0.1:5288;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-For $remote_addr;
-  }
-
-  # NATS por WebSocket (precisa de Upgrade e timeout longo)
-  location /nats {
-    proxy_pass http://127.0.0.1:8222;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_read_timeout 3600s;
-    proxy_send_timeout 3600s;
-  }
-}`,
+# Trocar o provedor de certificado depois (self-signed <-> ZeroSSL <-> Let's Encrypt)
+# O modo update reaplica as escolhas de TLS e regenera o nginx por padrão:
+./scripts/linux/install_discovery_server.sh --mode update`,
       },
       {
         type: 'table',
@@ -381,8 +400,15 @@ echo "NovaSenhaForte@2026" | dotnet run --project src/Discovery.Api -- --recover
         title: 'Branding',
         text: 'Logo, cores e nome exibido no Console e no Agent são configurados em Configurações → Branding (/settings/branding). O branding do Cliente pode sobrepor o global na herança de configuração.',
       },
+      {
+        type: 'callout',
+        tone: 'warning',
+        title: 'Não edite o nginx à mão',
+        text: 'O instalador regenera /etc/nginx/sites-available/discovery-rmm a cada atualização (mantendo backup .bak). Personalizações manuais se perdem: prefira as variáveis do instalador/env ou um arquivo de include separado.',
+      },
     ],
   },
+
   {
     id: 'client-setup',
     part: 'install',
@@ -979,6 +1005,29 @@ Start-Process "$env:LOGONSERVER\netlogon\\discovery\\discovery-amd64-installer.e
         ],
       },
       {
+        type: 'table',
+        caption: 'Cenários de provisionamento e o que cada um exige',
+        headers: ['Cenário', 'O que o agent faz', 'O que você precisa fazer'],
+        rows: [
+          ['Com Deploy Token (/S /URL= /KEY=)', 'Registra direto no servidor e vincula ao Cliente/Site do token', 'Gerar o token e garantir a rota até o servidor'],
+          ['Modo genérico (/G), sem URL e sem chave', 'Entra pela malha P2P: precisa de OUTROS agents na mesma rede para se descobrirem e obter as credenciais', 'Ter ao menos um agent já provisionado na LAN, ou ligar o CloudBootstrapEnabled para puxar a lista de peers pela nuvem'],
+          ['Endpoint novo auto-provisionado', 'Registra, mas fica aguardando liberação do servidor (zeroTouchPending) e não conclui a comunicação', 'Aprovar no Console: Agentes → Aprovar zero-touch (publica o evento AgentApproved)'],
+          ['Máquina que já tinha agent (inclusive após formatação)', 'Reassocia pelo hardware (TPM 2.0 EK + SMBIOS UUID) ao registro existente', 'Nada: o endpoint volta a operar com políticas, campos personalizados e labels já aplicados'],
+        ],
+      },
+      {
+        type: 'callout',
+        tone: 'info',
+        title: 'Por que o modo genérico depende da rede',
+        text: 'Sem URL e sem chave o agent não tem como aprender o servidor sozinho: ele procura pares na LAN (mDNS/UDP), repete o onboarding a cada 60 s com backoff entre 30 s e 2 min e espera até 120 s a descoberta inicial do P2P antes do primeiro policy-sync. A chave de implantação do onboarding expira em 30 minutos e as tentativas seguem enquanto não houver credencial. Se a rede não tem nenhum agent provisionado, use o Deploy Token (/KEY) ou ligue o CloudBootstrapEnabled.',
+      },
+      {
+        type: 'callout',
+        tone: 'warning',
+        title: 'Endpoint novo precisa de aprovação para comunicar',
+        text: 'Registrar não é o mesmo que liberar: enquanto o servidor devolve zeroTouchPending, o endpoint aparece aguardando aprovação e serviços como a App Store ficam bloqueados até você aprovar. Máquinas que já tinham o agent (mesmo depois de formatar o Windows) são reassociadas ao registro existente e não pedem nova aprovação.',
+      },
+      {
         type: 'accordion',
         title: 'Checklist, http:// e recuperação pós-formatação',
         items: [
@@ -1000,7 +1049,7 @@ Start-Process "$env:LOGONSERVER\netlogon\\discovery\\discovery-amd64-installer.e
             summary: 'Post-Format Recovery: a máquina volta a ser reconhecida sozinha',
             paragraphs: [
               'Em máquinas com TPM 2.0, o agente guarda a identidade de hardware (Endorsement Key + SMBIOS UUID). Depois de formatar o Windows, o novo agent se reassocia ao mesmo registro em vez de criar um endpoint duplicado.',
-              'O resultado é que políticas, campos personalizados, labels e pacotes do endpoint voltam a valer automaticamente após o zero-touch.',
+              'O resultado é que políticas, campos personalizados, labels e pacotes do endpoint voltam a valer automaticamente após o zero-touch — e, como o registro já existia, não há nova aprovação de zero-touch a fazer.',
             ],
           },
         ],

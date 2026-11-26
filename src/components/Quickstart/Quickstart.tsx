@@ -6,17 +6,17 @@ import { useI18n } from '../../i18n';
 type CopyState = 'idle' | 'copied' | 'error';
 
 const CHANNEL_COMMANDS: Record<string, (base: string) => string> = {
-  'DISCOVERY_RELEASE_CHANNEL=lts': (base) => `DISCOVERY_RELEASE_CHANNEL=lts ${base}`,
-  'DISCOVERY_RELEASE_CHANNEL=beta': (base) => `DISCOVERY_RELEASE_CHANNEL=beta ${base}`,
   'DISCOVERY_RELEASE_CHANNEL=dev': (base) => `DISCOVERY_RELEASE_CHANNEL=dev ${base}`,
-  '--branch release': (base) => `${base} -- --branch release`,
+  '--branch dev': (base) => `${base} -- --branch dev`,
+  'DISCOVERY_RELEASE_CHANNEL=beta': (base) => `DISCOVERY_RELEASE_CHANNEL=beta ${base}`,
+  'DISCOVERY_RELEASE_CHANNEL=lts': (base) => `DISCOVERY_RELEASE_CHANNEL=lts ${base}`,
   'install_discovery_server.sh --mode update': () => './scripts/linux/install_discovery_server.sh --mode update',
 };
 
 function Quickstart() {
   const { text } = useI18n();
   const [copyState, setCopyState] = useState<CopyState>('idle');
-  const [selectedChannel, setSelectedChannel] = useState<string | null>(null);
+  const [selectedChannel, setSelectedChannel] = useState<string | null>('DISCOVERY_RELEASE_CHANNEL=dev');
 
   const activeCommand =
     selectedChannel && CHANNEL_COMMANDS[selectedChannel]

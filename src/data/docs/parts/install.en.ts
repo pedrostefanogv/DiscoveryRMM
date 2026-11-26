@@ -73,10 +73,10 @@ JetStream streams per tenant:
         caption: 'Release channels and environment policy',
         headers: ['Channel / Branch', 'Audience', 'Behaviour', 'Recommendation'],
         rows: [
-          ['release (Stable)', 'Production', 'Only validated, tested code', 'Default for production servers and agents'],
-          ['beta', 'Pre-production', 'New features in final validation', 'Validate in a pilot environment before rollout'],
-          ['lts', 'Long-Term Support', 'Stability and critical fixes only', 'Environments with strict change windows'],
-          ['dev', 'Staging / Developers', 'Active development and CI', 'Never use it directly in production'],
+          ['dev', 'Pre-release testing', 'Active development (only usable channel right now)', 'Use this branch to test before the official launch'],
+          ['beta', 'Pre-production', 'New features in final validation (coming soon)', 'Will open after dev stabilization'],
+          ['release (Stable)', 'Production', 'Only validated, tested code (coming soon)', 'Default for production after launch'],
+          ['lts', 'Long-Term Support', 'Stability and critical fixes only (coming soon)', 'Will open after release stabilization'],
         ],
       },
       {
@@ -148,25 +148,31 @@ JetStream streams per tenant:
     navLabel: '1.3. Server installation',
     badge: 'Part 1 · Chapter 3 · Server setup',
     title: 'How to install the server (Linux bootstrap or manual)',
-    lead: 'A complete walkthrough to bring DiscoveryRMM up in production using the Linux bootstrap or manually from source.',
+    lead: 'A complete walkthrough to bring DiscoveryRMM up using the Linux bootstrap (dev branch for pre-release testing) or manually from source.',
     blocks: [
       {
+        type: 'callout',
+        tone: 'warning',
+        title: 'Currently available only on the dev branch (pre-release)',
+        text: 'For anyone who wants to test DiscoveryRMM before the official launch, only the dev branch build is usable right now. The release, beta, and lts channels will open after stabilization.',
+      },
+      {
         type: 'steps',
-        title: 'Method A — Fast production install (Linux Bootstrap)',
+        title: 'Method A — Fast test install (Linux Bootstrap · dev branch)',
         items: [
           {
             title: '1. Prepare the Ubuntu/Debian host',
             description: 'Log in as root or a user with sudo and make sure outbound HTTPS to GitHub and the distribution repositories works.',
           },
           {
-            title: '2. Run the Bootstrap Wizard',
-            description: 'The script clones the repository, installs .NET 10, PostgreSQL + pgvector, NATS 2.x and Redis, and configures the systemd services.',
-            code: 'bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/release/scripts/linux/bootstrap_install_discovery.sh)"',
+            title: '2. Run the Bootstrap Wizard (dev branch)',
+            description: 'The dev branch script clones the repository, installs .NET 10, PostgreSQL + pgvector, NATS 2.x and Redis, and configures the systemd services.',
+            code: 'bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/dev/scripts/linux/bootstrap_install_discovery.sh)"',
           },
           {
-            title: '3. Choose the release channel',
-            description: 'In the wizard select option 2 (release — stable). For unattended automation, use the DISCOVERY_RELEASE_CHANNEL variable.',
-            code: 'DISCOVERY_RELEASE_CHANNEL=release bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/release/scripts/linux/bootstrap_install_discovery.sh)"',
+            title: '3. Select the dev channel',
+            description: 'In the wizard select option 4 (dev — the only usable channel for testing right now). For unattended automation, set DISCOVERY_RELEASE_CHANNEL=dev.',
+            code: 'DISCOVERY_RELEASE_CHANNEL=dev bash -c "$(curl -fsSL https://raw.githubusercontent.com/pedrostefanogv/DiscoveryRMM_API/dev/scripts/linux/bootstrap_install_discovery.sh)"',
           },
           {
             title: '4. Validate the health check',
@@ -241,7 +247,7 @@ JetStream streams per tenant:
     navLabel: '1.4. Update, backup & recovery',
     badge: 'Part 1 · Chapter 4 · Maintenance',
     title: 'Update, back up and recover the server',
-    lead: 'The central server never updates itself. Here is the safe cycle for updates, backup/restore and administrative access recovery.',
+    lead: 'The central server never updates itself. This chapter covers the update cycle, the backup that is your responsibility, administrative access recovery and the periodic routine that actually makes sense.',
     blocks: [
       {
         type: 'callout',
@@ -251,17 +257,21 @@ JetStream streams per tenant:
       },
       {
         type: 'code',
-        title: 'Updating a server installed by the script',
+        title: 'Backup before updating, the update itself, and validation',
         language: 'bash',
-        snippet: `# 1. Backup before any change
-pg_dump -Fc discovery > /backup/discovery-$(date +%F-%H%M).dump
+        snippet: `# 1) Backup BEFORE any change — the installer does NOT back up the database
+sudo grep -m1 'ConnectionStrings__DefaultConnection' /etc/discovery-api/discovery.env
+#   confirm the database/user (installer defaults: discovery / discovery_app)
+sudo -u postgres pg_dump -Fc discovery > /backup/discovery-$(date +%F-%H%M).dump
+#   copy the dump AND the bucket (local RustFS or external storage) off the host
 
-# 2. Update (applies pending migrations and restarts the services)
+# 2) Update: reapplies the TLS choices, regenerates nginx and applies migrations
 ./scripts/linux/install_discovery_server.sh --mode update
 
-# 3. Validate
+# 3) Validate
 curl -fsS https://your-domain/health
-systemctl status discovery-api discovery-nats --no-pager`,
+systemctl status discovery-api nginx --no-pager
+systemctl list-timers 'discovery-*' --no-pager`,
       },
       {
         type: 'code',
@@ -279,12 +289,21 @@ echo "NewStrongPassword@2026" | dotnet run --project src/Discovery.Api -- --reco
         caption: 'Recommended minimum maintenance routine',
         headers: ['Item', 'Frequency', 'How'],
         rows: [
-          ['PostgreSQL backup', 'Daily + before updates', 'pg_dump -Fc and a copy outside the host'],
-          ['Object storage backup', 'Daily', 'Attachments, custom packages and recordings (disk/MinIO/S3)'],
-          ['Log and series retention', 'One-time setup', 'Settings → Database maintenance (/settings/database-maintenance)'],
-          ['Restore drill', 'Quarterly', 'Restore the dump in a staging host and validate /health'],
-          ['Key/NKey rotation', 'Yearly or after an incident', 'Update Nats:ServerPublicKey and restart API + NATS'],
+          ['PostgreSQL backup', 'Daily + before updating', 'pg_dump -Fc of the database (defaults discovery / discovery_app) to a destination off the host — the installer does not back up the database'],
+          ['Object storage backup', 'Daily', 'discovery-files bucket (local RustFS on port 9000 or external/S3 storage): attachments, in-house packages, recordings and reports'],
+          ['Server health and guards', 'Weekly', 'Check /health and the discovery-health-check.timer and discovery-api-runtime-guard.timer timers'],
+          ['TLS certificate', 'Monthly (check)', 'Verify certificate validity and the renewal timer: discovery-letsencrypt-renew.timer or discovery-zerossl-renew.timer'],
+          ['Disk space and retention', 'Monthly', 'Database, bucket and recordings: tune retention so it fits the disk instead of deleting data by hand'],
+          ['Sanitization checks', 'Monthly or after an incident', 'Run the database and object storage checks in /settings/database-maintenance and apply only after reading the report'],
+          ['Restore drill', 'Quarterly', 'Restore the dump on a staging host, start the API and validate /health and login'],
+          ['NATS identity (trust anchor)', 'Event-driven only — not a periodic rotation', 'When rebuilding the NATS server or reissuing the NKey, update Nats:ServerPublicKey and restart the API; there is no gain in rotating it on a schedule'],
         ],
+      },
+      {
+        type: 'callout',
+        tone: 'info',
+        title: 'What the installer already takes care of',
+        text: 'Certificate renewal (discovery-letsencrypt-renew or discovery-zerossl-renew timer), service runtime guard, periodic health check, restarting the .NET services when apt upgrades the runtime, and regenerating nginx on every update. In your routine, verify — do not redo.',
       },
       {
         type: 'callout',
@@ -294,68 +313,68 @@ echo "NewStrongPassword@2026" | dotnet run --project src/Discovery.Api -- --reco
       },
     ],
   },
+
   {
     id: 'console-access',
     part: 'install',
     navLabel: '1.5. Web Console, HTTPS & first access',
     badge: 'Part 1 · Chapter 5 · Console access',
-    title: 'Publish the Web Console over HTTPS/WSS and unlock the first access',
-    lead: 'Configure the reverse proxy, validate the NATS WebSocket and complete identity onboarding (password, profile, MFA and roles).',
+    title: 'What the installer already delivers for HTTPS/Console, and what is left to do',
+    lead: 'The installer publishes the Web Console, renders nginx, issues the certificate and exposes NATS over WSS automatically. This chapter separates what it solves from what remains your decision: DNS, certificate provider, firewall, first access and validation.',
     blocks: [
       {
+        type: 'table',
+        caption: 'What the installer already does automatically',
+        headers: ['Item', 'What it delivers', 'Note'],
+        rows: [
+          ['nginx rendered and enabled', 'Generates /etc/nginx/sites-available/discovery-rmm from the template, enables it in sites-enabled, removes the default site and keeps a backup of the previous one', 'Do not edit that file by hand: the update regenerates it by default'],
+          ['Redirect and TLS', 'Port 80 redirects to HTTPS (301); 443 with TLS 1.2/1.3, HTTP/2 and a default_server that rejects unknown hosts', 'No manual proxy work'],
+          ['Certificate and renewal', 'Wizard choice: self-signed (default), ZeroSSL or Let\'s Encrypt over ACME, with an automatic renewal timer', 'ACME via DNS validation: create the TXT record (a ready-made Cloudflare hook exists)'],
+          ['Web portal published', 'Clones DiscoveryRMM_Site, runs the build and publishes dist into the portal vhost', 'The Console is already served at https://your-domain/'],
+          ['NATS over WSS', 'Configures wss://<host>/nats/ with WebSocket Upgrade forwarding', 'Without it real time falls back to SSE'],
+          ['Object storage and services', 'Publishes the bucket through nginx and installs the systemd units, including the runtime guards', 'Fine tuning stays in appsettings/env'],
+        ],
+      },
+      {
         type: 'steps',
-        title: 'Publication and first access sequence',
+        title: 'What is still up to you',
         items: [
           {
-            title: '1. Publish the Web Console',
-            description: 'Build the DiscoveryRMM_Site production bundle and serve the static files through the same domain as the API (avoids CORS and simplifies WSS).',
-            code: 'npm ci && npm run build   # generates dist/',
+            title: '1. Point the domain DNS',
+            description: 'Before issuing a certificate the name must resolve to the server: create the A/AAAA (or CNAME) records pointing at the machine IP.',
           },
           {
-            title: '2. Terminate TLS and forward the NATS WebSocket',
-            description: 'On the reverse proxy, expose 443 for API/Console and forward /nats with WebSocket Upgrade. Without it the Console falls back to SSE and remote sessions become unavailable.',
+            title: '2. Choose the certificate provider',
+            description: 'In the wizard: self-signed for a lab, ZeroSSL or Let\'s Encrypt for production. With ACME DNS validation, create the requested TXT record — or use the Cloudflare hook — and wait for issuance.',
           },
           {
-            title: '3. First login and password change',
-            description: 'Sign in with admin / Mudar@123. The system requires a password change (12+ characters), a profile update and MFA enrolment.',
+            title: '3. Open the firewall ports',
+            description: 'The installer does not touch the firewall. Open 80 and 443 on the host and in the cloud security group; 4222 only if NATS is exposed directly (agents and Console use 443).',
+          },
+          {
+            title: '4. Complete the first access',
+            description: 'Sign in with admin / Mudar@123. The system requires a password change (12+ characters, uppercase, number and symbol), a profile update and MFA enrolment (FIDO2/WebAuthn or TOTP).',
             route: 'https://your-domain/auth/login',
-          },
-          {
-            title: '4. Register MFA and review roles',
-            description: 'Enrol FIDO2/WebAuthn or TOTP and create the technician accounts in /identity/access with roles and scope (Global, Client, Site).',
-            route: 'Settings → Identity and Access (/identity/access)',
           },
         ],
       },
       {
         type: 'code',
-        title: 'Reverse proxy example (Nginx) with HTTPS + WSS',
-        language: 'nginx',
-        snippet: `server {
-  listen 443 ssl http2;
-  server_name your-domain;
+        title: 'Inspecting what was generated (and switching the certificate later)',
+        language: 'bash',
+        snippet: `# The configuration lives outside your editor: inspect it before touching it
+sudo nginx -t                                  # validates the configuration without applying
+sudo ls -l /etc/nginx/sites-enabled/           # discovery-rmm -> sites-available/discovery-rmm
+sudo systemctl status nginx discovery-api      # proxy and API services
 
-  ssl_certificate     /etc/letsencrypt/live/your-domain/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/your-domain/privkey.pem;
+# End-to-end validation
+curl -fsS https://your-domain/health           # API responding
+# In the browser: https://your-domain/            (portal)
+#                 https://your-domain/scalar/v1   (API docs)
 
-  # API + Web Console
-  location / {
-    proxy_pass http://127.0.0.1:5288;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-For $remote_addr;
-  }
-
-  # NATS over WebSocket (needs Upgrade and a long timeout)
-  location /nats {
-    proxy_pass http://127.0.0.1:8222;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_read_timeout 3600s;
-    proxy_send_timeout 3600s;
-  }
-}`,
+# Switch the certificate provider later (self-signed <-> ZeroSSL <-> Let's Encrypt)
+# Update mode reapplies the TLS choices and regenerates nginx by default:
+./scripts/linux/install_discovery_server.sh --mode update`,
       },
       {
         type: 'table',
@@ -380,8 +399,15 @@ echo "NewStrongPassword@2026" | dotnet run --project src/Discovery.Api -- --reco
         title: 'Branding',
         text: 'Logo, colours and display name in the Console and the Agent are configured in Settings → Branding (/settings/branding). Client branding can override the global value through configuration inheritance.',
       },
+      {
+        type: 'callout',
+        tone: 'warning',
+        title: 'Do not edit nginx by hand',
+        text: 'The installer regenerates /etc/nginx/sites-available/discovery-rmm on every update (keeping a .bak backup). Manual customisations are lost: prefer installer/env variables or a separate include file.',
+      },
     ],
   },
+
   {
     id: 'client-setup',
     part: 'install',
@@ -978,6 +1004,29 @@ Start-Process "$env:LOGONSERVER\netlogon\\discovery\\discovery-amd64-installer.e
         ],
       },
       {
+        type: 'table',
+        caption: 'Provisioning scenarios and what each one requires',
+        headers: ['Scenario', 'What the agent does', 'What you have to do'],
+        rows: [
+          ['With a Deploy Token (/S /URL= /KEY=)', 'Registers straight into the server and binds to the token Client/Site', 'Generate the token and guarantee the route to the server'],
+          ['Generic mode (/G), no URL and no key', 'Joins through the P2P mesh: it needs OTHER agents on the same network to discover each other and obtain credentials', 'Have at least one already provisioned agent on the LAN, or enable CloudBootstrapEnabled to pull the peer list from the cloud'],
+          ['New auto-provisioned endpoint', 'Registers but stays awaiting release from the server (zeroTouchPending) and does not complete communication', 'Approve it in the Console: Agents → Approve zero-touch (publishes the AgentApproved event)'],
+          ['Machine that already had the agent (including after reinstall)', 'Re-associates through hardware (TPM 2.0 EK + SMBIOS UUID) to the existing record', 'Nothing: the endpoint resumes with policies, custom fields and labels already applied'],
+        ],
+      },
+      {
+        type: 'callout',
+        tone: 'info',
+        title: 'Why generic mode depends on the network',
+        text: 'Without a URL and key the agent cannot learn the server on its own: it looks for peers on the LAN (mDNS/UDP), retries onboarding every 60 s with backoff between 30 s and 2 min and waits up to 120 s for the initial P2P discovery before the first policy sync. The onboarding deploy key expires in 30 minutes and attempts continue while there is no credential. If the network has no provisioned agent, use the Deploy Token (/KEY) or enable CloudBootstrapEnabled.',
+      },
+      {
+        type: 'callout',
+        tone: 'warning',
+        title: 'A new endpoint needs approval before communicating',
+        text: 'Registering is not the same as releasing: while the server returns zeroTouchPending the endpoint shows as awaiting approval and services such as the App Store stay blocked until you approve it. Machines that already had the agent (even after reinstalling Windows) are re-associated with the existing record and do not require a new approval.',
+      },
+      {
         type: 'accordion',
         title: 'Checklist, http:// and post-format recovery',
         items: [
@@ -999,7 +1048,7 @@ Start-Process "$env:LOGONSERVER\netlogon\\discovery\\discovery-amd64-installer.e
             summary: 'Post-Format Recovery: the machine is recognised again by itself',
             paragraphs: [
               'On machines with TPM 2.0, the agent stores the hardware identity (Endorsement Key + SMBIOS UUID). After reinstalling Windows, the new agent re-associates with the same record instead of creating a duplicate endpoint.',
-              'As a result, policies, custom fields, labels and endpoint packages apply again automatically after zero-touch.',
+              'As a result, policies, custom fields, labels and endpoint packages apply again automatically after zero-touch — and because the record already existed, there is no new zero-touch approval to perform.',
             ],
           },
         ],
